@@ -1,5 +1,6 @@
 package com.zero.shareby;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,12 +26,14 @@ public class MyAppIntro extends AppIntro2 {
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
+        startActivity(new Intent(this,LoginActivity.class));
         finish();
     }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
+        startActivity(new Intent(this,LoginActivity.class));
         finish();
     }
 }
