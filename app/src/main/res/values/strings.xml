@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ShareBy</string>
+
+    <string name="sign_out">Sign Out</string>
 </resources>
