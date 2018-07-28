@@ -3,6 +3,8 @@
     package="com.zero.shareby">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -33,9 +35,11 @@
             android:parentActivityName=".MainActivity" />
 
         <activity android:name=".UserProfile"
+            android:label="Your Profile"
             android:parentActivityName=".UserSettings"/>
 
         <activity android:name=".EditProfile"
+            android:label="Edit Profile"
             android:parentActivityName=".UserProfile">
         </activity>
 

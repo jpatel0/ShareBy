@@ -6,5 +6,5 @@
     <color name="dividerColor">#A9A9A9</color>
     <color name="primary_material_light">#4b49d3</color>
     <color name="primary_dark_material_light">#64bdcf</color>
-    <color name="background_material_light">#918d8d</color>
+    <color name="background_material_light">#FFFFFF</color>
 </resources>

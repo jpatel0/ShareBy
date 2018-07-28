@@ -25,8 +25,6 @@ public class EditProfile extends AppCompatActivity {
         if(auth.getCurrentUser()!=null){
             editNameText.setText(auth.getCurrentUser().getDisplayName());
             editImageProfile.setImageResource(R.drawable.chat_image);
-
-
         }
 
     }

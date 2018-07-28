@@ -31,7 +31,7 @@ public class UserSettings extends AppCompatActivity {
 
         mlistView=findViewById(R.id.settings_list_view);
         settings_list=new ArrayList<>();
-        settings_list.add("Edit Profile");
+        settings_list.add("Profile");
         settings_list.add("Log out");
         mAuth=FirebaseAuth.getInstance();
         setTitle("Hi "+ mAuth.getCurrentUser().getDisplayName());
@@ -43,7 +43,7 @@ public class UserSettings extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-
+                        startActivity(new Intent(UserSettings.this,UserProfile.class));
                         break;
                     case 1:
                         if(mAuth.getCurrentUser()!=null){
