@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -51,9 +52,10 @@ public class LoginActivity extends AppCompatActivity {
                     //New User Sign up
                     startActivityForResult(AuthUI.getInstance()
                                             .createSignInIntentBuilder()
-                                            .setIsSmartLockEnabled(false)
+                                            .setIsSmartLockEnabled(true)
                                             .setTheme(R.style.AppTheme)
                                             .setAvailableProviders(providers)
+                                            .setLogo(R.drawable.sign)
                                             .build(),RC_SIGN_IN);
                 }
             }
@@ -73,7 +75,8 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             else
-                Toast.makeText(this,"Something went wrong",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,"Something went wrong",Toast.LENGTH_SHORT).show();
+                finish();
         }
 
     }
@@ -85,11 +88,17 @@ public class LoginActivity extends AppCompatActivity {
     }*/
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.i("yeah","back pressed");
+    }
+
+
+    @Override
     protected void onResume() {
         super.onResume();
         if(!isConnected(LoginActivity.this)) buildDialog(LoginActivity.this).show();
         else {
-            Toast.makeText(LoginActivity.this,"Welcome", Toast.LENGTH_SHORT).show();
             mAuth.addAuthStateListener(mAuthStateListener);
         }
     }
@@ -128,7 +137,6 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 finish();
             }
         });

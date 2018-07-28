@@ -24,7 +24,7 @@ public class EditProfile extends AppCompatActivity {
         EditText editNameText=findViewById(R.id.edit_profile_name);
         if(auth.getCurrentUser()!=null){
             editNameText.setText(auth.getCurrentUser().getDisplayName());
-            editImageProfile.setImageResource(R.drawable.chat_image);
+            editImageProfile.setImageResource(R.drawable.sign);
         }
 
     }
