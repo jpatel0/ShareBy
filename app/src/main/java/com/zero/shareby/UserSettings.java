@@ -43,6 +43,7 @@ public class UserSettings extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
+
                         break;
                     case 1:
                         if(mAuth.getCurrentUser()!=null){
@@ -56,4 +57,6 @@ public class UserSettings extends AppCompatActivity {
             }
         });
     }
+
+
 }
