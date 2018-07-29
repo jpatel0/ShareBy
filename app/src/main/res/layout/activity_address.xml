@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <EditText
+        android:id="@+id/address1_edit_text"
+        android:hint="Address Line 1"
+        android:inputType="textPostalAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_edittext"
+        android:textSize="18sp"
+        android:layout_marginTop="13dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"/>
+
+    <EditText
+        android:id="@+id/address2_edit_text"
+        android:hint="Address Line 2"
+        android:inputType="textPostalAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_edittext"
+        android:textSize="18sp"
+        android:layout_marginTop="13dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <EditText
+            android:id="@+id/zip_edit_text"
+            android:hint="Postal Code"
+            android:inputType="number"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:textSize="18sp"
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="12dp"/>
+
+
+        <EditText
+            android:id="@+id/city_edit_text"
+            android:hint="City"
+            android:inputType="textPostalAddress"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:textSize="18sp"
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"/>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        />
+
+    <TextView
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OR"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/google_map_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Get from Google Map"
+        android:layout_gravity="center_horizontal"/>
+
+
+
+</LinearLayout>

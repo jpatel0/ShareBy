@@ -3,41 +3,48 @@ package com.zero.shareby;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-
 import com.google.firebase.auth.FirebaseAuth;
 
 
-public class MainActivity extends AppCompatActivity {
 
+public class MainActivity extends AppCompatActivity{
+
+    public static final String MAP_KEY="map_key";
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-
+    SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferences= PreferenceManager.getDefaultSharedPreferences(this);
         mAuth=FirebaseAuth.getInstance();
         mAuthListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
-
                 }
                 else{
                     startActivity(new Intent(MainActivity.this,LoginActivity.class));
                 }
             }
         };
+
+            if(preferences.getBoolean(MAP_KEY,true)){
+                startActivity(new Intent(this,AddressActivity.class));
+            }
 
     }
 
@@ -107,7 +114,5 @@ public class MainActivity extends AppCompatActivity {
 
         return builder;
     }
-
-
 
 }

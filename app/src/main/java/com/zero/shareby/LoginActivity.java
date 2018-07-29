@@ -45,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
                     //Already Signed in
+                    UserDetails.uid=firebaseAuth.getUid();
+                    UserDetails.name=firebaseAuth.getCurrentUser().getDisplayName();
                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                     finish();
                 }
