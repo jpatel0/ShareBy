@@ -1,12 +1,13 @@
 package com.zero.shareby;
 
 import android.Manifest;
-import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,32 +24,33 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.zero.shareby.MapsActivity.RC_PERMISSIONS;
 
 public class AddressActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+    private static final String TAG=AddressActivity.class.getSimpleName();
     public static final int RC_PICKER=1353;
     private boolean isPermissionEnabled=false;
-    private GoogleApiClient mGoogleApiClient;
-    private EditText addressLine1;
-    private EditText addressLine2;
-    private EditText zipCode;
-    private EditText city;
+    GoogleApiClient mGoogleApiClient;
+    private EditText addressLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
-        addressLine1=findViewById(R.id.address1_edit_text);
-        addressLine2=findViewById(R.id.address2_edit_text);
-        zipCode=findViewById(R.id.zip_edit_text);
-        city=findViewById(R.id.city_edit_text);
-
+        addressLine =findViewById(R.id.address1_edit_text);
 
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
@@ -73,7 +75,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     }
 
 
-    private boolean askPermissions(){
+    /*private boolean askPermissions(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -101,7 +103,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 isPermissionEnabled=true;
             }
         }
-    }
+    }*/
 
 
     @Override
@@ -118,21 +120,29 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                addressLine1.setText(addresses.toString());
-                zipCode.setText(addresses.get(0).getPostalCode().trim());
-                city.setText(addresses.get(0).getLocality());
-                if(!place.getAddress().toString().isEmpty())
-                    UserDetails.address=addresses.get(0).getAddressLine(0);
-                Log.i("Map data yeah",addresses.toString());
+                addressLine.setText(addresses.get(0).getAddressLine(0));
+                Log.i("Map data yeah and loc",addresses.toString()+"\n"+addresses.get(0));
+                DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                Map<String,Object> latlngMap=new HashMap<>();
+                latlngMap.put("latitude",addresses.get(0).getLatitude());
+                latlngMap.put("longitude",addresses.get(0).getLongitude());
+                dbRef.updateChildren(latlngMap, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        Log.d(TAG,"firebase child Update successful");
+                    }
+                });
+                Toast.makeText(AddressActivity.this,"Address Saved",Toast.LENGTH_SHORT).show();
             }
             else if (resultCode==RESULT_CANCELED){
-                Log.i("Map data","Canceled");
+                Log.i(TAG," Map Canceled");
             }
         }
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this,"Problem getting map data",Toast.LENGTH_SHORT).show();
+        Log.d(TAG,"connection failed google place picker api");
     }
 }

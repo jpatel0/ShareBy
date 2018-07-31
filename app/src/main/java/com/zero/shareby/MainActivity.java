@@ -15,7 +15,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -35,6 +38,20 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
+
+                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    FirebaseDatabase.getInstance().getReference(uid).child("UserDetails").child(uid).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            throw databaseError.toException();
+                        }
+                    });
+
                 }
                 else{
                     startActivity(new Intent(MainActivity.this,LoginActivity.class));
@@ -42,9 +59,11 @@ public class MainActivity extends AppCompatActivity{
             }
         };
 
-            if(preferences.getBoolean(MAP_KEY,true)){
-                startActivity(new Intent(this,AddressActivity.class));
-            }
+        if(preferences.getBoolean(MAP_KEY,true)){
+            startActivity(new Intent(this,AddressActivity.class));
+            SharedPreferences.Editor editor=preferences.edit().putBoolean(MAP_KEY,false);
+            editor.apply();
+        }
 
     }
 

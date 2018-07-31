@@ -48,7 +48,7 @@ public class UserSettings extends AppCompatActivity {
                     case 1:
                         if(mAuth.getCurrentUser()!=null){
                             AuthUI.getInstance().signOut(getApplicationContext());
-                            UserDetails.clearData();
+                            //UserDetails.clearData();
                             startActivity(new Intent(UserSettings.this,LoginActivity.class));
                             finish();
                         }

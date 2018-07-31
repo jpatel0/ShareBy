@@ -6,19 +6,64 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntro2Fragment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MyAppIntro extends AppIntro2 {
     private static final String APP_INTRO_KEY="app_intro_check_key";
     SharedPreferences pref;
-
+    ChildEventListener listener;
+    DatabaseReference reference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //SharedPreferences sharedPreferences;
+
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            reference= FirebaseDatabase.getInstance().getReference().child("UserDetails");
+            listener=new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    UserDetails userDetails;
+                    userDetails=dataSnapshot.getValue(UserDetails.class);
+                   Log.i("app ho intro",userDetails.getName());
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            };
+            reference.addChildEventListener(listener);
+        }
+
 
         pref= PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -40,6 +85,21 @@ public class MyAppIntro extends AppIntro2 {
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
         gotoLoginActivity();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (listener==null && reference!=null)
+        reference.addChildEventListener(listener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(listener!=null)
+        reference.removeEventListener(listener);
+        listener=null;
     }
 
     @Override

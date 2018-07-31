@@ -4,66 +4,29 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <TextView
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_light"
+        android:text="NOTE:Your Default Location is necessary to run the app\nPlease provide your accurate address to be shown on map later"
+        android:layout_gravity="center_horizontal"/>
 
     <EditText
         android:id="@+id/address1_edit_text"
-        android:hint="Address Line 1"
-        android:inputType="textPostalAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_edittext"
-        android:textSize="18sp"
-        android:layout_marginTop="13dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"/>
-
-    <EditText
-        android:id="@+id/address2_edit_text"
-        android:hint="Address Line 2"
-        android:inputType="textPostalAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_edittext"
-        android:textSize="18sp"
         android:layout_marginTop="13dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"/>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-
-        <EditText
-            android:id="@+id/zip_edit_text"
-            android:hint="Postal Code"
-            android:inputType="number"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext"
-            android:textSize="18sp"
-            android:layout_marginTop="13dp"
-            android:layout_marginStart="12dp"/>
-
-
-        <EditText
-            android:id="@+id/city_edit_text"
-            android:hint="City"
-            android:inputType="textPostalAddress"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_edittext"
-            android:textSize="18sp"
-            android:layout_marginTop="13dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"/>
-
-
-    </LinearLayout>
+        android:background="@drawable/bg_edittext"
+        android:hint="Address Line"
+        android:inputType="textMultiLine"
+        android:lines="6"
+        android:minLines="6"
+        android:maxLines="10"
+        android:gravity="top|left"
+        android:textSize="18sp" />
 
     <View
         android:layout_marginTop="25dp"

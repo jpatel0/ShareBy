@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,15 +40,18 @@ public class LoginActivity extends AppCompatActivity {
                 new AuthUI.IdpConfig.EmailBuilder().build()
         );
 
-
+        final FirebaseDatabase database=FirebaseDatabase.getInstance();
 
         mAuthStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
                     //Already Signed in
-                    UserDetails.uid=firebaseAuth.getUid();
-                    UserDetails.name=firebaseAuth.getCurrentUser().getDisplayName();
+                    UserDetails userDetails=new UserDetails();
+                    userDetails.setUid(firebaseAuth.getUid());
+                    userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
+                    DatabaseReference dbReference=database.getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
+                    dbReference.setValue(userDetails);
                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                     finish();
                 }
