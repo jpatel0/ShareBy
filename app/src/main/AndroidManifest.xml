@@ -50,7 +50,7 @@
         <activity
             android:name=".AddressActivity"
             android:label="Edit Address"
-            android:parentActivityName=".UserProfile">
+            android:parentActivityName=".EditProfile">
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

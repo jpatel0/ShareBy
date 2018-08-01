@@ -3,16 +3,26 @@ package com.zero.shareby;
 public class UserDetails {
     private String name;
     private String uid;
-    private String latitude;
-    private String longitude;
+    private double latitude;
+    private double longitude;
     private String phone;
+    private String photoUrl;
 
     public UserDetails(){
-        name="";
-        uid="";
-        latitude="";
-        longitude="";
-        phone="";
+        name=null;
+        uid=null;
+        latitude=0.0;
+        longitude=0.0;
+        phone=null;
+        photoUrl=null;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     public void setUid(String uid) {
@@ -27,19 +37,19 @@ public class UserDetails {
         this.phone=phone;
     }
 
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 

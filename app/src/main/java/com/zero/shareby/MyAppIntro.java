@@ -24,45 +24,10 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MyAppIntro extends AppIntro2 {
     private static final String APP_INTRO_KEY="app_intro_check_key";
     SharedPreferences pref;
-    ChildEventListener listener;
-    DatabaseReference reference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //SharedPreferences sharedPreferences;
-
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
-            reference= FirebaseDatabase.getInstance().getReference().child("UserDetails");
-            listener=new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    UserDetails userDetails;
-                    userDetails=dataSnapshot.getValue(UserDetails.class);
-                   Log.i("app ho intro",userDetails.getName());
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            };
-            reference.addChildEventListener(listener);
-        }
 
 
         pref= PreferenceManager.getDefaultSharedPreferences(this);
@@ -87,20 +52,7 @@ public class MyAppIntro extends AppIntro2 {
         gotoLoginActivity();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (listener==null && reference!=null)
-        reference.addChildEventListener(listener);
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if(listener!=null)
-        reference.removeEventListener(listener);
-        listener=null;
-    }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {

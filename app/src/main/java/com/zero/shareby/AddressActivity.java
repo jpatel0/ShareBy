@@ -1,20 +1,17 @@
 package com.zero.shareby;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,8 +21,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,14 +35,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.zero.shareby.MapsActivity.RC_PERMISSIONS;
 
 public class AddressActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     private static final String TAG=AddressActivity.class.getSimpleName();
     public static final int RC_PICKER=1353;
     private boolean isPermissionEnabled=false;
     GoogleApiClient mGoogleApiClient;
-    private EditText addressLine;
+    private TextView addressLine;
+    DatabaseReference databaseReference;
+    ChildEventListener mChildListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +51,53 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         setContentView(R.layout.activity_address);
         addressLine =findViewById(R.id.address1_edit_text);
 
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("UserDetails");
+            mChildListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    double lat=0, lng=0;
+                    Log.d(TAG,dataSnapshot.getChildren().toString());
+                    if (dataSnapshot.getKey().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                        UserDetails userDetails=dataSnapshot.getValue(UserDetails.class);
+                        Log.d(TAG,String.valueOf(userDetails.getLatitude()));
+                        lat=userDetails.getLatitude();
+                        lng=userDetails.getLongitude();
+                        if (userDetails.getLongitude()==0){
+                            addressLine.setText("");
+                        }
+                        else {
+                            Geocoder geocoder = new Geocoder(AddressActivity.this, Locale.getDefault());
+                            List<Address> addressList = null;
+                            try {
+                                addressList=geocoder.getFromLocation(lat,lng,3);
+                                Log.d(TAG,addressList.toString());
+                                addressLine.setText(addressList.get(0).getAddressLine(0));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            };
+            databaseReference.addChildEventListener(mChildListener);
+        }
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -144,5 +190,47 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this,"Problem getting map data",Toast.LENGTH_SHORT).show();
         Log.d(TAG,"connection failed google place picker api");
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                Log.d(TAG,"home as up pressed");
+                if(addressLine.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(this, "Your location cant be empty!!", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                break;
+
+            default:
+                Log.d(TAG,item.getItemId()+"");
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG,"back pressed");
+        if(addressLine.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Your location cant be empty!!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        databaseReference.addChildEventListener(mChildListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        databaseReference.removeEventListener(mChildListener);
     }
 }

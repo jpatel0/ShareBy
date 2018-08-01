@@ -3,6 +3,7 @@ package com.zero.shareby;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -11,12 +12,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +31,7 @@ import java.util.List;
 public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN=123;
+    private static final String TAG=LoginActivity.class.getSimpleName();
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
@@ -44,14 +52,32 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuthStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onAuthStateChanged(@NonNull final FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
                     //Already Signed in
-                    UserDetails userDetails=new UserDetails();
+                    final UserDetails userDetails=new UserDetails();
                     userDetails.setUid(firebaseAuth.getUid());
                     userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
-                    DatabaseReference dbReference=database.getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
-                    dbReference.setValue(userDetails);
+                    DatabaseReference dbReference=database.getReference().child("UserDetails");
+                    dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Log.d(TAG,dataSnapshot.toString());
+                            Log.d(TAG,dataSnapshot.getChildrenCount()+"");
+                            if(dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
+                                Log.d(TAG,"yrs");
+                            }
+                            else {
+                                DatabaseReference fd=FirebaseDatabase.getInstance().getReference().child("UserDetails").child(mAuth.getCurrentUser().getUid());
+                                fd.setValue(userDetails);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                     finish();
                 }

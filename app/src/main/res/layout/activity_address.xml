@@ -9,39 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/holo_red_light"
-        android:text="NOTE:Your Default Location is necessary to run the app\nPlease provide your accurate address to be shown on map later"
-        android:layout_gravity="center_horizontal"/>
-
-    <EditText
-        android:id="@+id/address1_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="13dp"
-        android:background="@drawable/bg_edittext"
-        android:hint="Address Line"
-        android:inputType="textMultiLine"
-        android:lines="6"
-        android:minLines="6"
-        android:maxLines="10"
-        android:gravity="top|left"
-        android:textSize="18sp" />
-
-    <View
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        />
-
-    <TextView
-        android:layout_marginTop="12dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OR"
+        android:text="IMPORTANT NOTE:Your Default Location is necessary to run the app. Please provide your accurate address to be shown on map later"
         android:layout_gravity="center_horizontal"/>
 
     <Button
@@ -49,9 +17,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Get from Google Map"
+        android:text="Set location from Google Map"
         android:layout_gravity="center_horizontal"/>
 
-
+    <TextView
+        android:id="@+id/address1_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/bg_edittext"
+        android:hint="Your Selected address would appear OVER HERE"
+        android:lines="6"
+        android:minLines="6"
+        android:maxLines="10"
+        android:gravity="top|left"
+        android:textSize="18sp" />
 
 </LinearLayout>

@@ -17,12 +17,13 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
 public class MainActivity extends AppCompatActivity{
-
+    private static final String TAG=MainActivity.class.getSimpleName();
     public static final String MAP_KEY="map_key";
 
     private FirebaseAuth mAuth;
@@ -39,18 +40,18 @@ public class MainActivity extends AppCompatActivity{
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
 
-                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    /*String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     FirebaseDatabase.getInstance().getReference(uid).child("UserDetails").child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                            Log.d(TAG,dataSnapshot.toString());
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             throw databaseError.toException();
                         }
-                    });
+                    });*/
 
                 }
                 else{
@@ -60,7 +61,23 @@ public class MainActivity extends AppCompatActivity{
         };
 
         if(preferences.getBoolean(MAP_KEY,true)){
-            startActivity(new Intent(this,AddressActivity.class));
+            DatabaseReference dbReference=FirebaseDatabase.getInstance().getReference().child("UserDetails").child(mAuth.getCurrentUser().getUid());
+            dbReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d(TAG,dataSnapshot.toString());
+                    UserDetails userDetails=dataSnapshot.getValue(UserDetails.class);
+                    if (userDetails.getLatitude()!=0){
+                    }
+                    else
+                        startActivity(new Intent(MainActivity.this, AddressActivity.class));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
             SharedPreferences.Editor editor=preferences.edit().putBoolean(MAP_KEY,false);
             editor.apply();
         }
