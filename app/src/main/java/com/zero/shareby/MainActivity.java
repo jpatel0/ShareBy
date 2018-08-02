@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity{
 
         if(preferences.getBoolean(MAP_KEY,true)){
             DatabaseReference dbReference=FirebaseDatabase.getInstance().getReference().child("UserDetails").child(mAuth.getCurrentUser().getUid());
-            dbReference.addValueEventListener(new ValueEventListener() {
+            dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d(TAG,dataSnapshot.toString());

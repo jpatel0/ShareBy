@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeSet;
 
 
 public class AddressActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
@@ -157,31 +158,35 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode==RC_PICKER){
-            if (resultCode==RESULT_OK){
-                Place place=PlacePicker.getPlace(this,data);
-                Geocoder geocoder=new Geocoder(this, Locale.getDefault());
-                List<Address> addresses=new ArrayList<>();
+            if (resultCode==RESULT_OK) {
+                Place place = PlacePicker.getPlace(this, data);
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses = new ArrayList<>();
                 try {
-                    addresses=geocoder.getFromLocation(place.getLatLng().latitude,place.getLatLng().longitude,3);
+                    addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 3);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                addressLine.setText(addresses.get(0).getAddressLine(0));
-                Log.i("Map data yeah and loc",addresses.toString()+"\n"+addresses.get(0));
-                DatabaseReference dbRef= FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                Map<String,Object> latlngMap=new HashMap<>();
-                latlngMap.put("latitude",addresses.get(0).getLatitude());
-                latlngMap.put("longitude",addresses.get(0).getLongitude());
-                dbRef.updateChildren(latlngMap, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        Log.d(TAG,"firebase child Update successful");
-                    }
-                });
-                Toast.makeText(AddressActivity.this,"Address Saved",Toast.LENGTH_SHORT).show();
+                if (addresses.size() > 0) {
+                    addressLine.setText(addresses.get(0).getAddressLine(0));
+                    Log.d("Map data yeah and loc", addresses.toString() + "\n" + addresses.get(0));
+                    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    Map<String, Object> latlngMap = new HashMap<>();
+                    latlngMap.put("latitude", addresses.get(0).getLatitude());
+                    latlngMap.put("longitude", addresses.get(0).getLongitude());
+                    dbRef.updateChildren(latlngMap, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                            Log.d(TAG, "firebase child Update successful");
+                        }
+                    });
+                    Toast.makeText(AddressActivity.this, "Address Saved", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(AddressActivity.this, "Coordinates are invalid", Toast.LENGTH_SHORT).show();
             }
             else if (resultCode==RESULT_CANCELED){
-                Log.i(TAG," Map Canceled");
+                Log.d(TAG," Map Canceled");
             }
         }
     }

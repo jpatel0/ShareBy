@@ -17,6 +17,10 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -55,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull final FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
                     //Already Signed in
+                    Log.d(TAG,"Auth State is not null");
                     final UserDetails userDetails=new UserDetails();
                     userDetails.setUid(firebaseAuth.getUid());
                     userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
@@ -65,11 +70,21 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG,dataSnapshot.toString());
                             Log.d(TAG,dataSnapshot.getChildrenCount()+"");
                             if(dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
+                                startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                finish();
                                 Log.d(TAG,"yrs");
                             }
                             else {
-                                DatabaseReference fd=FirebaseDatabase.getInstance().getReference().child("UserDetails").child(mAuth.getCurrentUser().getUid());
-                                fd.setValue(userDetails);
+                                DatabaseReference fd=FirebaseDatabase.getInstance().getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
+                                fd.setValue(userDetails, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                        startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                        finish();
+                                    }
+                                });
+
+
                             }
                         }
 
@@ -78,8 +93,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                     });
-                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                    finish();
                 }
                 else {
                     //New User Sign up
@@ -102,9 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         if(requestCode==RC_SIGN_IN){
             if(resultCode==RESULT_OK){
                 //Signed in successfully
-                Toast.makeText(this,"Signed in successfully..",Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                finish();
+                Toast.makeText(LoginActivity.this,"Sign In Successful",Toast.LENGTH_SHORT).show();
             }
 
             else
