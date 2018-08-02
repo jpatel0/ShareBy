@@ -13,7 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -61,6 +64,20 @@ public class LoginActivity extends AppCompatActivity {
                     //Already Signed in
                     Log.d(TAG,"Auth State is not null");
                     final UserDetails userDetails=new UserDetails();
+
+                    RelativeLayout relParent = new RelativeLayout(LoginActivity.this);
+                    RelativeLayout.LayoutParams relParentParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    relParent.setLayoutParams(relParentParam);
+
+                    final ProgressBar pb=new ProgressBar(LoginActivity.this);
+                    RelativeLayout.LayoutParams progressBarViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    pb.setLayoutParams(progressBarViewParams);
+                    progressBarViewParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+
+                    relParent.addView(pb);
+                    setContentView(relParent, relParentParam);
+
+                    pb.setVisibility(View.VISIBLE);
                     userDetails.setUid(firebaseAuth.getUid());
                     userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
                     DatabaseReference dbReference=database.getReference().child("UserDetails");
@@ -70,7 +87,9 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG,dataSnapshot.toString());
                             Log.d(TAG,dataSnapshot.getChildrenCount()+"");
                             if(dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
+
                                 startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                pb.setVisibility(View.INVISIBLE);
                                 finish();
                                 Log.d(TAG,"yrs");
                             }
@@ -80,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                                         startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                                        pb.setVisibility(View.INVISIBLE);
                                         finish();
                                     }
                                 });
