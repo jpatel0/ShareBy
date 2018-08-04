@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,11 +58,13 @@ public class EditProfile extends AppCompatActivity {
     Uri downloadedUri;
     ImageView editImageProfile;
     EditText editNameText;
+    ProgressBar progressBar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate called");
         setContentView(R.layout.activity_edit_profile);
         FirebaseAuth auth=FirebaseAuth.getInstance();
         ActionBar actionBar=getSupportActionBar();
@@ -66,11 +73,12 @@ public class EditProfile extends AppCompatActivity {
         }
         photoUri=null;
         downloadedUri=null;
-
+        progressBar=findViewById(R.id.edit_layout_progress_bar);
         editImageProfile=findViewById(R.id.edit_profile_image);
         editNameText=findViewById(R.id.edit_profile_name);
         final TextView editAddress=findViewById(R.id.edit_address_text_view);
         Button changeLocationButton=findViewById(R.id.change_location_button);
+        progressBar.setVisibility(View.VISIBLE);
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -110,7 +118,7 @@ public class EditProfile extends AppCompatActivity {
         editImageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent pickPhoto=new Intent(Intent.ACTION_GET_CONTENT);
+                Intent pickPhoto=new Intent(Intent.ACTION_PICK);
                 pickPhoto.setType("image/*");
                 startActivityForResult(Intent.createChooser(pickPhoto,"Complete action using"),RC_PICK);
             }
@@ -121,12 +129,14 @@ public class EditProfile extends AppCompatActivity {
             editNameText.setText(auth.getCurrentUser().getDisplayName());
             if (auth.getCurrentUser().getPhotoUrl()==null) {
                 editImageProfile.setImageResource(R.drawable.sign);
+                progressBar.setVisibility(View.GONE);
             }
             else{
                 Log.d(TAG,"PHOTO"+auth.getCurrentUser().getPhotoUrl().toString());
                 Glide.with(EditProfile.this)
                         .load(auth.getCurrentUser().getPhotoUrl())
                         .into(editImageProfile);
+                progressBar.setVisibility(View.GONE);
             }
         }
 
@@ -155,7 +165,6 @@ public class EditProfile extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -180,13 +189,42 @@ public class EditProfile extends AppCompatActivity {
 
         else {
             if (photoUri != null) {
-                final StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("profile_images");
-                storageRef.child(photoUri.getLastPathSegment());
-                storageRef.putFile(photoUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                progressBar.setVisibility(View.VISIBLE);
+
+                InputStream imageStream = null;
+                try {
+                    imageStream = getContentResolver().openInputStream(
+                            photoUri);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                Bitmap bmp = BitmapFactory.decodeStream(imageStream);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 50, stream);
+                byte[] byteArray = stream.toByteArray();
+                try {
+                    stream.close();
+                    stream=null;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                long time=System.currentTimeMillis();
+                final StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("profile_images").child(String.valueOf(time));
+                storageRef.putBytes(byteArray).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (task.isSuccessful())
+                        if (task.isSuccessful()) {
+                            String oldFileURL=null;
+                            if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()!=null) {
+                                oldFileURL= FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().getLastPathSegment();
+                                StorageReference oldRef = FirebaseStorage.getInstance().getReference().child("profile_images").child(oldFileURL.substring(oldFileURL.indexOf("/")));
+                                Log.d(TAG,oldFileURL.substring(oldFileURL.indexOf("/")));
+                                oldRef.delete();
+                            }
                             return storageRef.getDownloadUrl();
+                        }
                         else
                             throw task.getException();
                     }
@@ -204,6 +242,7 @@ public class EditProfile extends AppCompatActivity {
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
+                                        progressBar.setVisibility(View.GONE);
                                         if (task.isSuccessful()) {
                                             Log.d(TAG, "User profile updated with profile image.");
                                             Toast.makeText(EditProfile.this, "Updated", Toast.LENGTH_LONG).show();
@@ -215,7 +254,8 @@ public class EditProfile extends AppCompatActivity {
                 });
             }
             else {
-                UserProfileChangeRequest profileUpdates;
+                progressBar.setVisibility(View.VISIBLE);
+                final UserProfileChangeRequest profileUpdates;
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
@@ -225,6 +265,7 @@ public class EditProfile extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "User profile updated w/o image.");
                                     Toast.makeText(EditProfile.this, "Updated", Toast.LENGTH_LONG).show();

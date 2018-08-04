@@ -12,8 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +31,11 @@ public class UserProfile extends AppCompatActivity {
 
     private static final String TAG=UserProfile.class.getSimpleName();
     FirebaseAuth mAuth;
+    ProgressBar progressBar;
+    ImageView profileImageView;
+    Button editProfileButton;
+    TextView profileName;
+    ImageView addressApprovedImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +44,32 @@ public class UserProfile extends AppCompatActivity {
         ActionBar actionBar=getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         mAuth=FirebaseAuth.getInstance();
-        Button editProfileButton=findViewById(R.id.edit_profile_button);
-        TextView profileName=findViewById(R.id.name_text_view);
-        final ImageView addressApprovedImageView=findViewById(R.id.address_approved_image_view);
+        progressBar=findViewById(R.id.user_profile_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+        profileImageView=findViewById(R.id.profile_image);
+        editProfileButton=findViewById(R.id.edit_profile_button);
+        profileName=findViewById(R.id.name_text_view);
+        addressApprovedImageView=findViewById(R.id.address_approved_image_view);
+    }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(mAuth.getCurrentUser()!=null){
             profileName.setText(mAuth.getCurrentUser().getDisplayName());
+            if (mAuth.getCurrentUser().getPhotoUrl()==null) {
+                profileImageView.setImageResource(R.drawable.sign);
+                progressBar.setVisibility(View.GONE);
+            }
+            else{
+                Log.d(TAG,"PHOTO:"+mAuth.getCurrentUser().getPhotoUrl().toString());
+                Glide.with(UserProfile.this)
+                        .load(mAuth.getCurrentUser().getPhotoUrl())
+                        .into(profileImageView);
+                progressBar.setVisibility(View.GONE);
+            }
+
             editProfileButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -81,5 +108,17 @@ public class UserProfile extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(UserProfile.this).clearDiskCache();
+            }
+        }).start();
     }
 }
