@@ -1,6 +1,8 @@
 package com.zero.shareby;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,8 +50,10 @@ public class UserSettings extends AppCompatActivity {
                     case 1:
                         if(mAuth.getCurrentUser()!=null){
                             AuthUI.getInstance().signOut(getApplicationContext());
-                            //UserDetails.clearData();
-                            //startActivity(new Intent(UserSettings.this,LoginActivity.class));
+                            SharedPreferences.Editor prefEditor= PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
+                            prefEditor.putBoolean(MainActivity.MAP_KEY,true);
+                            prefEditor.putBoolean("uploaded",false);
+                            prefEditor.commit();
                             finish();
                         }
                         break;

@@ -3,9 +3,11 @@ package com.zero.shareby;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -48,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAuth=FirebaseAuth.getInstance();
-
+        final SharedPreferences userAvailable= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         providers= Arrays.asList(
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -62,57 +64,66 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull final FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()!=null){
                     //Already Signed in
-                    Log.d(TAG,"Auth State is not null");
-                    final UserDetails userDetails=new UserDetails();
 
-                    RelativeLayout relParent = new RelativeLayout(LoginActivity.this);
-                    RelativeLayout.LayoutParams relParentParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    relParent.setLayoutParams(relParentParam);
+                    if (!userAvailable.getBoolean("uploaded",false)) {
+                        final UserDetails userDetails = new UserDetails();
 
-                    final ProgressBar pb=new ProgressBar(LoginActivity.this);
-                    RelativeLayout.LayoutParams progressBarViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    pb.setLayoutParams(progressBarViewParams);
-                    progressBarViewParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        RelativeLayout relParent = new RelativeLayout(LoginActivity.this);
+                        RelativeLayout.LayoutParams relParentParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                        relParent.setLayoutParams(relParentParam);
 
-                    relParent.addView(pb);
-                    setContentView(relParent, relParentParam);
+                        final ProgressBar pb = new ProgressBar(LoginActivity.this);
+                        RelativeLayout.LayoutParams progressBarViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        pb.setLayoutParams(progressBarViewParams);
+                        progressBarViewParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-                    pb.setVisibility(View.VISIBLE);
-                    userDetails.setUid(firebaseAuth.getUid());
-                    userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
-                    DatabaseReference dbReference=database.getReference().child("UserDetails");
-                    dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Log.d(TAG,dataSnapshot.toString());
-                            Log.d(TAG,dataSnapshot.getChildrenCount()+"");
-                            if(dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
+                        relParent.addView(pb);
+                        setContentView(relParent, relParentParam);
 
-                                startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                                pb.setVisibility(View.INVISIBLE);
-                                finish();
-                                Log.d(TAG,"yrs");
+                        pb.setVisibility(View.VISIBLE);
+                        userDetails.setUid(firebaseAuth.getUid());
+                        userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
+                        DatabaseReference dbReference = database.getReference().child("UserDetails");
+                        dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                Log.d(TAG, dataSnapshot.toString());
+                                Log.d(TAG, dataSnapshot.getChildrenCount() + "");
+                                if (dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
+                                    SharedPreferences.Editor editor=userAvailable.edit();
+                                    editor.putBoolean("uploaded",true);
+                                    editor.commit();
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    pb.setVisibility(View.INVISIBLE);
+                                    finish();
+                                } else {
+                                    DatabaseReference fd = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
+                                    fd.setValue(userDetails, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                            SharedPreferences.Editor editor=userAvailable.edit();
+                                            editor.putBoolean("uploaded",true);
+                                            editor.commit();
+                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                            pb.setVisibility(View.INVISIBLE);
+                                            finish();
+                                        }
+                                    });
+
+
+                                }
                             }
-                            else {
-                                DatabaseReference fd=FirebaseDatabase.getInstance().getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
-                                fd.setValue(userDetails, new DatabaseReference.CompletionListener() {
-                                    @Override
-                                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                        startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                                        pb.setVisibility(View.INVISIBLE);
-                                        finish();
-                                    }
-                                });
 
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
                             }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
+                        });
+                    }
+                    else {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
+                    }
                 }
                 else {
                     //New User Sign up

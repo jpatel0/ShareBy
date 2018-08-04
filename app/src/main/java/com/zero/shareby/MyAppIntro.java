@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MyAppIntro extends AppIntro2 {
-    private static final String APP_INTRO_KEY="app_intro_check_key";
+    public static final String APP_INTRO_KEY="app_intro_check_key";
     SharedPreferences pref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class MyAppIntro extends AppIntro2 {
         //SharedPreferences sharedPreferences;
 
 
-        pref= PreferenceManager.getDefaultSharedPreferences(this);
+        pref= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         if(!pref.getBoolean(APP_INTRO_KEY,true)){
             startActivity(new Intent(this,LoginActivity.class));

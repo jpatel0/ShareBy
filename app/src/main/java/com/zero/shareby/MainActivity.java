@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mAuth=FirebaseAuth.getInstance();
         mAuthListener=new FirebaseAuth.AuthStateListener() {
             @Override
