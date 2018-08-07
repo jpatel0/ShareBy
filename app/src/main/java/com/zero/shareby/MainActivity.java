@@ -8,10 +8,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +31,8 @@ public class MainActivity extends AppCompatActivity{
     private static final String TAG=MainActivity.class.getSimpleName();
     public static final String MAP_KEY="map_key";
 
+    private DrawerLayout drawer;
+
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     SharedPreferences preferences;
@@ -33,6 +40,14 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawer=findViewById(R.id.nav_drawer_layout);
+
+        ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(this,drawer,toolbar,R.string.nav_open,R.string.nav_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
         preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mAuth=FirebaseAuth.getInstance();
         mAuthListener=new FirebaseAuth.AuthStateListener() {
@@ -92,7 +107,14 @@ public class MainActivity extends AppCompatActivity{
         else {
             mAuth.addAuthStateListener(mAuthListener);
         }
+    }
 
+    @Override
+    public void onBackPressed() {
+        if(drawer.isDrawerOpen(GravityCompat.START))
+            drawer.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
     }
 
     @Override

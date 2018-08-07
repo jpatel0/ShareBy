@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ShareBy</string>
 
+    <string name="nav_open">Open Navigation Drawer</string>
+    <string name="nav_close">Close Navigation Drawer</string>
     <string name="sign_out">Sign Out</string>
     <string name="title_activity_maps">Map</string>
 </resources>
