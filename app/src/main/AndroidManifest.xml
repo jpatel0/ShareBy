@@ -33,22 +33,13 @@
             android:label="Sign In"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".UserSettings"
-            android:label="User Settings"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".UserProfile"
-            android:label="Your Profile"
-            android:parentActivityName=".UserSettings" />
-        <activity
             android:name=".EditProfile"
             android:label="Edit Profile"
-            android:parentActivityName=".UserProfile">
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity
             android:name=".AddressActivity"
-            android:label="Edit Address"
-            android:parentActivityName=".EditProfile">
+            android:label="Edit Address">
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

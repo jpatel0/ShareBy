@@ -1,15 +1,15 @@
 package com.zero.shareby;
 
+
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -23,13 +23,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
+public class UserProfileFragment extends Fragment {
 
-public class UserProfile extends AppCompatActivity {
+    private static final String TAG="UserProfileFragment";
 
-    private static final String TAG=UserProfile.class.getSimpleName();
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     ImageView profileImageView;
@@ -37,24 +34,30 @@ public class UserProfile extends AppCompatActivity {
     TextView profileName;
     ImageView addressApprovedImageView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_profile);
-        ActionBar actionBar=getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        mAuth=FirebaseAuth.getInstance();
-        progressBar=findViewById(R.id.user_profile_progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
-        profileImageView=findViewById(R.id.profile_image);
-        editProfileButton=findViewById(R.id.edit_profile_button);
-        profileName=findViewById(R.id.name_text_view);
-        addressApprovedImageView=findViewById(R.id.address_approved_image_view);
+    public UserProfileFragment() {
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.show_profile, container, false);
+    }
 
     @Override
-    protected void onResume() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mAuth=FirebaseAuth.getInstance();
+        progressBar=view.findViewById(R.id.user_profile_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+        profileImageView=view.findViewById(R.id.profile_image);
+        editProfileButton=view.findViewById(R.id.edit_profile_button);
+        profileName=view.findViewById(R.id.name_text_view);
+        addressApprovedImageView=view.findViewById(R.id.address_approved_image_view);
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
         if(mAuth.getCurrentUser()!=null){
             profileName.setText(mAuth.getCurrentUser().getDisplayName());
@@ -64,16 +67,15 @@ public class UserProfile extends AppCompatActivity {
             }
             else{
                 Log.d(TAG,"PHOTO:"+mAuth.getCurrentUser().getPhotoUrl().toString());
-                Glide.with(UserProfile.this)
+                Glide.with(getActivity())
                         .load(mAuth.getCurrentUser().getPhotoUrl())
                         .into(profileImageView);
-                progressBar.setVisibility(View.GONE);
             }
 
             editProfileButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(UserProfile.this,EditProfile.class));
+                    startActivity(new Intent(getActivity(),EditProfile.class));
                 }
             });
 
@@ -84,10 +86,12 @@ public class UserProfile extends AppCompatActivity {
                     UserDetails userDetails=dataSnapshot.getValue(UserDetails.class);
                     Log.d(TAG,String.valueOf(userDetails.getLatitude()));
                     if (userDetails.getLongitude()==0){
-                        addressApprovedImageView.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                        addressApprovedImageView.setImageResource(R.drawable.ic_error);
                     }
                     else
-                        addressApprovedImageView.setImageResource(R.drawable.approve_icon);
+                        addressApprovedImageView.setImageResource(R.drawable.ic_verified);
+
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -96,28 +100,17 @@ public class UserProfile extends AppCompatActivity {
                 }
             });
 
-
-
         }
-
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==R.id.homeAsUp){
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Glide.get(UserProfile.this).clearDiskCache();
+                Glide.get(getActivity()).clearDiskCache();
             }
         }).start();
     }

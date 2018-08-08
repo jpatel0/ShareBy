@@ -8,6 +8,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -166,6 +167,12 @@ public class EditProfile extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Log.d(TAG,"onBack pressed");
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.save_profile_menu:
@@ -174,9 +181,10 @@ public class EditProfile extends AppCompatActivity {
             case R.id.discard_changes_menu:
                 finish();
                 break;
-            case R.id.homeAsUp:
-                finish();
-                break;
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
