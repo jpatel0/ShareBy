@@ -178,9 +178,8 @@ public class EditProfile extends AppCompatActivity {
             case R.id.save_profile_menu:
                 saveChangesToProfile();
                 break;
+
             case R.id.discard_changes_menu:
-                finish();
-                break;
 
             case android.R.id.home:
                 onBackPressed();
