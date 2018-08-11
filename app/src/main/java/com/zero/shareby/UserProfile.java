@@ -1,16 +1,14 @@
 package com.zero.shareby;
 
-
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -28,9 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class UserProfileFragment extends Fragment {
-
-    private static final String TAG="UserProfileFragment";
+public class UserProfile extends AppCompatActivity {
+    private static final String TAG="UserProfile";
 
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -38,30 +35,26 @@ public class UserProfileFragment extends Fragment {
     Button editProfileButton;
     TextView profileName;
     ImageView addressApprovedImageView;
-
-    public UserProfileFragment() {
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.show_profile, container, false);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.show_profile);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        ActionBar actionBar=getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         mAuth=FirebaseAuth.getInstance();
-        progressBar=view.findViewById(R.id.user_profile_progress_bar);
-        profileImageView=view.findViewById(R.id.profile_image);
-        editProfileButton=view.findViewById(R.id.edit_profile_button);
-        profileName=view.findViewById(R.id.name_text_view);
-        addressApprovedImageView=view.findViewById(R.id.address_approved_image_view);
+        progressBar= findViewById(R.id.user_profile_progress_bar);
+        profileImageView= findViewById(R.id.profile_image);
+        editProfileButton= findViewById(R.id.edit_profile_button);
+        profileName= findViewById(R.id.name_text_view);
+        addressApprovedImageView= findViewById(R.id.address_approved_image_view);
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         progressBar.setVisibility(View.VISIBLE);
         if(mAuth.getCurrentUser()!=null){
@@ -72,7 +65,7 @@ public class UserProfileFragment extends Fragment {
             }
             else{
                 Log.d(TAG,"PHOTO:"+mAuth.getCurrentUser().getPhotoUrl().toString());
-                Glide.with(getActivity())
+                Glide.with(this)
                         .load(mAuth.getCurrentUser().getPhotoUrl())
                         .listener(new RequestListener<Drawable>() {
                             @Override
@@ -93,7 +86,7 @@ public class UserProfileFragment extends Fragment {
             editProfileButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(getActivity(),EditProfile.class));
+                    startActivity(new Intent(UserProfile.this,EditProfile.class));
                 }
             });
 
@@ -117,17 +110,18 @@ public class UserProfileFragment extends Fragment {
             });
 
         }
-        progressBar.setVisibility(View.GONE);
+        else
+            progressBar.setVisibility(View.GONE);
     }
 
     @Override
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Glide.get(getActivity()).clearDiskCache();
+                Glide.get(UserProfile.this).clearDiskCache();
             }
         }).start();
     }

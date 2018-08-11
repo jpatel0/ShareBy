@@ -1,10 +1,13 @@
 package com.zero.shareby;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +30,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     private DrawerLayout drawer;
 
+    ViewPager viewPager;
+    PagerAdapter pagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +49,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView=findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (savedInstanceState==null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new DashboardFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_home);
-        }
+
+        viewPager= findViewById(R.id.viewpager);
+        pagerAdapter=new PagerAdapter(this,getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        TabLayout tab=findViewById(R.id.tabs);
+        tab.setupWithViewPager(viewPager);
+
         auth=FirebaseAuth.getInstance();
+        navigationView.setCheckedItem(R.id.nav_home);
     }
 
 
@@ -57,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
 
             case R.id.nav_home:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new DashboardFragment()).commit();
+                viewPager.setCurrentItem(0);
                 break;
 
             case R.id.nav_logout:
@@ -67,16 +77,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     prefEditor.putBoolean(MAP_KEY,true);
                     prefEditor.putBoolean("uploaded",false);
                     prefEditor.commit();
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new DashboardFragment()).commit();
+                    viewPager.setCurrentItem(0);
                 }
                 break;
 
             case R.id.nav_profile:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new UserProfileFragment()).commit();
+                startActivity(new Intent(MainActivity.this,UserProfile.class));
                 break;
 
-                default:
-                    break;
+            case R.id.nav_share:
+                Intent shareIntent=new Intent(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT,"Hey!, Check this awesome app for sharing things in your neiborhood..");
+                startActivity(Intent.createChooser(shareIntent,"Complete action using"));
+                break;
+
+            default:
+                break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
