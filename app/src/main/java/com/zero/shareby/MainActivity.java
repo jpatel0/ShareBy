@@ -2,6 +2,7 @@ package com.zero.shareby;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_share:
                 Intent shareIntent=new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TITLE,"Shareby");
                 shareIntent.putExtra(Intent.EXTRA_TEXT,"Hey!, Check this awesome app for sharing things in your neiborhood..");
                 startActivity(Intent.createChooser(shareIntent,"Complete action using"));
                 break;

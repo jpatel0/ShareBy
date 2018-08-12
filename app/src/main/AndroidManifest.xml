@@ -27,8 +27,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MyAppIntro">
-        </activity>
+        <activity android:name=".MyAppIntro"></activity>
         <activity
             android:name=".LoginActivity"
             android:label="Sign In"
@@ -36,12 +35,10 @@
         <activity
             android:name=".EditProfile"
             android:label="Edit Profile"
-            android:parentActivityName=".UserProfile">
-        </activity>
+            android:parentActivityName=".UserProfile"></activity>
         <activity
             android:name=".AddressActivity"
-            android:label="Edit Address">
-        </activity>
+            android:label="Edit Address"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -73,8 +70,8 @@
         <activity
             android:name=".UserProfile"
             android:label="Profile"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".PostActivity"></activity>
     </application>
 
 </manifest>

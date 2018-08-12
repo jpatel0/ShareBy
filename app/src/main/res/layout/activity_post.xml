@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".PostFragment">
+    tools:context=".PostActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,6 +19,7 @@
         android:paddingStart="5dp"/>
 
     <EditText
+        android:id="@+id/title_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -40,6 +41,7 @@
 
 
     <EditText
+        android:id="@+id/description_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -52,6 +54,7 @@
         android:background="@drawable/bg_edittext"/>
 
     <Button
+        android:id="@+id/post_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"

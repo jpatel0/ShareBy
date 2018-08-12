@@ -16,6 +16,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+        switch (position){
+            case 0:
+                return new DashboardFragment();
+
+            case 1:
+                return new PostDashboard();
+        }
         return new DashboardFragment();
     }
 
@@ -27,6 +34,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return mContext.getString(R.string.app_name);
+        switch (position){
+            case 0:
+                return "Dashboard";
+
+            case 1:
+                return "Your Posts";
+        }
+        return "Default";
     }
 }
