@@ -7,4 +7,5 @@
     <color name="primary_material_light" tools:override="true">#4b49d3</color>
     <color name="primary_dark_material_light" tools:override="true">#64bdcf</color>
     <color name="background_material_light" tools:override="true">#FFFFFF</color>
+    <color name="delete_button_bg">#EEEAEA</color>
 </resources>

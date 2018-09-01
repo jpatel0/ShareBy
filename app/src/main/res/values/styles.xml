@@ -15,6 +15,7 @@
     </style>
 
     <style name="AppTheme.Launcher">
+        <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 

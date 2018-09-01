@@ -29,7 +29,7 @@ public class PostDashboard extends Fragment {
         data.add(new MyData("I know kfberf","Just a description"));
         data.add(new MyData("I know fvfvfv","Just a description"));
         data.add(new MyData("I know fvfvedwe","Just a description"));
-        data.add(new MyData("I know  wdwwwwwww","Just a description"));
+        data.add(new MyData("I know wdwwwwwww","Just a description"));
         data.add(new MyData("I know oeurerfiur","Just a description"));
         data.add(new MyData("I know ekbvkjerb","Just a description"));
         data.add(new MyData("I know erbherb","Just a description"));

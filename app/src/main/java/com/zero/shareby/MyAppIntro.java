@@ -27,8 +27,6 @@ public class MyAppIntro extends AppIntro2 {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //SharedPreferences sharedPreferences;
-
 
         pref= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 

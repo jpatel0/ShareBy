@@ -5,6 +5,13 @@
     <string name="nav_close">Close Navigation Drawer</string>
     <string name="sign_out">Sign Out</string>
     <string name="title_activity_maps">Map</string>
+    <string name="pref_lat">lat</string>
+    <string name="pref_lng">lng</string>
+    <string name="pref_country">country</string>
+    <string name="pref_pin">pin</string>
+    <string name="pref_key1">key1</string>
+    <string name="pref_key2">key2</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

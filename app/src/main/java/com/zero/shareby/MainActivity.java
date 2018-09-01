@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     SharedPreferences.Editor prefEditor= PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
                     prefEditor.putBoolean(MAP_KEY,true);
                     prefEditor.putBoolean("uploaded",false);
+                    prefEditor.clear();
                     prefEditor.commit();
                     viewPager.setCurrentItem(0);
                 }
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         ImageView nav_image=navigationView.getHeaderView(0).findViewById(R.id.nav_profile_image);
         TextView nav_user_name=navigationView.getHeaderView(0).findViewById(R.id.nav_profile_name);
-
+        navigationView.setCheckedItem(R.id.nav_home);
         if (auth.getCurrentUser()!=null){
             nav_user_name.setText(auth.getCurrentUser().getDisplayName());
             if (auth.getCurrentUser().getPhotoUrl()==null) {

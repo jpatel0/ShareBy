@@ -11,7 +11,8 @@
             android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null">
+            android:divider="@null"
+            android:dividerHeight="10dp">
         </ListView>
 
         <android.support.design.widget.FloatingActionButton

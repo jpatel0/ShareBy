@@ -8,14 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.zero.shareby.MyData;
 import com.zero.shareby.R;
 
 import java.util.ArrayList;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends ArrayAdapter<MyData> {
 
@@ -36,6 +38,12 @@ public class PostAdapter extends ArrayAdapter<MyData> {
         TextView descriptionTextView=newView.findViewById(R.id.card_description);
         titleTextView.setText(data.title);
         descriptionTextView.setText(data.description);
+        CircleImageView imageView=newView.findViewById(R.id.card_profile_image);
+        if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()!=null){
+            Glide.with(getContext())
+                    .load(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl())
+                    .into(imageView);
+        }
         final ImageButton deleteImageButton=newView.findViewById(R.id.card_delete_icon);
         deleteImageButton.setOnClickListener(new View.OnClickListener() {
             @Override

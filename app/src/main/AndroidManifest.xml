@@ -52,13 +52,6 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.zero.shareby.AddressActivity" />
-        </activity>
-        <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>

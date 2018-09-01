@@ -1,8 +1,11 @@
 package com.zero.shareby;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -21,14 +24,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,19 +46,21 @@ import java.util.TreeSet;
 
 public class AddressActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
     private static final String TAG=AddressActivity.class.getSimpleName();
-    public static final int RC_PICKER=1353;
+    public static final int RC_PICKER=1353,RC_CREATE_GRP=7828;
     private boolean isPermissionEnabled=false;
     GoogleApiClient mGoogleApiClient;
     private TextView addressLine;
     DatabaseReference databaseReference;
     ChildEventListener mChildListener;
+    Button googleMapButton;
+    SharedPreferences mPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
         addressLine =findViewById(R.id.address1_edit_text);
-
+        mPref= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
             databaseReference = FirebaseDatabase.getInstance().getReference().child("UserDetails");
             mChildListener = new ChildEventListener() {
@@ -105,18 +114,11 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
-        Button googleMapButton=findViewById(R.id.google_map_button);
+        googleMapButton=findViewById(R.id.google_map_button);
         googleMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(AddressActivity.this),RC_PICKER);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+                placeIntentBuilder(1);
             }
         });
     }
@@ -154,32 +156,108 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode==RC_PICKER){
             if (resultCode==RESULT_OK) {
-                Place place = PlacePicker.getPlace(this, data);
+                final Place place = PlacePicker.getPlace(this, data);
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses = new ArrayList<>();
+                String country=null,pin=null;
                 try {
-                    addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 3);
+                    addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 2);
+                    country=addresses.get(0).getCountryName();
+                    pin=addresses.get(0).getPostalCode();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (addresses.size() > 0) {
+                if (addresses.size() > 0 && pin!=null && country!=null) {
+                    FirebaseDatabase database=FirebaseDatabase.getInstance();
                     addressLine.setText(addresses.get(0).getAddressLine(0));
                     Log.d("Map data yeah and loc", addresses.toString() + "\n" + addresses.get(0));
-                    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    DatabaseReference dbRef = database.getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     Map<String, Object> latlngMap = new HashMap<>();
+                    final double latit=addresses.get(0).getLatitude(),longit=addresses.get(0).getLongitude();
                     latlngMap.put("latitude", addresses.get(0).getLatitude());
                     latlngMap.put("longitude", addresses.get(0).getLongitude());
                     dbRef.updateChildren(latlngMap, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                            Log.d(TAG, "firebase child Update successful");
+                            Log.d(TAG, "fireBase user location child Update successful");
+                            SharedPreferences.Editor editLoc=mPref.edit();
+                            editLoc.putFloat(getResources().getString(R.string.pref_lat),(float) latit);
+                            editLoc.putFloat(getResources().getString(R.string.pref_lng),(float) longit);
+                            editLoc.apply();
                         }
                     });
+
+
+                    final long lat=Long.parseLong(getConvertedString(addresses.get(0).getLatitude()));
+                    final long lng=Long.parseLong(getConvertedString(addresses.get(0).getLongitude()));
+                    final DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin);
+                    final String country_key=country,pin_key=pin;
+                    groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long minDiff=lat,diff=5000;
+                            DataSnapshot thisTree=null;
+                            String key1=null,key2=null;
+                            if (dataSnapshot.getChildrenCount()>0) {
+                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                    diff = Math.abs(Long.parseLong(data.getKey()) - lat);
+                                    if (diff <= 2300) {
+                                        if (minDiff > diff) {
+                                            minDiff = diff;
+                                            thisTree=data;
+                                            key1 = data.getKey();
+
+                                        }
+                                    }
+                                }
+                                if (diff > 2300) {
+                                    placeIntentBuilder(2);
+                                } else if (key1!=null){
+                                    Log.d(TAG," key1 :"+key1);
+                                    minDiff=lng;
+                                    diff=5000;
+                                    for (DataSnapshot getLngNode:thisTree.getChildren()){
+                                        diff = Math.abs(Long.parseLong(getLngNode.getKey()) - lng);
+                                        if (diff <= 2300) {
+                                            if (minDiff > diff) {
+                                                minDiff = diff;
+                                                key2 = getLngNode.getKey();
+                                            }
+                                        }
+                                    }
+                                    if (diff > 2300) {
+                                        placeIntentBuilder(2);
+                                    }
+                                    else if(key2!=null){
+                                        Log.d(TAG," key2 :"+key2);
+                                        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+                                        groupsRef.child(key1).child(key2).child("members").child(user.getUid()).setValue(true);;
+                                        groupsRef.child(key1).child(key2).child("posts").push().setValue(new Post(user.getUid(),user.getDisplayName()));
+                                        SharedPreferences.Editor editLoc=mPref.edit();
+                                        editLoc.putString(getResources().getString(R.string.pref_country), country_key);
+                                        editLoc.putString(getResources().getString(R.string.pref_pin),pin_key);
+                                        editLoc.putString(getResources().getString(R.string.pref_key1),key1);
+                                        editLoc.putString(getResources().getString(R.string.pref_key2),key2);
+                                        editLoc.apply();
+                                    }
+                                }
+                            }
+                            else{
+                                placeIntentBuilder(2);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                     Toast.makeText(AddressActivity.this, "Address Saved", Toast.LENGTH_SHORT).show();
                 }
                 else
@@ -189,7 +267,67 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 Log.d(TAG," Map Canceled");
             }
         }
+        else if (requestCode==RC_CREATE_GRP){
+            if(resultCode==RESULT_OK){
+                Place place = PlacePicker.getPlace(this, data);
+                LatLng latLng=place.getLatLng();
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> addresses = new ArrayList<>();
+                String country="",pin="";
+                try {
+                    addresses = geocoder.getFromLocation(latLng.latitude,latLng.longitude,2);
+                    country=addresses.get(0).getCountryName();
+                    pin=addresses.get(0).getPostalCode();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                String latString = getConvertedString(latLng.latitude);
+                String lngString = getConvertedString(latLng.longitude);
+                Log.d(TAG,"country:"+country+"  pin:"+pin+"  lat:"+latLng.latitude);
+                FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference createRef=FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin).child(latString).child(lngString);
+                createRef.setValue(new CreateGroup(addresses.get(0).getAddressLine(0),1,2300,latLng.latitude,latLng.longitude));
+                createRef.child("members").child(user.getUid()).setValue(true);
+                Log.d(TAG,createRef.getKey());
+                Post post=new Post(user.getUid(),user.getDisplayName());
+                createRef.child("posts").push().setValue(post);
+                SharedPreferences.Editor editLoc=mPref.edit();
+                editLoc.putString(getResources().getString(R.string.pref_country), country);
+                editLoc.putString(getResources().getString(R.string.pref_pin), pin);
+                editLoc.putString(getResources().getString(R.string.pref_key1), latString);
+                editLoc.putString(getResources().getString(R.string.pref_key2), lngString);
+                editLoc.apply();
+            }
+            else
+                Toast.makeText(this,"Group not created",Toast.LENGTH_SHORT).show();
+        }
     }
+
+    private String getConvertedString(double number){
+        String convertedString = Double.toString(number);
+        int index=convertedString.indexOf(".");
+        convertedString=convertedString.replace(".", "");
+        convertedString=convertedString.substring(0,index+6);
+        return convertedString;
+    }
+
+
+    private void placeIntentBuilder(int i){
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        try {
+            if (i == 2) {
+                startActivityForResult(builder.build(AddressActivity.this), RC_CREATE_GRP);
+            } else {
+                startActivityForResult(builder.build(AddressActivity.this), RC_PICKER);
+            }
+        }catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

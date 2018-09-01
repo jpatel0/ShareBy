@@ -93,7 +93,7 @@ public class EditProfile extends AppCompatActivity {
                 }
                 else {
                     Geocoder geocoder = new Geocoder(EditProfile.this, Locale.getDefault());
-                    List<Address> addressList = null;
+                    List<Address> addressList;
                     try {
                         addressList=geocoder.getFromLocation(lat,lng,3);
                         Log.d(TAG,addressList.toString());
