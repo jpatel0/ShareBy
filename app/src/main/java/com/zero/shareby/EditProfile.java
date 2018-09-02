@@ -223,12 +223,16 @@ public class EditProfile extends AppCompatActivity {
                     @Override
                     public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                         if (task.isSuccessful()) {
-                            String oldFileURL=null;
-                            if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()!=null) {
-                                oldFileURL= FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().getLastPathSegment();
-                                StorageReference oldRef = FirebaseStorage.getInstance().getReference().child("profile_images").child(oldFileURL.substring(oldFileURL.indexOf("/")));
-                                Log.d(TAG,oldFileURL.substring(oldFileURL.indexOf("/")));
-                                oldRef.delete();
+                            String oldFileURL;
+                            Uri oldPhotoUrl=FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl();
+                            if (oldPhotoUrl!=null) {
+                                Log.d(TAG,oldPhotoUrl.toString());
+                                if (!oldPhotoUrl.toString().contains("googleusercontent.com")) {
+                                    oldFileURL = oldPhotoUrl.getLastPathSegment();
+                                    StorageReference oldRef = FirebaseStorage.getInstance().getReference().child("profile_images").child(oldFileURL.substring(oldFileURL.indexOf("/")));
+                                    Log.d(TAG, oldFileURL.substring(oldFileURL.indexOf("/")));
+                                    oldRef.delete();
+                                }
                             }
                             return storageRef.getDownloadUrl();
                         }

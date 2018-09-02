@@ -200,12 +200,12 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                     groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            long minDiff=lat,diff=5000;
+                            long minDiff=Math.abs(lat),diff=5000;
                             DataSnapshot thisTree=null;
                             String key1=null,key2=null;
                             if (dataSnapshot.getChildrenCount()>0) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    diff = Math.abs(Long.parseLong(data.getKey()) - lat);
+                                    diff = Math.abs(Long.parseLong(data.getKey())) - Math.abs(lat);
                                     if (diff <= 2300) {
                                         if (minDiff > diff) {
                                             minDiff = diff;
@@ -219,10 +219,9 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                     placeIntentBuilder(2);
                                 } else if (key1!=null){
                                     Log.d(TAG," key1 :"+key1);
-                                    minDiff=lng;
-                                    diff=5000;
+                                    minDiff=Math.abs(lng);
                                     for (DataSnapshot getLngNode:thisTree.getChildren()){
-                                        diff = Math.abs(Long.parseLong(getLngNode.getKey()) - lng);
+                                        diff = Math.abs(Long.parseLong(getLngNode.getKey())) - Math.abs(lng);
                                         if (diff <= 2300) {
                                             if (minDiff > diff) {
                                                 minDiff = diff;
@@ -244,6 +243,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                         editLoc.putString(getResources().getString(R.string.pref_key1),key1);
                                         editLoc.putString(getResources().getString(R.string.pref_key2),key2);
                                         editLoc.apply();
+                                        uploadUserDetails(country_key,pin_key,key1,key2);
                                     }
                                 }
                             }
@@ -297,17 +297,20 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 editLoc.putString(getResources().getString(R.string.pref_key1), latString);
                 editLoc.putString(getResources().getString(R.string.pref_key2), lngString);
                 editLoc.apply();
+                uploadUserDetails(country,pin,latString,lngString);
             }
             else
                 Toast.makeText(this,"Group not created",Toast.LENGTH_SHORT).show();
         }
     }
 
-    private String getConvertedString(double number){
+    public String getConvertedString(double number){
         String convertedString = Double.toString(number);
+        convertedString=convertedString+"000000";
         int index=convertedString.indexOf(".");
         convertedString=convertedString.replace(".", "");
         convertedString=convertedString.substring(0,index+6);
+        Log.d(TAG,"Converted String:"+convertedString);
         return convertedString;
     }
 
@@ -327,7 +330,14 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         }
     }
 
-
+    private void uploadUserDetails(String country,String pin,String key1,String key2){
+        Map<String,Object> newGrpData=new HashMap<>();
+        newGrpData.put("country",country);
+        newGrpData.put("pin",pin);
+        newGrpData.put("key1",key1);
+        newGrpData.put("key2",key2);
+        databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(newGrpData);
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

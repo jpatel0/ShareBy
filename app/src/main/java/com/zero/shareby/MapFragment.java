@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +28,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,7 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class MapFragment extends Fragment implements LocationListener,GoogleMap.OnMapLongClickListener {
+public class MapFragment extends Fragment implements LocationListener {
 
     private static final String TAG="MapFragment";
     public static final int RC_PERMISSIONS=23;
@@ -72,19 +75,15 @@ public class MapFragment extends Fragment implements LocationListener,GoogleMap.
             public void onMapReady(GoogleMap googleMap) {
                 Log.d(TAG,"Map Created ");
                 mMap=googleMap;
-                mMap.setOnMapLongClickListener(MapFragment.this);
+                mMap.clear();
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(0,0)));
+                mMap.moveCamera(CameraUpdateFactory.zoomBy(15));
                 //mlocation=locationManager.getLastKnownLocation(provider);
             }
         });
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         uidReference=FirebaseDatabase.getInstance().getReference().child("UserDetails");
         return rootView;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
     }
 
     private void addMarkerOnMap(String uid){
@@ -94,9 +93,7 @@ public class MapFragment extends Fragment implements LocationListener,GoogleMap.
                 Log.d(TAG,dataSnapshot.toString());
                 UserDetails userInfo=dataSnapshot.getValue(UserDetails.class);
                 LatLng currLocation=new LatLng(userInfo.getLatitude(),userInfo.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(currLocation).title(userInfo.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(currLocation));
-                mMap.moveCamera(CameraUpdateFactory.zoomBy(15));
+                mMap.addMarker(new MarkerOptions().position(currLocation).title(userInfo.getName()));
             }
 
             @Override
@@ -146,18 +143,20 @@ public class MapFragment extends Fragment implements LocationListener,GoogleMap.
             locationManager.requestLocationUpdates(provider, 20000, 50, this);
         }*/
         if (preferences.getString(getString(R.string.pref_key1), "null").equals("null")) {
-
+            Toast.makeText(getActivity(),"preferences null",Toast.LENGTH_SHORT).show();
+            getGroupDatabaseReference();
         } else {
             String country=preferences.getString(getString(R.string.pref_country),"null");
             String pin=preferences.getString(getString(R.string.pref_pin),"null");
             String key1=preferences.getString(getString(R.string.pref_key1),"null");
             String key2=preferences.getString(getString(R.string.pref_key2),"null");
             DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference()
-                    .child("Groups").child(country).child(pin).child(key1).child(key2).child("members");
-            groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    .child("Groups").child(country).child(pin).child(key1).child(key2);
+            groupRef.child("members").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getChildrenCount()>0){
+
                         for (DataSnapshot member:dataSnapshot.getChildren()){
                             addMarkerOnMap(member.getKey());
                         }
@@ -169,8 +168,50 @@ public class MapFragment extends Fragment implements LocationListener,GoogleMap.
 
                 }
             });
+
+            groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    double lat=0,lng=0;
+                    for (DataSnapshot children:dataSnapshot.getChildren()){
+                        if (children.getKey().equals("latitude"))
+                            lat=children.getValue(Double.class);
+                        else if (children.getKey().equals("longitude"))
+                            lng=children.getValue(Double.class);
+                    }
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat,lng)));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
+
+    private void getGroupDatabaseReference(){
+        uidReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserDetails userDetails=dataSnapshot.getValue(UserDetails.class);
+                        if (!userDetails.getCountry().equals("null")) {
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString(getString(R.string.pref_country), userDetails.getCountry());
+                            editor.putString(getString(R.string.pref_pin), userDetails.getPin());
+                            editor.putString(getString(R.string.pref_key1), userDetails.getKey1());
+                            editor.putString(getString(R.string.pref_key2), userDetails.getKey2());
+                            editor.apply();
+                            onResume();
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+    }
+
+
 
     @Override
     public void onPause() {
@@ -178,6 +219,7 @@ public class MapFragment extends Fragment implements LocationListener,GoogleMap.
         /*if(isPermissionEnabled)
             locationManager.removeUpdates(this);
         */
+        mMap.clear();
         mapView.onPause();
     }
 
@@ -191,13 +233,6 @@ public class MapFragment extends Fragment implements LocationListener,GoogleMap.
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
-    }
-
-
-    @Override
-    public void onMapLongClick(LatLng latLng) {
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        //mMap.animateCamera(CameraUpdateFactory.zoomBy(2));
     }
 
 
