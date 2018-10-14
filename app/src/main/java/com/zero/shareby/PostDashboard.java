@@ -26,13 +26,13 @@ public class PostDashboard extends Fragment {
                              Bundle savedInstanceState) {
         View rootView=inflater.inflate(R.layout.fragment_post_dashboard, container, false);
         ArrayList<MyData> data=new ArrayList<>();
-        data.add(new MyData("I know kfberf","Just a description"));
-        data.add(new MyData("I know fvfvfv","Just a description"));
-        data.add(new MyData("I know fvfvedwe","Just a description"));
-        data.add(new MyData("I know wdwwwwwww","Just a description"));
-        data.add(new MyData("I know oeurerfiur","Just a description"));
-        data.add(new MyData("I know ekbvkjerb","Just a description"));
-        data.add(new MyData("I know erbherb","Just a description"));
+        data.add(new MyData("I want a hammer","Just a description"));
+        data.add(new MyData("I want a hammer","Just a description"));
+        data.add(new MyData("I want a hammer","Just a description"));
+        data.add(new MyData("I want a hammer","Just a description"));
+        data.add(new MyData("I want a hammer","Just a description"));
+        data.add(new MyData("I want a stormBreaker","Just a description"));
+        data.add(new MyData("I know hammer","Just a description"));
 
         PostAdapter postAdapter=new PostAdapter(getActivity(),data);
         ListView listView=rootView.findViewById(R.id.post_dashboard_list_view);

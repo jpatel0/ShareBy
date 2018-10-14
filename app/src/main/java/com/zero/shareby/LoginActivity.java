@@ -51,7 +51,8 @@ public class LoginActivity extends AppCompatActivity {
 
         providers= Arrays.asList(
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.EmailBuilder().build()
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.PhoneBuilder().build()
         );
 
         final FirebaseDatabase database=FirebaseDatabase.getInstance();

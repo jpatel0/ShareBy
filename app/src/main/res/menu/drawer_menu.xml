@@ -25,6 +25,12 @@
             <item android:id="@+id/nav_share"
                 android:title="Share"
                 android:icon="@drawable/ic_share"/>
+
+
+            <item android:id="@+id/nav_feedback"
+                android:title="Feedback"
+                android:icon="@drawable/ic_feedback"/>
         </menu>
     </item>
+
 </menu>

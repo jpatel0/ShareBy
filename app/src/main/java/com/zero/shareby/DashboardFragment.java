@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +28,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zero.shareby.customAdapter.DashboardAdapter;
+import com.zero.shareby.customAdapter.PostAdapter;
+
+import java.util.ArrayList;
 
 
 public class DashboardFragment extends Fragment {
@@ -48,6 +54,8 @@ public class DashboardFragment extends Fragment {
 
     public DashboardFragment() {
         // Required empty public constructor
+        //fake data
+        
     }
 
     /**
@@ -104,21 +112,31 @@ public class DashboardFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
                 }
             });
             SharedPreferences.Editor editor=preferences.edit().putBoolean(MAP_KEY,false);
             editor.apply();
         }
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View rootView=inflater.inflate(R.layout.fragment_dashboard, container, false);
+        ArrayList<DashboardData> data=new ArrayList<>();
+        data.add(new DashboardData("Jay","hammer","zero",1));
+        data.add(new DashboardData("Jay","hammer","zero",1));
+        data.add(new DashboardData("Jay","hammer","zero",1));
+        data.add(new DashboardData("Jay","hammer","zero",1));
+        data.add(new DashboardData("Jay","hammer","zero",1));
+        data.add(new DashboardData("Jay","hammer","zero",1));
+        data.add(new DashboardData("Jay","hammer","zero",1));
+
+        DashboardAdapter dashboardAdapter=new DashboardAdapter(getActivity(),data);
+        ListView listView=rootView.findViewById(R.id.main_dashboard_list_view);
+        listView.setAdapter(dashboardAdapter);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
