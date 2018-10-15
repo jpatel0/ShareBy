@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -173,7 +174,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                     e.printStackTrace();
                 }
                 if (addresses.size() > 0 && pin!=null && country!=null) {
-                    FirebaseDatabase database=FirebaseDatabase.getInstance();
+                    final FirebaseDatabase database=FirebaseDatabase.getInstance();
                     addressLine.setText(addresses.get(0).getAddressLine(0));
                     Log.d("Map data yeah and loc", addresses.toString() + "\n" + addresses.get(0));
                     DatabaseReference dbRef = database.getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -185,7 +186,11 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                         @Override
                         public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
                             Log.d(TAG, "fireBase user location child Update successful");
+                            float oldLat=mPref.getFloat(getResources().getString(R.string.pref_lat),0.0F),
+                                    oldLng=mPref.getFloat(getResources().getString(R.string.pref_lng),0.0F);
                             SharedPreferences.Editor editLoc=mPref.edit();
+                            editLoc.putFloat(getResources().getString(R.string.pref_old_lat),oldLat);
+                            editLoc.putFloat(getResources().getString(R.string.pref_old_lng),oldLng);
                             editLoc.putFloat(getResources().getString(R.string.pref_lat),(float) latit);
                             editLoc.putFloat(getResources().getString(R.string.pref_lng),(float) longit);
                             editLoc.apply();
@@ -237,6 +242,23 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
                                         groupsRef.child(key1).child(key2).child("members").child(user.getUid()).setValue(true);;
                                         groupsRef.child(key1).child(key2).child("posts").push().setValue(new Post(user.getUid(),user.getDisplayName()));
+                                        //remove user data from old group
+                                        String k1=mPref.getString(getResources().getString(R.string.pref_key1),"nope"),
+                                                k2=mPref.getString(getResources().getString(R.string.pref_key2),"nope");
+                                        if (!k1.equals("nope") || !k2.equals("nope")){
+                                            String count=mPref.getString(getResources().getString(R.string.pref_country),"nope"),
+                                                    pinn=mPref.getString(getResources().getString(R.string.pref_pin),"nope");
+                                            DatabaseReference delOldGroup=database.getReference().child("Groups").child(count).child(pinn)
+                                                    .child(k1).child(k2);
+                                            delOldGroup.child("members").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue(new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                                    Toast.makeText(getApplicationContext(),"success",Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                        }
+
+                                        //add user to the group
                                         SharedPreferences.Editor editLoc=mPref.edit();
                                         editLoc.putString(getResources().getString(R.string.pref_country), country_key);
                                         editLoc.putString(getResources().getString(R.string.pref_pin),pin_key);
@@ -261,13 +283,14 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                     Toast.makeText(AddressActivity.this, "Address Saved", Toast.LENGTH_SHORT).show();
                 }
                 else
-                    Toast.makeText(AddressActivity.this, "Coordinates are invalid", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddressActivity.this, "Couldn't obtain enough info on the provided location", Toast.LENGTH_SHORT).show();
             }
             else if (resultCode==RESULT_CANCELED){
                 Log.d(TAG," Map Canceled");
             }
         }
         else if (requestCode==RC_CREATE_GRP){
+            final SharedPreferences.Editor editLoc=mPref.edit();
             if(resultCode==RESULT_OK){
                 Place place = PlacePicker.getPlace(this, data);
                 LatLng latLng=place.getLatLng();
@@ -291,7 +314,6 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 Log.d(TAG,createRef.getKey());
                 Post post=new Post(user.getUid(),user.getDisplayName());
                 createRef.child("posts").push().setValue(post);
-                SharedPreferences.Editor editLoc=mPref.edit();
                 editLoc.putString(getResources().getString(R.string.pref_country), country);
                 editLoc.putString(getResources().getString(R.string.pref_pin), pin);
                 editLoc.putString(getResources().getString(R.string.pref_key1), latString);
@@ -299,8 +321,28 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 editLoc.apply();
                 uploadUserDetails(country,pin,latString,lngString);
             }
-            else
+            else{
+                // Change back location of user to previous one
+                if (mPref.getFloat(getResources().getString(R.string.pref_old_lat),0.0F)!=0.0F){
+                    final float latit=mPref.getFloat(getResources().getString(R.string.pref_old_lat),0.0F),
+                            longit=mPref.getFloat(getResources().getString(R.string.pref_old_lng),0.0F);
+                    FirebaseDatabase database=FirebaseDatabase.getInstance();
+                    DatabaseReference dbRef = database.getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    Map<String, Object> latlngMap = new HashMap<>();
+                    latlngMap.put("latitude", latit);
+                    latlngMap.put("longitude", longit);
+                    dbRef.updateChildren(latlngMap, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                            Log.d(TAG, "fireBase user location child Update successful");
+                            editLoc.putFloat(getResources().getString(R.string.pref_lat),latit);
+                            editLoc.putFloat(getResources().getString(R.string.pref_lng),longit);
+                            editLoc.apply();
+                        }
+                    });
+                }
                 Toast.makeText(this,"Group not created",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

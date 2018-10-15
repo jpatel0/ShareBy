@@ -20,7 +20,6 @@ public class PostDashboard extends Fragment {
     public PostDashboard() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

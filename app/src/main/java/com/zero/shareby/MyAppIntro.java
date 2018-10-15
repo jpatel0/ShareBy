@@ -38,7 +38,7 @@ public class MyAppIntro extends AppIntro2 {
         addSlide(AppIntro2Fragment.newInstance("Welcome","This is Share NearBy App",R.drawable.society, Color.parseColor("#E91E63")));
         addSlide(AppIntro2Fragment.newInstance("Borrow","Post request to all neighbors instantly",R.drawable.borrow1, Color.parseColor("#9C27B0")));
         addSlide(AppIntro2Fragment.newInstance("Chat within app","Personal chats for privacy",R.drawable.chat_image, Color.parseColor("#2196F3")));
-        addSlide(AppIntro2Fragment.newInstance("Go out","Interact to know your neighbours",R.drawable.meet_people, Color.parseColor("#2196F3")));
+        addSlide(AppIntro2Fragment.newInstance("Time to get Started","Interact to know your neighbours",R.drawable.meet_people, Color.parseColor("#2196F3")));
 
         //setColorTransitionsEnabled(true);
         setSlideOverAnimation();

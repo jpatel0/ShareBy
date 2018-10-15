@@ -7,6 +7,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="pref_lat">lat</string>
     <string name="pref_lng">lng</string>
+    <string name="pref_old_lat">old_lat</string>
+    <string name="pref_old_lng">old_lng</string>
     <string name="pref_country">country</string>
     <string name="pref_pin">pin</string>
     <string name="pref_key1">key1</string>
