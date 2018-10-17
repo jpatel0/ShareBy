@@ -138,6 +138,8 @@ public class MapFragment extends Fragment implements LocationListener {
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        if (mMap!=null)
+            mMap.clear();
         /*if (askPermissions()) {
             mlocation = locationManager.getLastKnownLocation(provider);
             locationManager.requestLocationUpdates(provider, 20000, 50, this);
@@ -215,18 +217,18 @@ public class MapFragment extends Fragment implements LocationListener {
 
     @Override
     public void onPause() {
+        mMap.clear();
+        mapView.onPause();
         super.onPause();
         /*if(isPermissionEnabled)
             locationManager.removeUpdates(this);
         */
-        mMap.clear();
-        mapView.onPause();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         mapView.onDestroy();
+        super.onDestroy();
     }
 
     @Override

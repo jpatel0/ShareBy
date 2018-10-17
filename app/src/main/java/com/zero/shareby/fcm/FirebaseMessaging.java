@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class FirebaseMessaging extends FirebaseMessagingService {
-    private static final String CHANNEL_ID="myChannel";
+    public static final String CHANNEL_ID="myChannel";
     public FirebaseMessaging() {
         super();
     }

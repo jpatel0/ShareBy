@@ -13,6 +13,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -23,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -89,10 +92,11 @@ public class DashboardFragment extends Fragment {
         mAuthListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser()!=null){
-                }
-                else{
+                if(firebaseAuth.getCurrentUser()==null){
                     startActivity(new Intent(getActivity(),LoginActivity.class));
+                    onDestroyView();
+                    onDetach();
+                    onDestroy();
                 }
             }
         };
@@ -104,10 +108,9 @@ public class DashboardFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d(TAG,dataSnapshot.toString());
                     UserDetails userDetails=dataSnapshot.getValue(UserDetails.class);
-                    if (userDetails.getLatitude()!=0){
-                    }
-                    else
+                    if (userDetails.getLatitude()==0){
                         startActivity(new Intent(getActivity(), AddressActivity.class));
+                    }
                 }
 
                 @Override
@@ -173,6 +176,7 @@ public class DashboardFragment extends Fragment {
         else {
             mAuth.addAuthStateListener(mAuthListener);
         }
+        updateDashboard();
     }
 
     @Override
@@ -242,5 +246,41 @@ public class DashboardFragment extends Fragment {
         return builder;
     }
 
+
+
+    public void updateDashboard(){
+        if (mAuth.getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")){
+            String country=preferences.getString(getString(R.string.pref_country),"null");
+            String pin=preferences.getString(getString(R.string.pref_pin),"null");
+            String key1=preferences.getString(getString(R.string.pref_key1),"null");
+            String key2=preferences.getString(getString(R.string.pref_key2),"null");
+
+            DatabaseReference getData=FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+                    .child(key1).child(key2).child("posts");
+
+            getData.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
+    }
 
 }
