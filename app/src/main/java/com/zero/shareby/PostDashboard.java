@@ -42,7 +42,8 @@ public class PostDashboard extends Fragment {
         View rootView=inflater.inflate(R.layout.fragment_post_dashboard, container, false);
         data=new ArrayList<>();
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
-        /*data.add(new MyData("I want a hammer","Just a description"));
+        /*   fake data
+        data.add(new MyData("I want a hammer","Just a description"));
         data.add(new MyData("I want a hammer","Just a description"));
         data.add(new MyData("I want a hammer","Just a description"));
         data.add(new MyData("I want a hammer","Just a description"));
@@ -87,7 +88,7 @@ public class PostDashboard extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d(TAG, dataSnapshot.toString() + "\n");
                     for (DataSnapshot myPost:dataSnapshot.getChildren()){
-                        if (myPost.hasChild("sharedUid"))
+                        if (myPost.child("priority").getValue(Integer.class)>0)
                             data.add(myPost.getValue(Post.class));
                     }
                     postAdapter.notifyDataSetChanged();

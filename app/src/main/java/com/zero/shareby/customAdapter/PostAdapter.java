@@ -3,6 +3,8 @@ package com.zero.shareby.customAdapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +15,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
-import com.zero.shareby.MyData;
+
 import com.zero.shareby.Post;
 import com.zero.shareby.R;
-
 import java.util.ArrayList;
+import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends ArrayAdapter<Post> {
@@ -37,8 +40,10 @@ public class PostAdapter extends ArrayAdapter<Post> {
         Post data=getItem(position);
         TextView titleTextView=newView.findViewById(R.id.card_title);
         TextView descriptionTextView=newView.findViewById(R.id.card_description);
+        TextView timestampTextView=newView.findViewById(R.id.timestamp_post_dashboard);
         titleTextView.setText(data.getTitle());
         descriptionTextView.setText(data.getDesc());
+        timestampTextView.setText(calculateTimeDisplay(data.getTimestamp()));
         CircleImageView imageView=newView.findViewById(R.id.card_profile_image);
         if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()!=null){
             Glide.with(getContext())
@@ -54,4 +59,31 @@ public class PostAdapter extends ArrayAdapter<Post> {
         });
         return newView;
     }
+
+
+    public String calculateTimeDisplay(long timestamp){
+        long diff=System.currentTimeMillis()-timestamp;
+        /*
+            sec(s) ago
+            min(s) ago,
+            hrs(s) ago,
+            day(s) ago,
+            rest  dd,mon yy
+         */
+        String convertedTime="";
+        if (diff<60000)
+            convertedTime= diff+" sec(s) ago";
+        else if (diff<3600000)
+            convertedTime=Long.toString(diff/60000)+" min(s) ago";
+        else if (diff<86400000)
+            convertedTime=Long.toString(diff/3600000)+" hr(s) ago";
+        else if (diff<129600000)
+            convertedTime=Long.toString(diff/86400000)+" day(s) ago";
+        else{
+            convertedTime=DateFormat.format("dd,mon yy",timestamp).toString();
+        }
+
+        return convertedTime;
+    }
+
 }

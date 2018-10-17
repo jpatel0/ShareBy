@@ -1,5 +1,7 @@
 package com.zero.shareby;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -22,6 +27,8 @@ public class PostActivity extends AppCompatActivity {
 
     Button postButton;
     EditText titleEditText,descriptionEditText;
+    SharedPreferences preferences;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +39,8 @@ public class PostActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        user=FirebaseAuth.getInstance().getCurrentUser();
         titleEditText=findViewById(R.id.title_edit_text);
         descriptionEditText=findViewById(R.id.description_edit_text);
         postButton=findViewById(R.id.post_button);
@@ -69,14 +78,26 @@ public class PostActivity extends AppCompatActivity {
         String description=null;
         if (descriptionEditText.getText().toString().trim().length()>0){
             description=descriptionEditText.getText().toString().trim();
-            Map<String,String> map=new HashMap<>();
-            map.put("title",title);
-            map.put("description",description);
-            if (FirebaseAuth.getInstance().getCurrentUser()!=null){
-                DatabaseReference postReference=FirebaseDatabase.getInstance().getReference();
-
-            }
         }
+        if (user!=null){
+            String country = preferences.getString(getString(R.string.pref_country), "null");
+            String pin = preferences.getString(getString(R.string.pref_pin), "null");
+            String key1 = preferences.getString(getString(R.string.pref_key1), "null");
+            String key2 = preferences.getString(getString(R.string.pref_key2), "null");
+
+            DatabaseReference uploadPost = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+                    .child(key1).child(key2).child("posts");
+            Post newPost=new Post(user.getUid(),null,user.getDisplayName(),title,description,1,0);
+            uploadPost.push().setValue(newPost).addOnSuccessListener(this, new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(PostActivity.this,"Your Post Request Sent",Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+        else
+            Toast.makeText(this,"An Error occured",Toast.LENGTH_SHORT).show();
     }
 
     @Override
