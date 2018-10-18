@@ -242,18 +242,21 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
                                         groupsRef.child(key1).child(key2).child("members").child(user.getUid()).setValue(true);;
                                         groupsRef.child(key1).child(key2).child("posts").push().setValue(new Post(user.getUid(),user.getDisplayName()));
+
+
                                         //remove user data from old group
                                         String k1=mPref.getString(getResources().getString(R.string.pref_key1),"nope"),
                                                 k2=mPref.getString(getResources().getString(R.string.pref_key2),"nope");
-                                        if (!k1.equals("nope") || !k2.equals("nope")){
+                                        if ((!k1.equals("nope") || !k2.equals("nope")) && oldVsNewDiff(key1,key2,k1,k2)){
                                             String count=mPref.getString(getResources().getString(R.string.pref_country),"nope"),
                                                     pinn=mPref.getString(getResources().getString(R.string.pref_pin),"nope");
                                             DatabaseReference delOldGroup=database.getReference().child("Groups").child(count).child(pinn)
                                                     .child(k1).child(k2);
-                                            delOldGroup.child("members").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue(new DatabaseReference.CompletionListener() {
+                                            delOldGroup.child("members").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    .removeValue(new DatabaseReference.CompletionListener() {
                                                 @Override
                                                 public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                                    Toast.makeText(getApplicationContext(),"success",Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(getApplicationContext(),"deleted:"+databaseReference.getKey(),Toast.LENGTH_LONG).show();
                                                 }
                                             });
                                         }
@@ -380,6 +383,16 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         newGrpData.put("key2",key2);
         databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(newGrpData);
     }
+
+
+    private boolean oldVsNewDiff(String new1,String new2,String old1,String old2){
+        int diff1=Math.abs(Integer.parseInt(new1)-Integer.parseInt(old1)),
+                diff2=Math.abs(Integer.parseInt(new2)-Integer.parseInt(old2));
+        if (diff1>2300 || diff2>2300)
+            return true;
+        return false;
+    }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

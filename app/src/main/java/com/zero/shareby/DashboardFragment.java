@@ -13,15 +13,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,11 +26,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.customAdapter.DashboardAdapter;
-import com.zero.shareby.customAdapter.PostAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class DashboardFragment extends Fragment {
@@ -46,6 +44,8 @@ public class DashboardFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     SharedPreferences preferences;
+    ArrayList<Post> data;
+    DashboardAdapter dashboardAdapter;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -127,16 +127,16 @@ public class DashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_dashboard, container, false);
-        ArrayList<DashboardData> data=new ArrayList<>();
+        data=new ArrayList<>();
+        /*data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));
-        data.add(new DashboardData("Jay","hammer","zero",1));
-        data.add(new DashboardData("Jay","hammer","zero",1));
+        data.add(new DashboardData("Jay","hammer","zero",1));*/
 
-        DashboardAdapter dashboardAdapter=new DashboardAdapter(getActivity(),data);
+        dashboardAdapter=new DashboardAdapter(getActivity(),data);
         ListView listView=rootView.findViewById(R.id.main_dashboard_list_view);
         listView.setAdapter(dashboardAdapter);
         return rootView;
@@ -174,9 +174,11 @@ public class DashboardFragment extends Fragment {
         nav.setCheckedItem(R.id.nav_home);
         if(!isConnected(getActivity())) buildDialog(getActivity()).show();
         else {
+            data.clear();
+            dashboardAdapter.clear();
+            updateDashboard();
             mAuth.addAuthStateListener(mAuthListener);
         }
-        updateDashboard();
     }
 
     @Override
@@ -248,32 +250,35 @@ public class DashboardFragment extends Fragment {
 
 
 
-    public void updateDashboard(){
-        if (mAuth.getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")){
-            String country=preferences.getString(getString(R.string.pref_country),"null");
-            String pin=preferences.getString(getString(R.string.pref_pin),"null");
-            String key1=preferences.getString(getString(R.string.pref_key1),"null");
-            String key2=preferences.getString(getString(R.string.pref_key2),"null");
+    private void updateDashboard(){
+        if (FirebaseAuth.getInstance().getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")) {
+            String country = preferences.getString(getString(R.string.pref_country), "null");
+            String pin = preferences.getString(getString(R.string.pref_pin), "null");
+            String key1 = preferences.getString(getString(R.string.pref_key1), "null");
+            String key2 = preferences.getString(getString(R.string.pref_key2), "null");
 
-            DatabaseReference getData=FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+            DatabaseReference getMyPosts = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
                     .child(key1).child(key2).child("posts");
 
-            getData.addChildEventListener(new ChildEventListener() {
+            Query query = getMyPosts.orderByChild("timestamp");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d(TAG, dataSnapshot.toString() + "\n");
+                    for (DataSnapshot posts:dataSnapshot.getChildren()){
+                        if (posts.hasChild("sharedUid")
+                                || posts.child("priority").getValue(Integer.class)==0) {
+                            data.add(posts.getValue(Post.class));
+                        }
+                    }
+                    Collections.sort(data,Collections.reverseOrder(new Comparator<Post>() {
+                        @Override
+                        public int compare(Post o1, Post o2) {
+                            return Long.compare(o1.getTimestamp(),o2.getTimestamp());
+                        }
+                    }));
+                    dashboardAdapter.notifyDataSetChanged();
 
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 }
 
                 @Override

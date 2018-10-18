@@ -20,8 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -92,6 +90,7 @@ public class PostActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(PostActivity.this,"Your Post Request Sent",Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
 

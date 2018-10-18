@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.zero.shareby.Post;
 import com.zero.shareby.R;
 import java.util.ArrayList;
-import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -61,7 +60,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
     }
 
 
-    public String calculateTimeDisplay(long timestamp){
+    public static String calculateTimeDisplay(long timestamp){
         long diff=System.currentTimeMillis()-timestamp;
         /*
             sec(s) ago
@@ -72,7 +71,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
          */
         String convertedTime="";
         if (diff<60000)
-            convertedTime= diff+" sec(s) ago";
+            convertedTime="a few sec(s) ago";
         else if (diff<3600000)
             convertedTime=Long.toString(diff/60000)+" min(s) ago";
         else if (diff<86400000)

@@ -5,7 +5,7 @@ public class UserDetails {
     private String uid;
     private double latitude;
     private double longitude;
-    private String phone;
+    private String phone,photoUrl;
     private String country,pin,key1,key2;
 
     public UserDetails(){
@@ -87,5 +87,13 @@ public class UserDetails {
 
     public void setKey2(String key2) {
         this.key2 = key2;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

@@ -91,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_share:
                 Intent shareIntent=new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
-                shareIntent.putExtra(Intent.EXTRA_TITLE,"Shareby");
-                shareIntent.putExtra(Intent.EXTRA_TEXT,"Hey!, Check this awesome app for sharing things in your neiborhood..");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT,"ShareBy App");
+                shareIntent.putExtra(Intent.EXTRA_TITLE,"ShareBy App");
+                shareIntent.putExtra(Intent.EXTRA_TEXT,"Hey! Check out this awesome app for sharing things in your neighborhood..");
                 startActivity(Intent.createChooser(shareIntent,"Complete action using"));
                 break;
 

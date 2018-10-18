@@ -6,17 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import com.firebase.ui.auth.AuthUI;
+import android.widget.ListView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.customAdapter.PostAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class PostDashboard extends Fragment {
     private static final String TAG="PostDashboard";
@@ -82,16 +81,24 @@ public class PostDashboard extends Fragment {
             DatabaseReference getMyPosts = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
                     .child(key1).child(key2).child("posts");
 
-            Query query = getMyPosts.orderByChild("reqUid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Query query = getMyPosts.orderByChild("timestamp");
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d(TAG, dataSnapshot.toString() + "\n");
                     for (DataSnapshot myPost:dataSnapshot.getChildren()){
-                        if (myPost.child("priority").getValue(Integer.class)>0)
+                        if (myPost.child("reqUid").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                && myPost.child("priority").getValue(Integer.class)>0)
                             data.add(myPost.getValue(Post.class));
                     }
+                    Collections.sort(data,Collections.reverseOrder(new Comparator<Post>() {
+                        @Override
+                        public int compare(Post o1, Post o2) {
+                            return Long.compare(o1.getTimestamp(),o2.getTimestamp());
+                        }
+                    }));
                     postAdapter.notifyDataSetChanged();
+
                 }
 
                 @Override

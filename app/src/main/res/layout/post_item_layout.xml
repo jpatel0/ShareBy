@@ -28,9 +28,10 @@
 
             <TextView
                 android:id="@+id/card_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_toEndOf="@id/card_profile_image"
+                android:layout_toStartOf="@id/timestamp_post_dashboard"
                 android:layout_alignParentTop="true"
                 android:textStyle="bold"
                 android:maxLines="2"
@@ -45,7 +46,8 @@
                 android:id="@+id/timestamp_post_dashboard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:text="time"
                 android:layout_alignParentTop="true"
                 android:textStyle="italic"
                 android:maxLines="1"

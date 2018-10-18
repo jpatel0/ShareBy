@@ -248,13 +248,16 @@ public class EditProfile extends AppCompatActivity {
                                 .setDisplayName(editNameText.getText().toString().trim())
                                 .setPhotoUri(downloadedUri)
                                 .build();
-                        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+                        final FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
                         user.updateProfile(profileUpdates)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         progressBar.setVisibility(View.GONE);
                                         if (task.isSuccessful()) {
+                                            DatabaseReference ref=FirebaseDatabase.getInstance().getReference()
+                                                    .child("UserDetails").child(user.getUid()).child("photoUrl");
+                                            ref.setValue(downloadedUri.toString());
                                             Log.d(TAG, "User profile updated with profile image.");
                                             Toast.makeText(EditProfile.this, "Updated", Toast.LENGTH_LONG).show();
                                             finish();

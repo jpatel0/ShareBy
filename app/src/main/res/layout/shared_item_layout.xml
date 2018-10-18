@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/offering_user_profile"
                 android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/timestamp_dashboard"
                 android:textStyle="bold"
                 android:maxLines="2"
                 android:gravity="top"
@@ -43,8 +44,8 @@
             <TextView
                 android:id="@+id/timestamp_dashboard"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:textStyle="italic"
                 android:maxLines="1"
