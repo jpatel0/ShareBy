@@ -59,6 +59,8 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:text="Post"
+        android:backgroundTint="@color/colorAccent"
+        android:textColor="@android:color/white"
         android:enabled="false"
         android:layout_gravity="end"
         android:layout_marginTop="10dp"

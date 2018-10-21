@@ -41,7 +41,9 @@ public class PostAdapter extends ArrayAdapter<Post> {
         TextView descriptionTextView=newView.findViewById(R.id.card_description);
         TextView timestampTextView=newView.findViewById(R.id.timestamp_post_dashboard);
         titleTextView.setText(data.getTitle());
-        descriptionTextView.setText(data.getDesc());
+        if (data.getDesc()!=null)
+            descriptionTextView.setText(data.getDesc());
+        else descriptionTextView.setHeight(0);
         timestampTextView.setText(calculateTimeDisplay(data.getTimestamp()));
         CircleImageView imageView=newView.findViewById(R.id.card_profile_image);
         if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()!=null){
@@ -79,7 +81,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
         else if (diff<129600000)
             convertedTime=Long.toString(diff/86400000)+" day(s) ago";
         else{
-            convertedTime=DateFormat.format("dd,mon yy",timestamp).toString();
+            convertedTime=DateFormat.format("dd, MMM yy",timestamp).toString();
         }
 
         return convertedTime;

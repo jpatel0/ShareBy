@@ -21,14 +21,18 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 return new DashboardFragment();
 
             case 1:
+                return new PendingRequestsFragment();
+
+            case 2:
                 return new PostDashboard();
+
         }
         return new DashboardFragment();
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Nullable
@@ -39,6 +43,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 return "Dashboard";
 
             case 1:
+                return "Requests";
+
+            case 2:
                 return "Your Posts";
         }
         return "Default";
