@@ -138,8 +138,9 @@ public class MapFragment extends Fragment implements LocationListener {
     public void onResume() {
         super.onResume();
         mapView.onResume();
-        if (mMap!=null)
+        if (mMap!=null) {
             mMap.clear();
+        }
         /*if (askPermissions()) {
             mlocation = locationManager.getLastKnownLocation(provider);
             locationManager.requestLocationUpdates(provider, 20000, 50, this);
@@ -181,6 +182,7 @@ public class MapFragment extends Fragment implements LocationListener {
                         else if (children.getKey().equals("longitude"))
                             lng=children.getValue(Double.class);
                     }
+                    mMap.moveCamera(CameraUpdateFactory.zoomTo(16));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat,lng)));
                 }
 

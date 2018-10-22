@@ -81,7 +81,8 @@ public class LoginActivity extends AppCompatActivity {
                         pb.setVisibility(View.VISIBLE);
                         userDetails.setUid(firebaseAuth.getUid());
                         userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
-                        userDetails.setPhotoUrl(firebaseAuth.getCurrentUser().getPhotoUrl().toString());
+                        if (firebaseAuth.getCurrentUser().getPhotoUrl()!=null)
+                            userDetails.setPhotoUrl(firebaseAuth.getCurrentUser().getPhotoUrl().toString());
                         DatabaseReference dbReference = database.getReference().child("UserDetails");
                         dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override

@@ -1,5 +1,6 @@
 package com.zero.shareby;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -42,7 +43,8 @@ public class PostActivity extends AppCompatActivity {
         titleEditText=findViewById(R.id.title_edit_text);
         descriptionEditText=findViewById(R.id.description_edit_text);
         postButton=findViewById(R.id.post_button);
-
+        postButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.darker_gray));
+        postButton.setTextColor(getResources().getColor(android.R.color.white));
         titleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -50,10 +52,16 @@ public class PostActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length()>0)
+                if (s.toString().trim().length()>0) {
                     postButton.setEnabled(true);
-                else
+                    postButton.setTextColor(getResources().getColor(android.R.color.white));
+                    postButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
+                }
+                else {
                     postButton.setEnabled(false);
+                    postButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.darker_gray));
+                    postButton.setTextColor(getResources().getColor(android.R.color.white));
+                }
             }
 
             @Override

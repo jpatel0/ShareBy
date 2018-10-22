@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -40,11 +42,12 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
         }
 
         final Post post=getItem(position);
-        final TextView reqUserTextView=newView.findViewById(R.id.requesting_user_name);
-        final TextView titleTextView=newView.findViewById(R.id.pending_request_title);
-        final TextView descriptionTextView=newView.findViewById(R.id.pending_request_description);
+        TextView reqUserTextView=newView.findViewById(R.id.requesting_user_name);
+        TextView titleTextView=newView.findViewById(R.id.pending_request_title);
+        TextView descriptionTextView=newView.findViewById(R.id.pending_request_description);
         TextView timestampTextView=newView.findViewById(R.id.timestamp_pending_post);
         final CircleImageView imageView=newView.findViewById(R.id.pending_user_profile_photo);
+        Button replyButton=newView.findViewById(R.id.pending_reply_button);
 
         reqUserTextView.setText(post.getName());
         titleTextView.setText(post.getTitle());
@@ -71,9 +74,14 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-
-
         timestampTextView.setText(PostAdapter.calculateTimeDisplay(post.getTimestamp()));
+
+        replyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"Left to implement",Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return newView;
     }

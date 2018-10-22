@@ -210,8 +210,8 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                             String key1=null,key2=null;
                             if (dataSnapshot.getChildrenCount()>0) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    diff = Math.abs(Long.parseLong(data.getKey())) - Math.abs(lat);
-                                    if (diff <= 2300) {
+                                    diff = Math.abs(Math.abs(Long.parseLong(data.getKey())) - Math.abs(lat));
+                                    if (diff <= 2000) {
                                         if (minDiff > diff) {
                                             minDiff = diff;
                                             thisTree=data;
@@ -220,21 +220,21 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                         }
                                     }
                                 }
-                                if (diff > 2300) {
+                                if (diff > 2000) {
                                     placeIntentBuilder(2);
                                 } else if (key1!=null){
                                     Log.d(TAG," key1 :"+key1);
                                     minDiff=Math.abs(lng);
                                     for (DataSnapshot getLngNode:thisTree.getChildren()){
-                                        diff = Math.abs(Long.parseLong(getLngNode.getKey())) - Math.abs(lng);
-                                        if (diff <= 2300) {
+                                        diff = Math.abs(Math.abs(Long.parseLong(getLngNode.getKey())) - Math.abs(lng));
+                                        if (diff <= 2000) {
                                             if (minDiff > diff) {
                                                 minDiff = diff;
                                                 key2 = getLngNode.getKey();
                                             }
                                         }
                                     }
-                                    if (diff > 2300) {
+                                    if (diff > 2000) {
                                         placeIntentBuilder(2);
                                     }
                                     else if(key2!=null){
@@ -312,7 +312,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 Log.d(TAG,"country:"+country+"  pin:"+pin+"  lat:"+latLng.latitude);
                 FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference createRef=FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin).child(latString).child(lngString);
-                createRef.setValue(new CreateGroup(addresses.get(0).getAddressLine(0),1,2300,latLng.latitude,latLng.longitude));
+                createRef.setValue(new CreateGroup(addresses.get(0).getAddressLine(0),1,2000,latLng.latitude,latLng.longitude));
                 createRef.child("members").child(user.getUid()).setValue(true);
                 Log.d(TAG,createRef.getKey());
                 Post post=new Post(user.getUid(),user.getDisplayName());
@@ -388,7 +388,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     private boolean oldVsNewDiff(String new1,String new2,String old1,String old2){
         int diff1=Math.abs(Integer.parseInt(new1)-Integer.parseInt(old1)),
                 diff2=Math.abs(Integer.parseInt(new2)-Integer.parseInt(old2));
-        if (diff1>2300 || diff2>2300)
+        if (diff1>2000 || diff2>2000)
             return true;
         return false;
     }

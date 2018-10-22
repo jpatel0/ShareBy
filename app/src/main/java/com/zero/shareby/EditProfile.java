@@ -274,7 +274,8 @@ public class EditProfile extends AppCompatActivity {
                 profileUpdates = new UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
                             .build();
-
+                DatabaseReference userNameref=FirebaseDatabase.getInstance().getReference().child("UserDetails").child(user.getUid()).child("name");
+                userNameref.setValue(name);
                 user.updateProfile(profileUpdates)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
