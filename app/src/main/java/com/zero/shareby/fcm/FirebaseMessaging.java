@@ -1,15 +1,22 @@
 package com.zero.shareby.fcm;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.zero.shareby.R;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class FirebaseMessaging extends FirebaseMessagingService {
@@ -48,4 +55,29 @@ public class FirebaseMessaging extends FirebaseMessagingService {
     public void onDeletedMessages() {
         super.onDeletedMessages();
     }
+
+
+    @Override
+    public void onNewToken(String s) {
+        uploadDeviceTokenId(s);
+
+        super.onNewToken(s);
+    }
+
+    public static void uploadDeviceTokenId(String id){
+        if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            Map<String, String> map = new HashMap<>();
+            map.put("token", id);
+            DatabaseReference userReference = FirebaseDatabase.getInstance().getReference()
+                    .child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            userReference.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.d("Token Id", "generated");
+                }
+            });
+        }
+
+    }
+
 }

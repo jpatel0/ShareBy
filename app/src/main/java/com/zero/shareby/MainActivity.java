@@ -72,14 +72,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_logout:
                 if(auth.getCurrentUser()!=null){
-                    AuthUI.getInstance().signOut(getApplicationContext());
                     SharedPreferences.Editor prefEditor= PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
                     prefEditor.putBoolean(MAP_KEY,true);
                     prefEditor.putBoolean("uploaded",false);
                     prefEditor.putBoolean("app_intro_check_key",false);
                     prefEditor.clear();
                     prefEditor.commit();
-                    viewPager.setCurrentItem(0);
+                    AuthUI.getInstance().signOut(getApplicationContext());
                 }
                 break;
 

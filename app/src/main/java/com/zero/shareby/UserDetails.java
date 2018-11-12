@@ -6,7 +6,7 @@ public class UserDetails {
     private double latitude;
     private double longitude;
     private String phone,photoUrl;
-    private String country,pin,key1,key2;
+    private String country,pin,key1,key2,tokenId;
 
     public UserDetails(){
         latitude=0.0;
