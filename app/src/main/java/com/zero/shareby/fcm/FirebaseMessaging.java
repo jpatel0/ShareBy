@@ -1,5 +1,6 @@
 package com.zero.shareby.fcm;
 
+import android.app.Notification;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -29,10 +30,12 @@ public class FirebaseMessaging extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d("inside","yes");
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_home)
+                .setColor(getResources().getColor(R.color.colorPrimary))
                 .setContentTitle(remoteMessage.getNotification().getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setDefaults(Notification.DEFAULT_SOUND)
                 .setVibrate(new long[]{0,250,250,250});
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
