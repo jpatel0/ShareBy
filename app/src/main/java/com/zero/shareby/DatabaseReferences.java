@@ -19,7 +19,7 @@ public class DatabaseReferences {
             String pin = preferences.getString("pin","nothing");
 
             return FirebaseDatabase.getInstance().getReference()
-                    .child(country).child(pin).child(key1).child(key2);
+                    .child("Groups").child(country).child(pin).child(key1).child(key2);
         }
     }
 }

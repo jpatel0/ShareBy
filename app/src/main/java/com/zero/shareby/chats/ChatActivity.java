@@ -48,7 +48,6 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(this,"Grp not available",Toast.LENGTH_SHORT).show();
         }else {
             mChatRef = mGrpRef.child("chats");
-            chatsData.add(new Chat("jay","zero","ffff",12453535));
             chatsAdapter.notifyDataSetChanged();
             Log.d(TAG, mChatRef.toString());
             attachChildListener();
@@ -66,14 +65,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private void attachChildListener(){
         if (mListener==null) {
-            Log.d(TAG,"inside mlisterner is null");
             mListener = new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "inside");
                     if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
                         chatsData.add(dataSnapshot.getValue(Chat.class));
-                        Log.d(TAG, "added");
                     }
                     chatsAdapter.notifyDataSetChanged();
                 }
@@ -92,11 +88,12 @@ public class ChatActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d(TAG,databaseError.getMessage());
                 }
             };
         }
         mChatRef.addChildEventListener(mListener);
-        Log.d(TAG,"added listener");
+
     }
 
 }
