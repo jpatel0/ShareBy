@@ -16,9 +16,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHolder> {
     private ArrayList<Chat> mChatList;
+    private ChatItemClickListener onItemClickListener;
 
-    public ChatsAdapter(ArrayList<Chat> chats){
+    public interface ChatItemClickListener{
+        void onClick(Chat chatObject);
+    }
+
+    public ChatsAdapter(ChatItemClickListener listener,ArrayList<Chat> chats){
         mChatList = chats;
+        onItemClickListener = listener;
     }
 
     @NonNull
@@ -31,11 +37,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
         return new ChatsViewHolder(v);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull ChatsViewHolder holder, int position) {
         Chat chatObj = mChatList.get(position);
         holder.userName.setText(chatObj.getSentBy());
-        holder.userImage.setImageResource(R.drawable.ic_chat);
+        holder.userImage.setImageResource(R.drawable.ic_home);
     }
 
     @Override
@@ -45,7 +52,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
         else return mChatList.size();
     }
 
-    public class ChatsViewHolder extends RecyclerView.ViewHolder {
+    public class ChatsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         CircleImageView userImage;
         TextView userName;
@@ -53,6 +60,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
             super(layoutView);
             userImage = layoutView.findViewById(R.id.chat_list_user_image);
             userName = layoutView.findViewById(R.id.chat_list_user_name);
+            layoutView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onItemClickListener.onClick(mChatList.get(getAdapterPosition()));
         }
     }
 }

@@ -4,9 +4,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -18,7 +21,7 @@ import com.zero.shareby.R;
 
 import java.util.ArrayList;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements ChatsAdapter.ChatItemClickListener {
     private static final String TAG = "ChatsActivity";
     ArrayList<Chat> chatsData;
     ChatsAdapter chatsAdapter;
@@ -32,14 +35,21 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         RecyclerView chats_list = findViewById(R.id.chats_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        //chats_list.setHasFixedSize(false);
+        chats_list.setHasFixedSize(true);
+        chats_list.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         chats_list.setLayoutManager(layoutManager);
+
         chatsData =new ArrayList<>();
-        chatsAdapter=new ChatsAdapter(chatsData);
+        chatsAdapter=new ChatsAdapter(this,chatsData);
         chats_list.setAdapter(chatsAdapter);
         mGrpRef = DatabaseReferences.getGroupReference(getApplicationContext());
+
     }
 
+    @Override
+    public void onClick(Chat chat) {
+        Log.d(TAG,"click"+chat.getSentBy());
+    }
 
     @Override
     protected void onResume() {
@@ -77,18 +87,14 @@ public class ChatActivity extends AppCompatActivity {
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 }
-
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 }
-
                 @Override
                 public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d(TAG,databaseError.getMessage());
                 }
             };
         }
