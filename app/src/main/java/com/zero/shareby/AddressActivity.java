@@ -26,6 +26,8 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -34,6 +36,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.zero.shareby.fcm.FirebaseMessaging;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -240,7 +245,8 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                     else if(key2!=null){
                                         Log.d(TAG," key2 :"+key2);
                                         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
-                                        groupsRef.child(key1).child(key2).child("members").child(user.getUid()).setValue(true);;
+                                        //groupsRef.child(key1).child(key2).child("members").child(user.getUid()).setValue(true);
+                                        writeTokenToGroup(groupsRef.child(key1).child(key2));
                                         groupsRef.child(key1).child(key2).child("posts").push().setValue(new Post(user.getUid(),user.getDisplayName()));
 
 
@@ -311,9 +317,11 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 String lngString = getConvertedString(latLng.longitude);
                 Log.d(TAG,"country:"+country+"  pin:"+pin+"  lat:"+latLng.latitude);
                 FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
-                DatabaseReference createRef=FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin).child(latString).child(lngString);
-                createRef.setValue(new CreateGroup(addresses.get(0).getAddressLine(0),1,2000,latLng.latitude,latLng.longitude));
-                createRef.child("members").child(user.getUid()).setValue(true);
+                DatabaseReference createRef=FirebaseDatabase.getInstance().getReference()
+                        .child("Groups").child(country).child(pin).child(latString).child(lngString);
+                createRef.setValue(new CreateGroup(addresses.get(0).getAddressLine(0),
+                        1,2000,latLng.latitude,latLng.longitude));
+                writeTokenToGroup(createRef);
                 Log.d(TAG,createRef.getKey());
                 Post post=new Post(user.getUid(),user.getDisplayName());
                 createRef.child("posts").push().setValue(post);
@@ -391,6 +399,25 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         if (diff1>2000 || diff2>2000)
             return true;
         return false;
+    }
+
+
+
+    private void writeTokenToGroup(final DatabaseReference createRef){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        createRef.child("members").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(token);
+                    }
+                });
     }
 
 

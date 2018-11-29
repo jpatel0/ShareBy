@@ -25,20 +25,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.-->
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_home" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming-->
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
 
-
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MyAppIntro"></activity>
+        <activity android:name=".MyAppIntro" />
         <activity
             android:name=".LoginActivity"
             android:label="Sign In"
@@ -46,10 +45,10 @@
         <activity
             android:name=".EditProfile"
             android:label="Edit Profile"
-            android:parentActivityName=".UserProfile"></activity>
+            android:parentActivityName=".UserProfile" />
         <activity
             android:name=".AddressActivity"
-            android:label="Edit Address"></activity>
+            android:label="Edit Address" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -74,8 +73,8 @@
         <activity
             android:name=".UserProfile"
             android:label="Profile"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".PostActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".PostActivity" />
 
         <service android:name=".fcm.FirebaseMessaging">
             <intent-filter>
@@ -83,7 +82,8 @@
             </intent-filter>
         </service>
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+        <!--
+     Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more.
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -92,7 +92,9 @@
              notification message. See README(https://goo.gl/6BKBk7) for more.
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorPrimaryDark" />  -->
+            android:resource="@color/colorPrimaryDark" />
+        -->
+        <activity android:name=".chats.ChatActivity"></activity>
     </application>
 
 </manifest>

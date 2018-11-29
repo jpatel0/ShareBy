@@ -2,7 +2,6 @@ package com.zero.shareby;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.zero.shareby.chats.ChatActivity;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     private static final String TAG=MainActivity.class.getSimpleName();
@@ -84,6 +84,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_profile:
                 startActivity(new Intent(MainActivity.this,UserProfile.class));
+                break;
+
+            case R.id.nav_chat:
+                startActivity(new Intent(this,ChatActivity.class));
                 break;
 
             case R.id.nav_share:
