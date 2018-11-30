@@ -8,7 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
+import com.zero.shareby.UserDetails;
 
 import java.util.ArrayList;
 
@@ -41,13 +47,26 @@ public class ChatsAdapter extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Chat chatObj=mChatList.get(position);
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
+        final Chat chatObj=mChatList.get(position);
         if (chatObj.isBelongsToCurrentUser()){
             ((MyMessageViewHolder) holder).myMessage.setText(chatObj.getMessage());
         }else {
-            ((TheirMessageViewHolder) holder).theirName.setText(chatObj.getSentBy());
-            ((TheirMessageViewHolder) holder).theirMessage.setText(chatObj.getMessage());
+            DatabaseReference otherUserRef = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(chatObj.getSentBy());
+            otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        UserDetails otherUser = dataSnapshot.getValue(UserDetails.class);
+                        ((TheirMessageViewHolder) holder).theirName.setText(otherUser.getName());
+                        ((TheirMessageViewHolder) holder).theirMessage.setText(chatObj.getMessage());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
         }
     }
 

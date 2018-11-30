@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="dividerColor">#A9A9A9</color>
+    <color name="sendButton">#004C00</color>
     <color name="primary_material_light" tools:override="true">#4b49d3</color>
     <color name="primary_dark_material_light" tools:override="true">#64bdcf</color>
     <color name="background_material_light" tools:override="true">#FFFFFF</color>

@@ -23,6 +23,7 @@
             android:background="#ffffff"
             android:layout_height="wrap_content">
                 <EditText
+                    android:id="@+id/group_chat_edit_text"
                     android:layout_marginStart="5dp"
                     android:inputType="text"
                     android:hint="Write a message"
@@ -33,6 +34,7 @@
                     android:layout_weight="3"/>
 
                 <ImageButton
+                    android:id="@+id/group_chat_send_message_button"
                     android:contentDescription="send_message"
                     android:background="@drawable/ic_send"
                     android:backgroundTint="#004c00"
