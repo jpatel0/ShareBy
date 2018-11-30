@@ -3,6 +3,7 @@ package com.zero.shareby.chats;
 public class Chat {
     private String sentBy,receivedBy,message;
     private long timestamp;
+    boolean belongsToCurrentUser;
 
     public Chat() {
     }
@@ -12,6 +13,14 @@ public class Chat {
         this.receivedBy = receivedBy;
         this.message = message;
         this.timestamp = timestamp;
+    }
+
+    public boolean isBelongsToCurrentUser() {
+        return belongsToCurrentUser;
+    }
+
+    public void setBelongsToCurrentUser(boolean belongsToCurrentUser) {
+        this.belongsToCurrentUser = belongsToCurrentUser;
     }
 
     public String getSentBy() {

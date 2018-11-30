@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GroupChatFragment extends Fragment implements ChatsAdapter.ChatItemClickListener{
+public class GroupChatFragment extends Fragment {
     private static final String TAG = "GroupChatFragment";
     ArrayList<Chat> chatsData;
     ChatsAdapter chatsAdapter;
@@ -56,17 +57,11 @@ public class GroupChatFragment extends Fragment implements ChatsAdapter.ChatItem
         chats_list.setLayoutManager(layoutManager);
 
         chatsData =new ArrayList<>();
-        chatsAdapter=new ChatsAdapter(this,chatsData);
+        chatsAdapter=new ChatsAdapter(chatsData);
         chats_list.setAdapter(chatsAdapter);
         mGrpRef = DatabaseReferences.getGroupReference(getContext());
-
     }
 
-
-    @Override
-    public void onClick(Chat chat) {
-        Log.d(TAG,"click"+chat.getSentBy());
-    }
 
     private void attachChildListener(){
         if (mListener==null) {
@@ -74,7 +69,12 @@ public class GroupChatFragment extends Fragment implements ChatsAdapter.ChatItem
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
-                        chatsData.add(dataSnapshot.getValue(Chat.class));
+                        Chat getChatObject = dataSnapshot.getValue(Chat.class);
+                        if (getChatObject.getSentBy().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                            getChatObject.setBelongsToCurrentUser(true);
+                        else
+                            getChatObject.setBelongsToCurrentUser(false);
+                        chatsData.add(getChatObject);
                     }
                     chatsAdapter.notifyDataSetChanged();
                 }
@@ -114,6 +114,7 @@ public class GroupChatFragment extends Fragment implements ChatsAdapter.ChatItem
     public void onPause() {
         super.onPause();
         if (mListener!=null){
+            chatsData.clear();
             mChatRef.removeEventListener(mListener);
             mListener=null;
         }

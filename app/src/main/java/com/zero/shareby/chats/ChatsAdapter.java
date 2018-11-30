@@ -14,35 +14,41 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHolder> {
+public class ChatsAdapter extends RecyclerView.Adapter {
     private ArrayList<Chat> mChatList;
-    private ChatItemClickListener onItemClickListener;
 
-    public interface ChatItemClickListener{
-        void onClick(Chat chatObject);
-    }
-
-    public ChatsAdapter(ChatItemClickListener listener,ArrayList<Chat> chats){
+    public ChatsAdapter(ArrayList<Chat> chats){
         mChatList = chats;
-        onItemClickListener = listener;
     }
+
 
     @NonNull
     @Override
-    public ChatsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v;
+        switch (viewType){
+            case 0:
+                v=LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.my_message_layout, parent, false);
+                return new MyMessageViewHolder(v);
 
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chat_list_item, parent, false);
-
-        return new ChatsViewHolder(v);
+            default:
+                v=LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.their_message_layout, parent, false);
+                return new TheirMessageViewHolder(v);
+        }
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ChatsViewHolder holder, int position) {
-        Chat chatObj = mChatList.get(position);
-        holder.userName.setText(chatObj.getSentBy());
-        holder.userImage.setImageResource(R.drawable.ic_home);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Chat chatObj=mChatList.get(position);
+        if (chatObj.isBelongsToCurrentUser()){
+            ((MyMessageViewHolder) holder).myMessage.setText(chatObj.getMessage());
+        }else {
+            ((TheirMessageViewHolder) holder).theirName.setText(chatObj.getSentBy());
+            ((TheirMessageViewHolder) holder).theirMessage.setText(chatObj.getMessage());
+        }
     }
 
     @Override
@@ -52,20 +58,31 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ChatsViewHol
         else return mChatList.size();
     }
 
-    public class ChatsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public int getItemViewType(int position) {
+        if (mChatList.get(position).isBelongsToCurrentUser()){
+            return 0;
+        }else return 1;
+    }
 
-        CircleImageView userImage;
-        TextView userName;
-        public ChatsViewHolder(View layoutView) {
+    public class MyMessageViewHolder extends RecyclerView.ViewHolder {
+        TextView myMessage;
+        public MyMessageViewHolder(View layoutView) {
             super(layoutView);
-            userImage = layoutView.findViewById(R.id.chat_list_user_image);
-            userName = layoutView.findViewById(R.id.chat_list_user_name);
-            layoutView.setOnClickListener(this);
+            myMessage= layoutView.findViewById(R.id.my_message_body);
         }
 
-        @Override
-        public void onClick(View v) {
-            onItemClickListener.onClick(mChatList.get(getAdapterPosition()));
+    }
+
+    public class TheirMessageViewHolder extends RecyclerView.ViewHolder {
+        View theirAvatar;
+        TextView theirMessage,theirName;
+        public TheirMessageViewHolder(View layoutView) {
+            super(layoutView);
+            theirAvatar = layoutView.findViewById(R.id.their_avatar);
+            theirName= layoutView.findViewById(R.id.their_name);
+            theirMessage= layoutView.findViewById(R.id.their_message_body);
         }
+
     }
 }

@@ -1,15 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#eee"
+    android:layout_margin="3dp"
+    android:layout_marginStart="2dp"
+    android:clipToPadding="false"
+    android:orientation="vertical"
     tools:context=".chats.GroupChatFragment">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chats_recycler_view"
+            android:layout_weight="2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:scrollbars="vertical">
         </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="#ffffff"
+            android:layout_height="wrap_content">
+                <EditText
+                    android:layout_marginStart="5dp"
+                    android:inputType="text"
+                    android:hint="Write a message"
+                    android:layout_width="0dp"
+                    android:maxLines="5"
+                    android:minLines="1"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"/>
+
+                <ImageButton
+                    android:contentDescription="send_message"
+                    android:background="@drawable/ic_send"
+                    android:backgroundTint="#004c00"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+</LinearLayout>
