@@ -15,6 +15,15 @@ public class UserDetails {
         pin="null";
         key1="null";
         key2="null";
+        name="null";
+    }
+
+    public String getTokenId() {
+        return tokenId;
+    }
+
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     public void setUid(String uid) {

@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                     //Already Signed in
                     askPermissions();
                     if (!userAvailable.getBoolean("uploaded",false)) {
-                        final UserDetails userDetails = new UserDetails();
+
 
                         RelativeLayout relParent = new RelativeLayout(LoginActivity.this);
                         RelativeLayout.LayoutParams relParentParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -88,17 +88,13 @@ public class LoginActivity extends AppCompatActivity {
                         setContentView(relParent, relParentParam);
 
                         pb.setVisibility(View.VISIBLE);
-                        userDetails.setUid(firebaseAuth.getUid());
-                        userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
-                        if (firebaseAuth.getCurrentUser().getPhotoUrl()!=null)
-                            userDetails.setPhotoUrl(firebaseAuth.getCurrentUser().getPhotoUrl().toString());
                         DatabaseReference dbReference = database.getReference().child("UserDetails");
                         dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Log.d(TAG, dataSnapshot.toString());
                                 Log.d(TAG, dataSnapshot.getChildrenCount() + "");
-                                if (dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
+                                if (!dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
                                     SharedPreferences.Editor editor=userAvailable.edit();
                                     editor.putBoolean("uploaded",true);
                                     editor.commit();
@@ -106,6 +102,11 @@ public class LoginActivity extends AppCompatActivity {
                                     pb.setVisibility(View.INVISIBLE);
                                     finish();
                                 } else {
+                                    UserDetails userDetails = new UserDetails();
+                                    userDetails.setUid(firebaseAuth.getUid());
+                                    userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
+                                    if (firebaseAuth.getCurrentUser().getPhotoUrl()!=null)
+                                        userDetails.setPhotoUrl(firebaseAuth.getCurrentUser().getPhotoUrl().toString());
                                     DatabaseReference fd = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
                                     fd.setValue(userDetails, new DatabaseReference.CompletionListener() {
                                         @Override

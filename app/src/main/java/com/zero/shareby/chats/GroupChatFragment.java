@@ -38,6 +38,7 @@ public class GroupChatFragment extends Fragment {
     private DatabaseReference mChatRef;
     private DatabaseReference mGrpRef;
     EditText editMessage;
+    RecyclerView chats_list;
 
     public GroupChatFragment() {
         // Required empty public constructor
@@ -54,14 +55,15 @@ public class GroupChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView chats_list = view.findViewById(R.id.chats_recycler_view);
+        chats_list = view.findViewById(R.id.chats_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         chats_list.setHasFixedSize(true);
+        ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
         chats_list.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         chats_list.setLayoutManager(layoutManager);
 
         chatsData =new ArrayList<>();
-        chatsAdapter=new ChatsAdapter(chatsData);
+        chatsAdapter=new ChatsAdapter(getContext(),chatsData);
         chats_list.setAdapter(chatsAdapter);
         mGrpRef = DatabaseReferences.getGroupReference(getContext());
 
@@ -70,6 +72,16 @@ public class GroupChatFragment extends Fragment {
         editMessage = view.findViewById(R.id.group_chat_edit_text);
         sendButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.darker_gray));
         sendButton.setEnabled(false);
+        chats_list.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v,
+                                       int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    scrollToBottom();
+                }
+            }
+        });
         editMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -96,6 +108,7 @@ public class GroupChatFragment extends Fragment {
             public void onClick(View v) {
                 sendMessage();
                 editMessage.setText("");
+                scrollToBottom();
             }
         });
 
@@ -115,6 +128,7 @@ public class GroupChatFragment extends Fragment {
                             getChatObject.setBelongsToCurrentUser(false);
                         chatsData.add(getChatObject);
                     }
+
                     chatsAdapter.notifyDataSetChanged();
                 }
 
@@ -145,7 +159,14 @@ public class GroupChatFragment extends Fragment {
         });
     }
 
-
+    private void scrollToBottom(){
+        chats_list.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    chats_list.scrollToPosition(chatsAdapter.getItemCount()-1);
+                }
+            },300);
+    }
     @Override
     public void onResume() {
         super.onResume();

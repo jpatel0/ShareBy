@@ -1,5 +1,7 @@
 package com.zero.shareby.chats;
 
+import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,9 +25,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatsAdapter extends RecyclerView.Adapter {
     private ArrayList<Chat> mChatList;
+    private Context context;
 
-    public ChatsAdapter(ArrayList<Chat> chats){
+    public ChatsAdapter(Context context,ArrayList<Chat> chats){
         mChatList = chats;
+        this.context=context;
     }
 
 
@@ -58,6 +63,8 @@ public class ChatsAdapter extends RecyclerView.Adapter {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         UserDetails otherUser = dataSnapshot.getValue(UserDetails.class);
+                        if (otherUser.getPhotoUrl()!=null)
+                            Glide.with(context).load(Uri.parse(otherUser.getPhotoUrl())).into(((TheirMessageViewHolder)holder).theirAvatar);
                         ((TheirMessageViewHolder) holder).theirName.setText(otherUser.getName());
                         ((TheirMessageViewHolder) holder).theirMessage.setText(chatObj.getMessage());
                     }
@@ -94,7 +101,7 @@ public class ChatsAdapter extends RecyclerView.Adapter {
     }
 
     public class TheirMessageViewHolder extends RecyclerView.ViewHolder {
-        View theirAvatar;
+        CircleImageView theirAvatar;
         TextView theirMessage,theirName;
         public TheirMessageViewHolder(View layoutView) {
             super(layoutView);

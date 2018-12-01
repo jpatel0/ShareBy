@@ -69,11 +69,9 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
     public static void uploadDeviceTokenId(String id){
         if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
-            Map<String, String> map = new HashMap<>();
-            map.put("token", id);
             DatabaseReference userReference = FirebaseDatabase.getInstance().getReference()
-                    .child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            userReference.setValue(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    .child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("tokenId");
+            userReference.setValue(id).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Log.d("Token Id", "generated");
