@@ -25,7 +25,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.zero.shareby.DatabaseReferences;
+import com.zero.shareby.Utilities;
 import com.zero.shareby.R;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class GroupChatFragment extends Fragment {
         chatsData =new ArrayList<>();
         chatsAdapter=new ChatsAdapter(getContext(),chatsData);
         chats_list.setAdapter(chatsAdapter);
-        mGrpRef = DatabaseReferences.getGroupReference(getContext());
+        mGrpRef = Utilities.getGroupReference(getContext());
 
         final ImageButton sendButton = view.findViewById(R.id.group_chat_send_message_button);
 

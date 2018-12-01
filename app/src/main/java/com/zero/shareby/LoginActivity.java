@@ -88,13 +88,13 @@ public class LoginActivity extends AppCompatActivity {
                         setContentView(relParent, relParentParam);
 
                         pb.setVisibility(View.VISIBLE);
-                        DatabaseReference dbReference = database.getReference().child("UserDetails");
+                        DatabaseReference dbReference = database.getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
                         dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 Log.d(TAG, dataSnapshot.toString());
                                 Log.d(TAG, dataSnapshot.getChildrenCount() + "");
-                                if (!dataSnapshot.hasChild(firebaseAuth.getCurrentUser().getUid())) {
+                                if (dataSnapshot.exists() && dataSnapshot.hasChild("name")) {
                                     SharedPreferences.Editor editor=userAvailable.edit();
                                     editor.putBoolean("uploaded",true);
                                     editor.commit();
@@ -110,7 +110,19 @@ public class LoginActivity extends AppCompatActivity {
                                     DatabaseReference fd = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
                                     fd.setValue(userDetails, new DatabaseReference.CompletionListener() {
                                         @Override
-                                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {FirebaseInstanceId.getInstance().getInstanceId()
+                                                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                        if (!task.isSuccessful()) {
+                                                            Log.w(TAG, "getInstanceId failed", task.getException());
+                                                            return;
+                                                        }
+                                                        // Get new Instance ID token
+                                                        String token = task.getResult().getToken();
+                                                        FirebaseMessaging.uploadDeviceTokenId(token);
+                                                    }
+                                                });
                                             SharedPreferences.Editor editor=userAvailable.edit();
                                             editor.putBoolean("uploaded",true);
                                             editor.commit();
@@ -156,19 +168,7 @@ public class LoginActivity extends AppCompatActivity {
         if(requestCode==RC_SIGN_IN){
             if(resultCode==RESULT_OK){
                 //Signed in successfully
-                FirebaseInstanceId.getInstance().getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "getInstanceId failed", task.getException());
-                                    return;
-                                }
-                                // Get new Instance ID token
-                                String token = task.getResult().getToken();
-                                FirebaseMessaging.uploadDeviceTokenId(token);
-                            }
-                        });
+
                 Toast.makeText(LoginActivity.this,"Sign In Successful",Toast.LENGTH_SHORT).show();
             }
 

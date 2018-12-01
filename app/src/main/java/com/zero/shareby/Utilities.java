@@ -11,7 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class DatabaseReferences {
+public class Utilities {
 
     public static DatabaseReference getGroupReference(Context context){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
