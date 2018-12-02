@@ -23,6 +23,7 @@
         android:layout_marginStart="10dp"
         android:paddingStart="15dp"
         android:paddingEnd="10dp"
+        android:textColor="@android:color/white"
         android:text="UserName"
         android:textSize="20sp"
         android:layout_gravity="start"/>

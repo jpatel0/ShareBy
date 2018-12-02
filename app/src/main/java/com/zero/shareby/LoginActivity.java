@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.d(TAG, dataSnapshot.toString());
                                 Log.d(TAG, dataSnapshot.getChildrenCount() + "");
                                 if (dataSnapshot.exists() && dataSnapshot.hasChild("name")) {
+                                    Utilities.setPreferences(getApplicationContext());
                                     SharedPreferences.Editor editor=userAvailable.edit();
                                     editor.putBoolean("uploaded",true);
                                     editor.commit();
@@ -123,6 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         FirebaseMessaging.uploadDeviceTokenId(token);
                                                     }
                                                 });
+                                            Utilities.setPreferences(getApplicationContext());
                                             SharedPreferences.Editor editor=userAvailable.edit();
                                             editor.putBoolean("uploaded",true);
                                             editor.commit();

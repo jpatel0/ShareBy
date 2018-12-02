@@ -42,7 +42,7 @@ public class DashboardFragment extends Fragment {
     private static final String TAG="DashboardFragment";
 
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    //private FirebaseAuth.AuthStateListener mAuthListener;
     SharedPreferences preferences;
     ArrayList<Post> data;
     DashboardAdapter dashboardAdapter;
@@ -89,7 +89,7 @@ public class DashboardFragment extends Fragment {
 
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         mAuth=FirebaseAuth.getInstance();
-        mAuthListener=new FirebaseAuth.AuthStateListener() {
+        /*mAuthListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(firebaseAuth.getCurrentUser()==null){
@@ -99,7 +99,7 @@ public class DashboardFragment extends Fragment {
                     onDestroy();
                 }
             }
-        };
+        };*/
 
         if(preferences.getBoolean(MAP_KEY,true)){
             DatabaseReference dbReference= FirebaseDatabase.getInstance().getReference().child("UserDetails").child(mAuth.getCurrentUser().getUid());
@@ -177,15 +177,15 @@ public class DashboardFragment extends Fragment {
             data.clear();
             dashboardAdapter.clear();
             updateDashboard();
-            mAuth.addAuthStateListener(mAuthListener);
+            //mAuth.addAuthStateListener(mAuthListener);
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(mAuth!=null)
-            mAuth.removeAuthStateListener(mAuthListener);
+        /*if(mAuth!=null)
+            mAuth.removeAuthStateListener(mAuthListener);*/
     }
 
     @Override
