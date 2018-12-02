@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,7 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String MAP_KEY="map_key";
@@ -48,6 +49,7 @@ public class DashboardFragment extends Fragment {
     DashboardAdapter dashboardAdapter;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    SwipeRefreshLayout swipeRefreshLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -122,6 +124,7 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -135,7 +138,7 @@ public class DashboardFragment extends Fragment {
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));*/
-
+        swipeRefreshLayout=rootView.findViewById(R.id.main_dashboard_refresh);
         dashboardAdapter=new DashboardAdapter(getActivity(),data);
         ListView listView=rootView.findViewById(R.id.main_dashboard_list_view);
         listView.setAdapter(dashboardAdapter);
@@ -153,6 +156,23 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FragmentManager fm=getFragmentManager();
         fm.beginTransaction().replace(R.id.map_container,new MapFragment()).commit();
+        data.clear();
+        dashboardAdapter.clear();
+        updateDashboard();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                data.clear();
+                dashboardAdapter.clear();
+                updateDashboard();
+                swipeRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                },2000);
+            }
+        });
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -173,12 +193,6 @@ public class DashboardFragment extends Fragment {
         NavigationView nav=getActivity().findViewById(R.id.nav_view);
         nav.setCheckedItem(R.id.nav_home);
         if(!isConnected(getActivity())) buildDialog(getActivity()).show();
-        else {
-            data.clear();
-            dashboardAdapter.clear();
-            updateDashboard();
-            //mAuth.addAuthStateListener(mAuthListener);
-        }
     }
 
     @Override
@@ -278,7 +292,6 @@ public class DashboardFragment extends Fragment {
                         }
                     }));
                     dashboardAdapter.notifyDataSetChanged();
-
                 }
 
                 @Override

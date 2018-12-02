@@ -6,19 +6,24 @@
     android:orientation="vertical"
     tools:context=".DashboardFragment">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="176dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:id="@+id/map_container">
-    </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="176dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:id="@+id/map_container">
+        </FrameLayout>
 
-    <ListView
-        android:id="@+id/main_dashboard_list_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/main_dashboard_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </ListView>
+        <ListView
+            android:id="@+id/main_dashboard_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>
