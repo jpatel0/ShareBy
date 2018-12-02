@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -103,7 +104,7 @@ public class DashboardFragment extends Fragment  {
             }
         };*/
 
-        if(preferences.getBoolean(MAP_KEY,true)){
+        if(preferences.getBoolean(MAP_KEY,true) && FirebaseAuth.getInstance().getCurrentUser()!=null){
             DatabaseReference dbReference= FirebaseDatabase.getInstance().getReference().child("UserDetails").child(mAuth.getCurrentUser().getUid());
             dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -139,7 +140,7 @@ public class DashboardFragment extends Fragment  {
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));*/
         swipeRefreshLayout=rootView.findViewById(R.id.main_dashboard_refresh);
-        dashboardAdapter=new DashboardAdapter(getActivity(),data);
+        dashboardAdapter=new DashboardAdapter(getContext(),data);
         ListView listView=rootView.findViewById(R.id.main_dashboard_list_view);
         listView.setAdapter(dashboardAdapter);
         return rootView;
@@ -156,9 +157,15 @@ public class DashboardFragment extends Fragment  {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FragmentManager fm=getFragmentManager();
         fm.beginTransaction().replace(R.id.map_container,new MapFragment()).commit();
-        data.clear();
-        dashboardAdapter.clear();
-        updateDashboard();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                data.clear();
+                dashboardAdapter.clear();
+                updateDashboard();
+            }
+        },3000);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -265,7 +272,9 @@ public class DashboardFragment extends Fragment  {
 
 
     private void updateDashboard(){
+        Log.d(TAG,preferences.getString(getString(R.string.pref_key1),"nnn"));
         if (FirebaseAuth.getInstance().getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")) {
+            Log.d(TAG,"inside of upadateDash");
             String country = preferences.getString(getString(R.string.pref_country), "null");
             String pin = preferences.getString(getString(R.string.pref_pin), "null");
             String key1 = preferences.getString(getString(R.string.pref_key1), "null");

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -11,6 +12,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Utilities {
 
@@ -29,45 +33,69 @@ public class Utilities {
         }
     }
 
-    public static void setPreferences(Context context){
+    public static void setPreferences(Context context) {
         final SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference()
-                .child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists() && dataSnapshot.getChildrenCount()>1){
-                    UserDetails currentUserObject = dataSnapshot.getValue(UserDetails.class);
-                    SharedPreferences.Editor editor = myPreferences.edit();
-                    if (dataSnapshot.hasChild("country") && currentUserObject.getCountry()!=null && !currentUserObject.getCountry().equals("null"))
-                        editor.putString("country",currentUserObject.getCountry());
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            DatabaseReference currentUserRef = FirebaseDatabase.getInstance().getReference()
+                    .child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 1) {
+                        UserDetails currentUserObject = dataSnapshot.getValue(UserDetails.class);
+                        SharedPreferences.Editor editor = myPreferences.edit();
+                        if (dataSnapshot.hasChild("country") && currentUserObject.getCountry() != null && !currentUserObject.getCountry().equals("null"))
+                            editor.putString("country", currentUserObject.getCountry());
 
-                    if (dataSnapshot.hasChild("pin") && currentUserObject.getPin()!=null && !currentUserObject.getPin().equals("null"))
-                        editor.putString("pin",currentUserObject.getPin());
+                        if (dataSnapshot.hasChild("pin") && currentUserObject.getPin() != null && !currentUserObject.getPin().equals("null"))
+                            editor.putString("pin", currentUserObject.getPin());
 
-                    if (dataSnapshot.hasChild("key1") && currentUserObject.getKey1()!=null && !currentUserObject.getKey1().equals("null"))
-                        editor.putString("key1",currentUserObject.getKey1());
+                        if (dataSnapshot.hasChild("key1") && currentUserObject.getKey1() != null && !currentUserObject.getKey1().equals("null"))
+                            editor.putString("key1", currentUserObject.getKey1());
 
-                    if (dataSnapshot.hasChild("key2") && currentUserObject.getKey2()!=null && !currentUserObject.getKey2().equals("null"))
-                        editor.putString("key2",currentUserObject.getKey2());
+                        if (dataSnapshot.hasChild("key2") && currentUserObject.getKey2() != null && !currentUserObject.getKey2().equals("null"))
+                            editor.putString("key2", currentUserObject.getKey2());
 
-                    if (dataSnapshot.hasChild("latitutde") && currentUserObject.getLatitude()!=0)
-                        editor.putFloat("lat",(float) currentUserObject.getLatitude());
+                        if (dataSnapshot.hasChild("latitutde") && currentUserObject.getLatitude() != 0)
+                            editor.putFloat("lat", (float) currentUserObject.getLatitude());
 
-                    if (dataSnapshot.hasChild("longitude") && currentUserObject.getLongitude()!=0)
-                        editor.putFloat("lng",(float) currentUserObject.getLongitude());
+                        if (dataSnapshot.hasChild("longitude") && currentUserObject.getLongitude() != 0)
+                            editor.putFloat("lng", (float) currentUserObject.getLongitude());
 
-                    if (dataSnapshot.hasChild("photoUrl") && !currentUserObject.getPhotoUrl().equals(""))
-                        editor.putString("photoUrl",currentUserObject.getPhotoUrl());
+                        if (dataSnapshot.hasChild("photoUrl") && !currentUserObject.getPhotoUrl().equals(""))
+                            editor.putString("photoUrl", currentUserObject.getPhotoUrl());
 
-                    editor.apply();
+                        editor.apply();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
     }
 
+    public static void uploadUserLocation(final Context context, final double lat, final double lng){
+        if (FirebaseAuth.getInstance().getCurrentUser()!=null){
+            final SharedPreferences mPref = PreferenceManager.getDefaultSharedPreferences(context);
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Map<String, Object> latLngMap = new HashMap<>();
+            latLngMap.put("latitude", lat);
+            latLngMap.put("longitude", lng);
+            dbRef.updateChildren(latLngMap, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                    float oldLat=mPref.getFloat(context.getResources().getString(R.string.pref_lat),0.0F),
+                            oldLng=mPref.getFloat(context.getResources().getString(R.string.pref_lng),0.0F);
+                    SharedPreferences.Editor editLoc=mPref.edit();
+                    editLoc.putFloat(context.getResources().getString(R.string.pref_old_lat),oldLat);
+                    editLoc.putFloat(context.getResources().getString(R.string.pref_old_lng),oldLng);
+                    editLoc.putFloat(context.getResources().getString(R.string.pref_lat),(float) lat);
+                    editLoc.putFloat(context.getResources().getString(R.string.pref_lng),(float) lng);
+                    editLoc.apply();
+                }
+            });
+        }
+    }
 }
