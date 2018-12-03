@@ -161,7 +161,8 @@ public class DashboardFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FragmentManager fm=getFragmentManager();
-        fm.beginTransaction().replace(R.id.map_container,new MapFragment()).commit();
+        final MapFragment mapFragment = new MapFragment();
+        fm.beginTransaction().replace(R.id.map_container,mapFragment).commit();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -177,6 +178,7 @@ public class DashboardFragment extends Fragment  {
                 data.clear();
                 dashboardAdapter.clear();
                 updateDashboard();
+                mapFragment.onResume();
                 swipeRefreshLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
