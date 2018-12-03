@@ -195,31 +195,43 @@ public class MapFragment extends Fragment implements LocationListener {
     }
 
     private void getGroupDatabaseReference(){
-        uidReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UserDetails userDetails=dataSnapshot.getValue(UserDetails.class);
-                        if (!userDetails.getCountry().equals("null")) {
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString(getString(R.string.pref_country), userDetails.getCountry());
-                            editor.putString(getString(R.string.pref_pin), userDetails.getPin());
-                            editor.putString(getString(R.string.pref_key1), userDetails.getKey1());
-                            editor.putString(getString(R.string.pref_key2), userDetails.getKey2());
-                            editor.apply();
-                            onResume();
+        try {
+            uidReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            UserDetails userDetails = dataSnapshot.getValue(UserDetails.class);
+                            try {
+                                if (!userDetails.getCountry().equals("null")) {
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putString(getString(R.string.pref_country), userDetails.getCountry());
+                                    editor.putString(getString(R.string.pref_pin), userDetails.getPin());
+                                    editor.putString(getString(R.string.pref_key1), userDetails.getKey1());
+                                    editor.putString(getString(R.string.pref_key2), userDetails.getKey2());
+                                    editor.apply();
+                                    onResume();
+                                }
+                            }catch (NullPointerException e){
+                                Log.d(TAG,"Group data not available at UserDetails");
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
 
 
     @Override
     public void onPause() {
-        mMap.clear();
+        if (mMap!=null)
+            mMap.clear();
         mapView.onPause();
         super.onPause();
         /*if(isPermissionEnabled)

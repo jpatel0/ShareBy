@@ -111,7 +111,14 @@ public class DashboardFragment extends Fragment  {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     Log.d(TAG,dataSnapshot.toString());
                     UserDetails userDetails=dataSnapshot.getValue(UserDetails.class);
-                    if (userDetails.getLatitude()==0){
+                    try{
+                        if (userDetails.getLatitude()==0){
+                            startActivity(new Intent(getActivity(), AddressActivity.class));
+                            SharedPreferences.Editor editor=preferences.edit().putBoolean(MAP_KEY,false);
+                            editor.apply();
+                        }
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
                         startActivity(new Intent(getActivity(), AddressActivity.class));
                     }
                 }
@@ -120,8 +127,6 @@ public class DashboardFragment extends Fragment  {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }
             });
-            SharedPreferences.Editor editor=preferences.edit().putBoolean(MAP_KEY,false);
-            editor.apply();
         }
     }
 
