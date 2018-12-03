@@ -79,7 +79,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     prefEditor.clear();
                     prefEditor.commit();
                     AuthUI.getInstance().signOut(getApplicationContext());
-                    //startActivity(new Intent(this,LoginActivity.class));
+                    Intent backToLoginIntent = new Intent(this,LoginActivity.class);
+                    backToLoginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(backToLoginIntent);
                     finish();
                 }
                 break;
