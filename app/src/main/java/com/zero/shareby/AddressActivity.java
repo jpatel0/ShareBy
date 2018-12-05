@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -60,7 +62,9 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     ChildEventListener mChildListener;
     Button googleMapButton;
     SharedPreferences mPref;
-    private boolean exists=false;
+    private Listener listener;
+    private String country=null,currentAddressLine,pin;
+    private double latitude=0,longitude=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +132,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 placeIntentBuilder(1);
             }
         });
+        listener=new Listener();
     }
 
 
@@ -165,6 +170,9 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        listener.setDone(false);
+        listener.exists=false;
+        currentAddressLine=null;
 
         if (requestCode==RC_PICKER){
             if (resultCode==RESULT_OK) {
@@ -172,10 +180,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 final Place place = PlacePicker.getPlace(this, data);
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses = new ArrayList<>();
-                String country=null,pin;
                 ArrayList<String> pinCodes = new ArrayList<>();
-                ArrayList<Double> latitudes = new ArrayList<>();
-                ArrayList<Double> longitudes = new ArrayList<>();
                 try {
                     addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 10);
                     if (addresses.size()>0){
@@ -183,12 +188,14 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                             pin=addresses.get(i).getPostalCode();
                             if (pin!=null && !pinCodes.contains(pin)) {
                                 pinCodes.add(pin);
-                                latitudes.add(addresses.get(i).getLatitude());
-                                longitudes.add(addresses.get(i).getLongitude());
                             }
                         }
+                        latitude=addresses.get(0).getLatitude();
+                        longitude=addresses.get(0).getLongitude();
+                        country=addresses.get(0).getCountryName();
+                        currentAddressLine=addresses.get(0).getAddressLine(0);
                     }
-                    country=addresses.get(0).getCountryName();
+
                     Log.d(TAG,"addresses List"+addresses);
                     Log.d(TAG,"pinCodes"+pinCodes);
                 } catch (IOException e) {
@@ -197,32 +204,50 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
 
 
                 if (addresses.size() > 0 && !pinCodes.isEmpty() && country!=null) {
-                    boolean groupExists = false;
-                    for (i = 0; i < pinCodes.size(); i++) {
-                        if (groupExists) break;
-                        groupExists = checkIfGroupExists(country, pinCodes.get(i), latitudes.get(i), longitudes.get(i));
-                    }
 
-                    if (groupExists) {
-                        /*
-                        update user address(lat,lng) to UserDetails first
-                        delete user from old grp if it exists
-                        set user to new group and update preferences
-                         */
-                        --i;
-                        addressLine.setText(addresses.get(i).getAddressLine(0));
-                        Utilities.uploadUserLocation(getApplicationContext(),latitudes.get(i),longitudes.get(i));
-                        addUserToGroup(country,pinCodes.get(i),latitudes.get(i),latitudes.get(i));
-                        //userDetails are updated in above function
-                    } else {
-                        /*
-                        no group exists for that address
-                        select address[0] as default and create group for that location
-                        update user address(lat,lng) to UserDetails first, change prefs accordingly
-                         */
-                        Utilities.uploadUserLocation(getApplicationContext(),addresses.get(0).getLatitude(),addresses.get(0).getLongitude());
-                        placeIntentBuilder(2);
+                    for (i = 0; i < pinCodes.size(); i++) {
+                        checkIfGroupExists(country, pinCodes.get(i), latitude, longitude,i==pinCodes.size()-1);
                     }
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            AddressActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    addressLine.setText(currentAddressLine);
+                                }
+                            });
+                            while (!listener.isDone()) {
+                                try {
+                                    Thread.sleep(200);
+                                    Log.d(TAG,"inside Run");
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Log.d(TAG, "IsDone,Exists  " + listener.isDone() + listener.ifExists());
+                            if (listener.ifExists()) {
+                                Log.d(TAG,"inside Group exists block");
+                                /*
+                                update user address(lat,lng) to UserDetails first
+                                delete user from old grp if it exists
+                                set user to new group and update preferences
+                                 */
+                                Utilities.uploadUserLocation(getApplicationContext(), latitude, longitude);
+                                addUserToGroup(country, listener.getPin(), listener.getKey1(), listener.getKey2());
+                                //userDetails are updated in above function
+                            } else {
+                                Log.d(TAG,"inside not exists block");
+                                /*
+                                no group exists for that address
+                                select address[0] as default and create group for that location
+                                update user address(lat,lng) to UserDetails first, change prefs accordingly
+                                 */
+                                Utilities.uploadUserLocation(getApplicationContext(), latitude, longitude);
+                                placeIntentBuilder(2);
+                            }
+                        }
+                    });
                 }
                 else
                     Toast.makeText(AddressActivity.this, "Couldn't obtain enough info on the provided location", Toast.LENGTH_SHORT).show();
@@ -232,6 +257,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
             }
         }
         else if (requestCode==RC_CREATE_GRP){
+            Log.d(TAG,"intent for create grp");
             final SharedPreferences.Editor editLoc=mPref.edit();
             if(resultCode==RESULT_OK){
                 Place place = PlacePicker.getPlace(this, data);
@@ -291,7 +317,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     }
 
 
-    private boolean checkIfGroupExists(String country,String pin,double latitude,double longitude){
+    private void checkIfGroupExists(String country, final String pin, double latitude, double longitude, final boolean theEnd){
         final long lat=Long.parseLong(getConvertedString(latitude));
         final long lng=Long.parseLong(getConvertedString(longitude));
         final DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin);
@@ -314,7 +340,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                         }
                     }
                     if (diff > 2000) {
-                        exists=false;
+                        listener.setDone(false);
                     } else if (key1!=null){
                         Log.d(TAG," key1 :"+key1);
                         minDiff=Math.abs(lng);
@@ -328,29 +354,26 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                             }
                         }
                         if (diff > 2000) {
-                            exists=false;
+                            listener.setDone(false);
                         }
                         else if(key2!=null){
-                            exists = true;
+                            Log.d(TAG,"key2:"+key2);
+                            listener.onResult(pin,key1,key2,true,true);
                         }
                     }
                 }
-                else{
-                    exists = false;
-                }
+                if (theEnd)
+                    listener.setDone(true);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-
-        return exists;
     }
 
 
-    private void addUserToGroup(String country,String pin,double lat,double lng){
-        String key1 = getConvertedString(lat),key2 = getConvertedString(lng);
+    private void addUserToGroup(String country,String pin,String key1,String key2){
         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin);
         //groupsRef.child(key1).child(key2).child("members").child(user.getUid()).setValue(true);
@@ -430,9 +453,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     private boolean oldVsNewDiff(String new1,String new2,String old1,String old2){
         int diff1=Math.abs(Integer.parseInt(new1)-Integer.parseInt(old1)),
                 diff2=Math.abs(Integer.parseInt(new2)-Integer.parseInt(old2));
-        if (diff1>2000 || diff2>2000)
-            return true;
-        return false;
+        return (diff1>2000 || diff2>2000);
     }
 
 
@@ -502,4 +523,42 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         super.onPause();
         databaseReference.removeEventListener(mChildListener);
     }
+
+    private static class Listener{
+        private boolean exists,isDone;
+        private String pin,key1,key2;
+
+        public boolean ifExists() {
+            return exists;
+        }
+
+        public void onResult(String pin,String key1,String key2,boolean exists,boolean isDone) {
+            this.exists = exists;
+            this.pin=pin;
+            this.key1=key1;
+            this.key2=key2;
+            this.isDone=isDone;
+        }
+
+        public boolean isDone() {
+            return isDone;
+        }
+
+        public void setDone(boolean done) {
+            isDone = done;
+        }
+
+        public String getPin() {
+            return pin;
+        }
+
+        public String getKey1() {
+            return key1;
+        }
+
+        public String getKey2() {
+            return key2;
+        }
+    }
+
 }

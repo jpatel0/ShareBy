@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                                     SharedPreferences.Editor editor=userAvailable.edit();
                                     editor.putBoolean("uploaded",true);
                                     editor.commit();
-                                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                    startActivity(new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                     pb.setVisibility(View.INVISIBLE);
                                     finish();
                                 } else {
@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                                             SharedPreferences.Editor editor=userAvailable.edit();
                                             editor.putBoolean("uploaded",true);
                                             editor.commit();
-                                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                            startActivity(new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                             pb.setVisibility(View.INVISIBLE);
                                             finish();
                                         }
@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                         });
                     }
                     else {
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         finish();
                     }
                 }

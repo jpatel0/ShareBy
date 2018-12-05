@@ -41,7 +41,7 @@
         <activity
             android:name=".LoginActivity"
             android:label="Sign In"
-            android:parentActivityName=".MainActivity" />
+            android:launchMode="singleTask"/>
         <activity
             android:name=".EditProfile"
             android:label="Edit Profile"
