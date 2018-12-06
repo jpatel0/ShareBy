@@ -19,9 +19,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zero.shareby.Post;
+import com.zero.shareby.Utilities.Post;
 import com.zero.shareby.R;
-import com.zero.shareby.UserDetails;
+import com.zero.shareby.Utilities.UserDetails;
+import com.zero.shareby.Utilities.Utilities;
 
 import java.util.ArrayList;
 
@@ -74,7 +75,7 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
             public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
 
-        timestampTextView.setText(PostAdapter.calculateTimeDisplay(post.getTimestamp()));
+        timestampTextView.setText(Utilities.calculateTimeDisplay(post.getTimestamp()));
 
         replyButton.setOnClickListener(new View.OnClickListener() {
             @Override

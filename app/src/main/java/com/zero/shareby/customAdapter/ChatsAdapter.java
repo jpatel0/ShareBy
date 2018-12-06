@@ -1,10 +1,9 @@
-package com.zero.shareby.chats;
+package com.zero.shareby.customAdapter;
 
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
-import com.zero.shareby.UserDetails;
+import com.zero.shareby.Utilities.UserDetails;
+import com.zero.shareby.Utilities.Utilities;
+import com.zero.shareby.chats.Chat;
 
 import java.util.ArrayList;
 
@@ -56,6 +57,7 @@ public class ChatsAdapter extends RecyclerView.Adapter {
         final Chat chatObj=mChatList.get(position);
         if (chatObj.isBelongsToCurrentUser()){
             ((MyMessageViewHolder) holder).myMessage.setText(chatObj.getMessage());
+            ((MyMessageViewHolder) holder).myTimestamp.setText(Utilities.calculateTimeDisplay(chatObj.getTimestamp()));
         }else {
             DatabaseReference otherUserRef = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(chatObj.getSentBy());
             otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -67,6 +69,7 @@ public class ChatsAdapter extends RecyclerView.Adapter {
                             Glide.with(context).load(Uri.parse(otherUser.getPhotoUrl())).into(((TheirMessageViewHolder)holder).theirAvatar);
                         ((TheirMessageViewHolder) holder).theirName.setText(otherUser.getName());
                         ((TheirMessageViewHolder) holder).theirMessage.setText(chatObj.getMessage());
+                        ((TheirMessageViewHolder) holder).theirTimestamp.setText(Utilities.calculateTimeDisplay(chatObj.getTimestamp()));
                     }
                 }
 
@@ -92,22 +95,24 @@ public class ChatsAdapter extends RecyclerView.Adapter {
     }
 
     public class MyMessageViewHolder extends RecyclerView.ViewHolder {
-        TextView myMessage;
+        TextView myMessage,myTimestamp;
         public MyMessageViewHolder(View layoutView) {
             super(layoutView);
             myMessage= layoutView.findViewById(R.id.my_message_body);
+            myTimestamp = layoutView.findViewById(R.id.my_message_timestamp);
         }
 
     }
 
     public class TheirMessageViewHolder extends RecyclerView.ViewHolder {
         CircleImageView theirAvatar;
-        TextView theirMessage,theirName;
+        TextView theirMessage,theirName,theirTimestamp;
         public TheirMessageViewHolder(View layoutView) {
             super(layoutView);
             theirAvatar = layoutView.findViewById(R.id.their_avatar);
             theirName= layoutView.findViewById(R.id.their_name);
             theirMessage= layoutView.findViewById(R.id.their_message_body);
+            theirTimestamp = layoutView.findViewById(R.id.their_message_timestamp);
         }
 
     }

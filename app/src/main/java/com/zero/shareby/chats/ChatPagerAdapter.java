@@ -18,6 +18,8 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new GroupChatFragment();
 
+            case 1:
+                return new RecentChats();
 
             default:
                 return null;
@@ -26,7 +28,7 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        return 2;
     }
 
     @Nullable
@@ -36,6 +38,8 @@ public class ChatPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return "Group Chat";
 
+            case 1:
+                return "Recent Chats";
 
             default:
                 return "default";

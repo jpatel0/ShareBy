@@ -18,5 +18,14 @@
         android:textSize="15sp"
         android:layout_alignParentRight="true"
         />
+    <TextView
+        android:id="@+id/my_message_timestamp"
+        android:layout_width="wrap_content"
+        android:textSize="12sp"
+        android:padding="3dp"
+        android:layout_alignRight="@id/my_message_body"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/my_message_body"
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

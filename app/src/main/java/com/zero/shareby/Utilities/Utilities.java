@@ -1,11 +1,11 @@
-package com.zero.shareby;
+package com.zero.shareby.Utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.text.format.DateFormat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.zero.shareby.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,5 +99,36 @@ public class Utilities {
                 }
             });
         }
+    }
+
+    public static String calculateTimeDisplay(long timestamp){
+        long diff=System.currentTimeMillis()-timestamp;
+        /*
+            sec(s) ago
+            min(s) ago,
+            hrs(s) ago,
+            day(s) ago,
+            rest  dd,mon yy
+         */
+        String convertedTime="";
+        if (diff<60000)
+            convertedTime="a few sec(s) ago";
+        else if (diff<3600000)
+            convertedTime=Long.toString(diff/60000)+" min(s) ago";
+        else if (diff<86400000)
+            convertedTime=Long.toString(diff/3600000)+" hr(s) ago";
+        else if (diff<129600000)
+            convertedTime=Long.toString(diff/86400000)+" day(s) ago";
+        else{
+            convertedTime=DateFormat.format("dd, MMM yy",timestamp).toString();
+        }
+
+        return convertedTime;
+    }
+
+    public static String compareUid(String currentUserUid,String otherUserUid){
+        if (currentUserUid.length()>otherUserUid.length())
+            return currentUserUid+otherUserUid;
+        else return otherUserUid+currentUserUid;
     }
 }

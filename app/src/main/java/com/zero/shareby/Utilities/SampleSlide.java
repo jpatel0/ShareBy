@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.Utilities;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

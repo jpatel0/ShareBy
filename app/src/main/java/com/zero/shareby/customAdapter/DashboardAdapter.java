@@ -12,16 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zero.shareby.Post;
+import com.zero.shareby.Utilities.Post;
 import com.zero.shareby.R;
-import com.zero.shareby.UserDetails;
+import com.zero.shareby.Utilities.UserDetails;
+import com.zero.shareby.Utilities.Utilities;
 
 import java.util.ArrayList;
 
@@ -93,7 +93,7 @@ public class DashboardAdapter extends ArrayAdapter<Post> {
         }
 
 
-        timestampTextView.setText(PostAdapter.calculateTimeDisplay(post.getTimestamp()));
+        timestampTextView.setText(Utilities.calculateTimeDisplay(post.getTimestamp()));
         return newView;
     }
 }

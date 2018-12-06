@@ -16,11 +16,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
-import com.zero.shareby.Post;
+import com.zero.shareby.Utilities.Post;
 import com.zero.shareby.R;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.zero.shareby.Utilities.Utilities.calculateTimeDisplay;
 
 public class PostAdapter extends ArrayAdapter<Post> {
 
@@ -62,29 +64,6 @@ public class PostAdapter extends ArrayAdapter<Post> {
     }
 
 
-    public static String calculateTimeDisplay(long timestamp){
-        long diff=System.currentTimeMillis()-timestamp;
-        /*
-            sec(s) ago
-            min(s) ago,
-            hrs(s) ago,
-            day(s) ago,
-            rest  dd,mon yy
-         */
-        String convertedTime="";
-        if (diff<60000)
-            convertedTime="a few sec(s) ago";
-        else if (diff<3600000)
-            convertedTime=Long.toString(diff/60000)+" min(s) ago";
-        else if (diff<86400000)
-            convertedTime=Long.toString(diff/3600000)+" hr(s) ago";
-        else if (diff<129600000)
-            convertedTime=Long.toString(diff/86400000)+" day(s) ago";
-        else{
-            convertedTime=DateFormat.format("dd, MMM yy",timestamp).toString();
-        }
 
-        return convertedTime;
-    }
 
 }

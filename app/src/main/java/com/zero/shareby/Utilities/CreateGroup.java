@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.Utilities;
 
 public class CreateGroup {
     private String grpName;

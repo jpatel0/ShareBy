@@ -1,10 +1,14 @@
-package com.zero.shareby;
+package com.zero.shareby.customAdapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.zero.shareby.DashboardFragment;
+import com.zero.shareby.PendingRequestsFragment;
+import com.zero.shareby.PostDashboard;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
 
