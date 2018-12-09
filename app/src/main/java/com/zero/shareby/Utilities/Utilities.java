@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -15,7 +16,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Utilities {
@@ -130,5 +135,29 @@ public class Utilities {
         if (currentUserUid.length()>otherUserUid.length())
             return currentUserUid+otherUserUid;
         else return otherUserUid+currentUserUid;
+    }
+
+
+    public static boolean compareTimestamps(long t1,long t2){
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy",Locale.getDefault());
+
+        Date d1,d2;
+        try {
+            d1 = df.parse(DateFormat.format("dd-MM-yyyy",t1).toString());
+            d2 = df.parse(DateFormat.format("dd-MM-yyyy",t2).toString());
+            Log.d("Dates:",""+d1+"  "+d2+"  "+d1.compareTo(d2));
+            return d1.compareTo(d2)<0;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static String getDateString(long timestamp){
+        return DateFormat.format("MMM dd, yy",timestamp).toString();
+    }
+
+    public static String getTimeString(long timestamp){
+        return DateFormat.format("hh:mm aaa",timestamp).toString();
     }
 }

@@ -123,6 +123,18 @@ public class GroupChatFragment extends Fragment {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
                         Chat getChatObject = dataSnapshot.getValue(Chat.class);
+                        if (chatsData.size()==0){
+                            Chat initialDivider = new Chat();
+                            initialDivider.setDivider(true);
+                            initialDivider.setTimestamp(getChatObject.getTimestamp());
+                            chatsData.add(initialDivider);
+                        }else if (Utilities.compareTimestamps(chatsData.get(chatsData.size()-1).getTimestamp(),getChatObject.getTimestamp())){
+                            Chat initialDivider = new Chat();
+                            initialDivider.setDivider(true);
+                            initialDivider.setTimestamp(getChatObject.getTimestamp());
+                            chatsData.add(initialDivider);
+                        }
+
                         if (getChatObject.getSentBy().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                             getChatObject.setBelongsToCurrentUser(true);
                         else
@@ -184,6 +196,7 @@ public class GroupChatFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG,chatsData.toString());
         if (mListener!=null){
             chatsData.clear();
             mChatRef.removeEventListener(mListener);

@@ -3,9 +3,17 @@ package com.zero.shareby.chats;
 public class Chat {
     private String sentBy,receivedBy,message;
     private long timestamp;
-    boolean belongsToCurrentUser;
+    boolean belongsToCurrentUser,isDivider;
 
     public Chat() {
+    }
+
+    public boolean isDivider() {
+        return isDivider;
+    }
+
+    public void setDivider(boolean divider) {
+        isDivider = divider;
     }
 
     public Chat(String sentBy, String receivedBy, String message, long timestamp) {

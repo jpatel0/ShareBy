@@ -44,10 +44,16 @@ public class ChatsAdapter extends RecyclerView.Adapter {
                         .inflate(R.layout.my_message_layout, parent, false);
                 return new MyMessageViewHolder(v);
 
-            default:
+
+            case 1:
                 v=LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.their_message_layout, parent, false);
                 return new TheirMessageViewHolder(v);
+
+            default:
+                v=LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.chat_date_divider_layout, parent, false);
+                return new DateDividerViewHolder(v);
         }
     }
 
@@ -55,9 +61,13 @@ public class ChatsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         final Chat chatObj=mChatList.get(position);
-        if (chatObj.isBelongsToCurrentUser()){
+
+        if (chatObj.isDivider()){
+            ((DateDividerViewHolder) holder).dateDivider.setText(Utilities.getDateString(chatObj.getTimestamp()));
+        }
+        else if (chatObj.isBelongsToCurrentUser()){
             ((MyMessageViewHolder) holder).myMessage.setText(chatObj.getMessage());
-            ((MyMessageViewHolder) holder).myTimestamp.setText(Utilities.calculateTimeDisplay(chatObj.getTimestamp()));
+            ((MyMessageViewHolder) holder).myTimestamp.setText(Utilities.getTimeString(chatObj.getTimestamp()));
         }else {
             DatabaseReference otherUserRef = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(chatObj.getSentBy());
             otherUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -69,7 +79,7 @@ public class ChatsAdapter extends RecyclerView.Adapter {
                             Glide.with(context).load(Uri.parse(otherUser.getPhotoUrl())).into(((TheirMessageViewHolder)holder).theirAvatar);
                         ((TheirMessageViewHolder) holder).theirName.setText(otherUser.getName());
                         ((TheirMessageViewHolder) holder).theirMessage.setText(chatObj.getMessage());
-                        ((TheirMessageViewHolder) holder).theirTimestamp.setText(Utilities.calculateTimeDisplay(chatObj.getTimestamp()));
+                        ((TheirMessageViewHolder) holder).theirTimestamp.setText(Utilities.getTimeString(chatObj.getTimestamp()));
                     }
                 }
 
@@ -89,7 +99,9 @@ public class ChatsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (mChatList.get(position).isBelongsToCurrentUser()){
+        if (mChatList.get(position).isDivider())
+            return 2;
+        else if (mChatList.get(position).isBelongsToCurrentUser()){
             return 0;
         }else return 1;
     }
@@ -114,6 +126,13 @@ public class ChatsAdapter extends RecyclerView.Adapter {
             theirMessage= layoutView.findViewById(R.id.their_message_body);
             theirTimestamp = layoutView.findViewById(R.id.their_message_timestamp);
         }
+    }
 
+    public class DateDividerViewHolder extends RecyclerView.ViewHolder {
+        TextView dateDivider;
+        public DateDividerViewHolder(View itemView) {
+            super(itemView);
+            dateDivider = itemView.findViewById(R.id.chat_date_divider);
+        }
     }
 }
