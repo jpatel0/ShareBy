@@ -24,6 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Utilities {
+    static UserDetails user;
 
     public static DatabaseReference getGroupReference(Context context){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -159,5 +160,9 @@ public class Utilities {
 
     public static String getTimeString(long timestamp){
         return DateFormat.format("hh:mm aaa",timestamp).toString();
+    }
+
+    public static String getUserUid() throws NullPointerException{
+        return FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 }

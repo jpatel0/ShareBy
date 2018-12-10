@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_location_city_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_chat_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,12 +33,10 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="3944ff" />
-                            <entry key="height" value="30" />
-                            <entry key="outputName" value="ic_launcher_new" />
+                            <entry key="color" value="ffffff" />
+                            <entry key="outputName" value="ic_chat_white" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\Zero" />
-                            <entry key="width" value="30" />
                           </map>
                         </option>
                       </PersistentState>

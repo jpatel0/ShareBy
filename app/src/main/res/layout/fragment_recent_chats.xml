@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".chats.RecentChats">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recent_chats_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
+        android:id="@+id/recent_chats_refresh"
         android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recent_chats_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/recent_chat_fab_button"
+        android:layout_width="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:src="@drawable/ic_chat_white"
+        android:layout_marginBottom="40dp"
+        android:layout_height="wrap_content"
+        app:backgroundTint="#32CD32"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
+        app:fabSize="normal"/>
+
+</RelativeLayout>
