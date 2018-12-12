@@ -41,7 +41,7 @@
         <activity
             android:name=".LoginActivity"
             android:label="Sign In"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
         <activity
             android:name=".EditProfile"
             android:label="Edit Profile"
@@ -94,9 +94,12 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimaryDark" />
         -->
-        <activity android:name=".chats.ChatActivity"
+        <activity
+            android:name=".chats.ChatActivity"
             android:label="My Chats"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".chats.ContactListActivity"
+            android:parentActivityName=".chats.ChatActivity"></activity>
     </application>
 
 </manifest>

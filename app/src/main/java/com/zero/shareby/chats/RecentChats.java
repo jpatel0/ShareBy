@@ -1,6 +1,7 @@
 package com.zero.shareby.chats;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,13 +21,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
-import com.zero.shareby.Utilities.Utilities;
+import com.zero.shareby.Utils.Utilities;
 import com.zero.shareby.customAdapter.RecentChatsAdapter;
 
 import java.util.ArrayList;
 
 public class RecentChats extends Fragment {
 
+    private static final int RC_CONTACT = 10;
     RecyclerView recentChatList;
     private ArrayList<String> friends_Uids;
     private RecentChatsAdapter chatsAdapter;
@@ -56,6 +58,8 @@ public class RecentChats extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent getContactIntent = new Intent(getContext(),ContactListActivity.class);
+                startActivityForResult(getContactIntent,RC_CONTACT);
                 Toast.makeText(getContext(),"FAB",Toast.LENGTH_SHORT).show();
             }
         });
@@ -69,6 +73,17 @@ public class RecentChats extends Fragment {
         getFriendList();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_CONTACT && resultCode == -1){
+            String friendId = data.getStringExtra("uid");
+            /*if (friendId!=null){
+                DatabaseReference
+            }*/
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     private void getFriendList(){
         try {

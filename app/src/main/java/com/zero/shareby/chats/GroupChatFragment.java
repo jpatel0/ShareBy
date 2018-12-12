@@ -25,7 +25,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.zero.shareby.Utilities.Utilities;
+import com.zero.shareby.Utils.Utilities;
 import com.zero.shareby.R;
 import com.zero.shareby.customAdapter.ChatsAdapter;
 

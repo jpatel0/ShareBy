@@ -37,10 +37,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.zero.shareby.Utilities.CreateGroup;
-import com.zero.shareby.Utilities.Post;
-import com.zero.shareby.Utilities.UserDetails;
-import com.zero.shareby.Utilities.Utilities;
+import com.zero.shareby.Utils.CreateGroup;
+import com.zero.shareby.Utils.Post;
+import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.Utils.Utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;

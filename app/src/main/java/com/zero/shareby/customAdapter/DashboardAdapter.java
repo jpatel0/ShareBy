@@ -18,10 +18,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zero.shareby.Utilities.Post;
+import com.zero.shareby.Utils.Post;
 import com.zero.shareby.R;
-import com.zero.shareby.Utilities.UserDetails;
-import com.zero.shareby.Utilities.Utilities;
+import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.Utils.Utilities;
 
 import java.util.ArrayList;
 

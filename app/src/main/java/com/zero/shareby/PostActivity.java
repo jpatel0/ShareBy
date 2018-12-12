@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.zero.shareby.Utilities.Post;
+import com.zero.shareby.Utils.Post;
 
 
 public class PostActivity extends AppCompatActivity {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +15,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
-import com.zero.shareby.Utilities.Post;
+import com.zero.shareby.Utils.Post;
 import com.zero.shareby.R;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.zero.shareby.Utilities.Utilities.calculateTimeDisplay;
+import static com.zero.shareby.Utils.Utilities.calculateTimeDisplay;
 
 public class PostAdapter extends ArrayAdapter<Post> {
 

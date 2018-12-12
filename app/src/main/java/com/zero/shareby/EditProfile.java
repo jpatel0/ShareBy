@@ -37,7 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.zero.shareby.Utilities.UserDetails;
+import com.zero.shareby.Utils.UserDetails;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;

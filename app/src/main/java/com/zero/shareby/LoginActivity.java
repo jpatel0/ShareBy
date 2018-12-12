@@ -32,8 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.zero.shareby.Utilities.UserDetails;
-import com.zero.shareby.Utilities.Utilities;
+import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.Utils.Utilities;
 import com.zero.shareby.fcm.FirebaseMessaging;
 
 import java.util.Arrays;

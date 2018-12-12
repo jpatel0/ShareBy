@@ -15,7 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
-import com.zero.shareby.Utilities.UserDetails;
+import com.zero.shareby.Utils.UserDetails;
 
 import java.util.ArrayList;
 

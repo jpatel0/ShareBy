@@ -1,4 +1,4 @@
-package com.zero.shareby.Utilities;
+package com.zero.shareby.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,7 +24,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Utilities {
-    static UserDetails user;
 
     public static DatabaseReference getGroupReference(Context context){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
