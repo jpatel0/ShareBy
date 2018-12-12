@@ -1,19 +1,17 @@
 package com.zero.shareby.chats;
 
-
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -25,52 +23,53 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.zero.shareby.Utils.Utilities;
+import com.google.firebase.database.FirebaseDatabase;
 import com.zero.shareby.R;
+import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.Utils.Utilities;
 import com.zero.shareby.customAdapter.ChatsAdapter;
 
 import java.util.ArrayList;
 
-public class GroupChatFragment extends Fragment {
-    private static final String TAG = "GroupChatFragment";
+public class PeerToPeerChat extends AppCompatActivity {
+
+
+    private static final String TAG = PeerToPeerChat.class.getSimpleName();
     ArrayList<Chat> chatsData;
     ChatsAdapter chatsAdapter;
+    private UserDetails friend;
     private ChildEventListener mListener=null;
     private DatabaseReference mChatRef;
-    private DatabaseReference mGrpRef;
-    EditText editMessage;
     RecyclerView chats_list;
-
-    public GroupChatFragment() {
-        // Required empty public constructor
-    }
-
+    EditText editMessage;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_group_chat, container, false);
-    }
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_group_chat);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        chats_list = view.findViewById(R.id.chats_recycler_view);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        friend = (UserDetails) getIntent().getSerializableExtra("userObject");
+
+        ActionBar actionBar=getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(friend.getName());
+        }
+
+        chats_list = findViewById(R.id.chats_recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         chats_list.setHasFixedSize(true);
         ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
-        chats_list.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        chats_list.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         chats_list.setLayoutManager(layoutManager);
 
         chatsData =new ArrayList<>();
-        chatsAdapter=new ChatsAdapter(getContext(),chatsData);
+        chatsAdapter=new ChatsAdapter(this,chatsData);
         chats_list.setAdapter(chatsAdapter);
-        mGrpRef = Utilities.getGroupReference(getContext());
 
-        final ImageButton sendButton = view.findViewById(R.id.group_chat_send_message_button);
+        final ImageButton sendButton = findViewById(R.id.group_chat_send_message_button);
 
-        editMessage = view.findViewById(R.id.group_chat_edit_text);
+        editMessage = findViewById(R.id.group_chat_edit_text);
         sendButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.darker_gray));
         sendButton.setEnabled(false);
         chats_list.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -112,9 +111,18 @@ public class GroupChatFragment extends Fragment {
                 scrollToBottom();
             }
         });
-
     }
 
+
+    private void sendMessage(){
+        Chat createChatObj = new Chat(Utilities.getUserUid(),friend.getUid(),editMessage.getText().toString(),System.currentTimeMillis());
+        mChatRef.push().setValue(createChatObj).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG,"message Sent");
+            }
+        });
+    }
 
     private void attachChildListener(){
         if (mListener==null) {
@@ -162,46 +170,31 @@ public class GroupChatFragment extends Fragment {
         mChatRef.addChildEventListener(mListener);
     }
 
-    private void sendMessage(){
-        Chat createChatObj = new Chat(FirebaseAuth.getInstance().getCurrentUser().getUid(),null,editMessage.getText().toString(),System.currentTimeMillis());
-        mChatRef.push().setValue(createChatObj).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.d(TAG,"message Sent");
-            }
-        });
-    }
-
-    private void scrollToBottom(){
-        chats_list.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    chats_list.scrollToPosition(chatsAdapter.getItemCount()-1);
-                }
-            },300);
-    }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (mGrpRef == null){
-            Toast.makeText(getContext(),"Grp not available",Toast.LENGTH_SHORT).show();
-        }else {
-            mChatRef = mGrpRef.child("chats");
-            chatsAdapter.notifyDataSetChanged();
-            Log.d(TAG, mChatRef.toString());
-            attachChildListener();
-        }
+        mChatRef = FirebaseDatabase.getInstance().getReference().child("RecentChats")
+                .child(Utilities.compareUid(Utilities.getUserUid(),friend.getUid()));
+        attachChildListener();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG,chatsData.toString());
         if (mListener!=null){
             chatsData.clear();
             mChatRef.removeEventListener(mListener);
             mListener=null;
         }
+    }
+
+    private void scrollToBottom(){
+        chats_list.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                chats_list.scrollToPosition(chatsAdapter.getItemCount()-1);
+            }
+        },300);
     }
 }

@@ -35,7 +35,7 @@ public class ChatActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        viewPager.setCurrentItem(0);
+        viewPager.setCurrentItem(1);
 
     }
 

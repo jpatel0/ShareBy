@@ -1,6 +1,8 @@
 package com.zero.shareby.Utils;
 
-public class UserDetails {
+import java.io.Serializable;
+
+public class UserDetails implements Serializable {
     private String name;
     private String uid;
     private double latitude;

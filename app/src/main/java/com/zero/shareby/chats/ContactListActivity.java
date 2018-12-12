@@ -1,6 +1,8 @@
 package com.zero.shareby.chats;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +22,7 @@ import com.zero.shareby.customAdapter.GroupContactsAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactListActivity extends AppCompatActivity {
+public class ContactListActivity extends AppCompatActivity implements GroupContactsAdapter.MyListenerInterface{
 
     List<UserDetails> groupContactUsers;
     ListView listView;
@@ -31,9 +33,14 @@ public class ContactListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
 
+        ActionBar actionBar=getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         groupContactUsers = new ArrayList<>();
         listView = findViewById(R.id.group_contacts_list_view);
-        adapter = new GroupContactsAdapter(this,groupContactUsers);
+        adapter = new GroupContactsAdapter(this,groupContactUsers,this);
         listView.setAdapter(adapter);
         getContactList();
     }
@@ -74,5 +81,13 @@ public class ContactListActivity extends AppCompatActivity {
                 }
             });
         }else Toast.makeText(this,"Couldn't obtain group Data",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void clicked(UserDetails user) {
+        Intent startChat = new Intent(this,PeerToPeerChat.class);
+        startChat.putExtra("userObject",user);
+        startActivity(startChat);
+        finish();
     }
 }

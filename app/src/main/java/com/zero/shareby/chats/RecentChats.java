@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class RecentChats extends Fragment {
 
-    private static final int RC_CONTACT = 10;
+    //private static final int RC_CONTACT = 10;
     RecyclerView recentChatList;
     private ArrayList<String> friends_Uids;
     private RecentChatsAdapter chatsAdapter;
@@ -59,7 +59,7 @@ public class RecentChats extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent getContactIntent = new Intent(getContext(),ContactListActivity.class);
-                startActivityForResult(getContactIntent,RC_CONTACT);
+                startActivity(getContactIntent);
                 Toast.makeText(getContext(),"FAB",Toast.LENGTH_SHORT).show();
             }
         });
@@ -71,18 +71,6 @@ public class RecentChats extends Fragment {
             }
         });
         getFriendList();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == RC_CONTACT && resultCode == -1){
-            String friendId = data.getStringExtra("uid");
-            /*if (friendId!=null){
-                DatabaseReference
-            }*/
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void getFriendList(){
