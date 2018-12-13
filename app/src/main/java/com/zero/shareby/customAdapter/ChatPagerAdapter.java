@@ -1,9 +1,12 @@
-package com.zero.shareby.chats;
+package com.zero.shareby.customAdapter;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.zero.shareby.chats.GroupChatFragment;
+import com.zero.shareby.chats.RecentChats;
 
 
 public class ChatPagerAdapter extends FragmentStatePagerAdapter {

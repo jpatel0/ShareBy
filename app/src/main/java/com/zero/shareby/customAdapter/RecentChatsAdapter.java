@@ -25,10 +25,15 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<RecentChatsAdapter.
 
     private Context context;
     private ArrayList<String> uid;
+    private ClickListener listener;
+    public interface ClickListener{
+        void onItemClick(String uid);
+    }
 
-    public RecentChatsAdapter(Context context,ArrayList<String> uid) {
+    public RecentChatsAdapter(Context context,ArrayList<String> uid,ClickListener listener) {
         this.uid=uid;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -66,13 +71,19 @@ public class RecentChatsAdapter extends RecyclerView.Adapter<RecentChatsAdapter.
         return 0;
     }
 
-    public class RecentChatViewHolder extends RecyclerView.ViewHolder{
+    public class RecentChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         CircleImageView friend_profile_image;
         TextView friend_name;
         public RecentChatViewHolder(View itemView) {
             super(itemView);
             friend_name = itemView.findViewById(R.id.friend_name);
             friend_profile_image = itemView.findViewById(R.id.friend_profile_image);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemClick(uid.get(getAdapterPosition()));
         }
     }
 }

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.zero.shareby.R;
+import com.zero.shareby.customAdapter.ChatPagerAdapter;
 
 public class ChatActivity extends AppCompatActivity  {
     private static final String TAG = "ChatsActivity";

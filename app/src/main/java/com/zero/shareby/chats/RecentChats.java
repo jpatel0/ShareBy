@@ -21,12 +21,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
+import com.zero.shareby.Utils.UserDetails;
 import com.zero.shareby.Utils.Utilities;
 import com.zero.shareby.customAdapter.RecentChatsAdapter;
 
 import java.util.ArrayList;
 
-public class RecentChats extends Fragment {
+public class RecentChats extends Fragment implements RecentChatsAdapter.ClickListener {
 
     //private static final int RC_CONTACT = 10;
     RecyclerView recentChatList;
@@ -42,7 +43,6 @@ public class RecentChats extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         friends_Uids = new ArrayList<>();
-        chatsAdapter = new RecentChatsAdapter(getContext(),friends_Uids);
         return inflater.inflate(R.layout.fragment_recent_chats, container, false);
     }
 
@@ -52,6 +52,7 @@ public class RecentChats extends Fragment {
         recentChatList = view.findViewById(R.id.recent_chats_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recentChatList.setLayoutManager(layoutManager);
+        chatsAdapter = new RecentChatsAdapter(getContext(),friends_Uids,this);
         recentChatList.setAdapter(chatsAdapter);
         refreshLayout = view.findViewById(R.id.recent_chats_refresh);
         FloatingActionButton fab = view.findViewById(R.id.recent_chat_fab_button);
@@ -71,6 +72,27 @@ public class RecentChats extends Fragment {
             }
         });
         getFriendList();
+    }
+
+    @Override
+    public void onItemClick(String uid) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("UserDetails")
+                .child(uid);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    Intent goToChat = new Intent(getActivity(),PeerToPeerChat.class);
+                    goToChat.putExtra("userObject",dataSnapshot.getValue(UserDetails.class));
+                    startActivity(goToChat);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void getFriendList(){

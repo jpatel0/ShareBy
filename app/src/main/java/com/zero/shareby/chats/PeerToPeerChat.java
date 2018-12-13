@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
 import com.zero.shareby.Utils.UserDetails;
 import com.zero.shareby.Utils.Utilities;
@@ -42,6 +42,7 @@ public class PeerToPeerChat extends AppCompatActivity {
     private DatabaseReference mChatRef;
     RecyclerView chats_list;
     EditText editMessage;
+    private boolean isChatAvailable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,8 @@ public class PeerToPeerChat extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(friend.getName());
         }
+
+        checkIfFriendIsAdded();
 
         chats_list = findViewById(R.id.chats_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -131,6 +134,7 @@ public class PeerToPeerChat extends AppCompatActivity {
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
                         Chat getChatObject = dataSnapshot.getValue(Chat.class);
+                        isChatAvailable = true;
                         if (chatsData.size()==0){
                             Chat initialDivider = new Chat();
                             initialDivider.setDivider(true);
@@ -168,6 +172,24 @@ public class PeerToPeerChat extends AppCompatActivity {
             };
         }
         mChatRef.addChildEventListener(mListener);
+    }
+
+
+    private void checkIfFriendIsAdded(){
+        final DatabaseReference recentChatRef = FirebaseDatabase.getInstance().getReference()
+                .child("RecentChats").child(Utilities.getUserUid());
+        recentChatRef.child(friend.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists() && !isChatAvailable){
+                    recentChatRef.child(friend.getUid()).setValue(friend.getName());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
 

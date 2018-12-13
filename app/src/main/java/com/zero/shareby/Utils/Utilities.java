@@ -132,7 +132,7 @@ public class Utilities {
     }
 
     public static String compareUid(String currentUserUid,String otherUserUid){
-        if (currentUserUid.length()>otherUserUid.length())
+        if (currentUserUid.compareTo(otherUserUid)>=0)
             return currentUserUid+otherUserUid;
         else return otherUserUid+currentUserUid;
     }
