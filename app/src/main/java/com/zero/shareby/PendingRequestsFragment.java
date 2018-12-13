@@ -1,6 +1,7 @@
 package com.zero.shareby;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.Utils.Post;
+import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.chats.PeerToPeerChat;
 import com.zero.shareby.customAdapter.PendingRequestsAdapter;
 
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ import java.util.Comparator;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PendingRequestsFragment extends Fragment {
+public class PendingRequestsFragment extends Fragment implements PendingRequestsAdapter.ReplyClickListener{
     private static final String TAG= "PendingRequestFragment";
 
     ArrayList<Post> pendingPostsList;
@@ -48,7 +51,7 @@ public class PendingRequestsFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_pending_requests, container, false);
         pendingPostsList=new ArrayList<>();
-        postsAdapter=new PendingRequestsAdapter(getContext(),pendingPostsList);
+        postsAdapter=new PendingRequestsAdapter(getContext(),pendingPostsList,this);
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         ListView listView=rootView.findViewById(R.id.pending_requests_listview);
         listView.setAdapter(postsAdapter);
@@ -61,6 +64,28 @@ public class PendingRequestsFragment extends Fragment {
         postsAdapter.clear();
         super.onResume();
         updatePendingList();
+    }
+
+    @Override
+    public void onReplyButtonClick(String otherUserId) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("UserDetails")
+                .child(otherUserId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    Intent goToChat = new Intent(getActivity(),PeerToPeerChat.class);
+                    goToChat.putExtra("userObject",dataSnapshot.getValue(UserDetails.class));
+                    startActivity(goToChat);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void updatePendingList(){

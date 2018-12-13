@@ -180,12 +180,6 @@ public class DashboardFragment extends Fragment  {
                 dashboardAdapter.clear();
                 updateDashboard();
                 mapFragment.onResume();
-                swipeRefreshLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                },2000);
             }
         });
         super.onViewCreated(view, savedInstanceState);
@@ -282,6 +276,7 @@ public class DashboardFragment extends Fragment  {
     private void updateDashboard(){
         Log.d(TAG,preferences.getString(getString(R.string.pref_key1),"nnn"));
         if (FirebaseAuth.getInstance().getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")) {
+            swipeRefreshLayout.setRefreshing(true);
             Log.d(TAG,"inside of upadateDash");
             String country = preferences.getString(getString(R.string.pref_country), "null");
             String pin = preferences.getString(getString(R.string.pref_pin), "null");
@@ -309,6 +304,8 @@ public class DashboardFragment extends Fragment  {
                         }
                     }));
                     dashboardAdapter.notifyDataSetChanged();
+                    if (swipeRefreshLayout.isRefreshing())
+                        swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override

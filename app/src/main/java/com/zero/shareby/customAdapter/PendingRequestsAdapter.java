@@ -30,13 +30,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PendingRequestsAdapter extends ArrayAdapter<Post>{
 
-    public PendingRequestsAdapter(Context context, ArrayList<Post> postArrayList){
+    private ReplyClickListener listener;
+    public interface ReplyClickListener{
+        void onReplyButtonClick(String otherUserId);
+    }
+
+    public PendingRequestsAdapter(Context context, ArrayList<Post> postArrayList,ReplyClickListener listener){
         super(context, R.layout.pending_post_item,postArrayList);
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View newView=convertView;
         if (convertView==null){
             newView= LayoutInflater.from(getContext()).inflate(R.layout.pending_post_item,parent,false);
@@ -77,10 +83,16 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
 
         timestampTextView.setText(Utilities.calculateTimeDisplay(post.getTimestamp()));
 
+        if (Utilities.getUserUid().equals(post.getReqUid())){
+            replyButton.setBackgroundTintList(getContext().getResources().getColorStateList(android.R.color.darker_gray));
+            replyButton.setTextColor(getContext().getResources().getColor(android.R.color.white));
+            replyButton.setEnabled(false);
+        }
         replyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(),"Left to implement",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),post.getReqUid(),Toast.LENGTH_SHORT).show();
+                listener.onReplyButtonClick(post.getReqUid());
             }
         });
 

@@ -97,6 +97,7 @@ public class RecentChats extends Fragment implements RecentChatsAdapter.ClickLis
 
     private void getFriendList(){
         try {
+            refreshLayout.setRefreshing(true);
             DatabaseReference recentChatReference = FirebaseDatabase.getInstance().getReference().child("RecentChats").child(Utilities.getUserUid());
             recentChatReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
