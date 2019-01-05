@@ -4,15 +4,15 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -34,24 +34,29 @@ public class UserProfile extends AppCompatActivity {
     ProgressBar progressBar;
     ImageView profileImageView;
     Button editProfileButton;
-    TextView profileName;
     ImageView addressApprovedImageView;
+    Toolbar toolbar;
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_profile);
+        setContentView(R.layout.show_profile_new);
 
-        ActionBar actionBar=getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+         toolbar = findViewById(R.id.profile_toolbar);
+        setSupportActionBar(toolbar);
+//        ActionBar actionBar=getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//        }
 
         mAuth=FirebaseAuth.getInstance();
+        collapsingToolbarLayout = findViewById(R.id.profile_collapsing_toolbar);
         progressBar= findViewById(R.id.user_profile_progress_bar);
         profileImageView= findViewById(R.id.profile_image);
         editProfileButton= findViewById(R.id.edit_profile_button);
-        profileName= findViewById(R.id.name_text_view);
         addressApprovedImageView= findViewById(R.id.address_approved_image_view);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -59,7 +64,7 @@ public class UserProfile extends AppCompatActivity {
         super.onResume();
         progressBar.setVisibility(View.VISIBLE);
         if(mAuth.getCurrentUser()!=null){
-            profileName.setText(mAuth.getCurrentUser().getDisplayName());
+            collapsingToolbarLayout.setTitle(mAuth.getCurrentUser().getDisplayName());
             if (mAuth.getCurrentUser().getPhotoUrl()==null) {
                 profileImageView.setImageResource(R.drawable.sign);
                 progressBar.setVisibility(View.GONE);

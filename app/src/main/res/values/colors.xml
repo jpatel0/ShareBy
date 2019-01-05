@@ -10,4 +10,6 @@
     <color name="background_material_light" tools:override="true">#FFFFFF</color>
     <color name="delete_button_bg">#EEEAEA</color>
     <color name="my_chat_message_bg">#48B3FF</color>
+    <color name="green">#00FF00</color>
+    <color name="white" tools:override="true">#FFFFFF</color>
 </resources>

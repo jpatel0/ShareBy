@@ -88,15 +88,23 @@
                 android:textSize="16sp" />
 
             <Button
-                android:layout_width="108dp"
+                android:id="@+id/i_have_it"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pending_request_description"
+                android:layout_toEndOf="@+id/pending_user_profile_photo"
+                android:backgroundTint="@color/green"
+                android:text="I have it"
+                android:textColor="@color/white" />
+
+            <Button
+                android:layout_width="wrap_content"
                 android:id="@+id/pending_reply_button"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/pending_request_title"
-
-                android:layout_marginStart="144dp"
+                android:layout_below="@id/pending_request_description"
                 android:backgroundTint="@color/colorAccent"
-                android:text="Reply"
+                android:text="Reply in chat"
                 android:textColor="@android:color/white" />
 
         </RelativeLayout>

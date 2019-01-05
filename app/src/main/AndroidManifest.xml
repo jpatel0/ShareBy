@@ -73,6 +73,7 @@
         <activity
             android:name=".UserProfile"
             android:label="Profile"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".PostActivity" />
 

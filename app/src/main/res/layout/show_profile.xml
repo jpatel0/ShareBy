@@ -22,17 +22,14 @@
 
 
         <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/profile_image"
             android:layout_width="96dp"
             android:layout_marginTop="22dp"
             android:focusable="true"
             android:clickable="true"
             android:layout_height="96dp"
-            android:src="@drawable/sign"
-            android:layout_gravity="center_horizontal"
-            app:civ_border_width="2dp"
-            app:civ_border_color="#FF000000"/>
+            android:src="@drawable/ic_face"
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
             android:id="@+id/name_text_view"
@@ -48,6 +45,8 @@
             android:layout_marginTop="15dp"
             android:id="@+id/edit_profile_button"
             android:text="Edit Profile"
+            android:backgroundTint="@color/green"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"/>
@@ -135,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/shared_items_count"
         android:layout_centerHorizontal="true"
-        android:text="Shared Items:"
+        android:text="Help Provided:"
         android:textSize="30sp"
         android:textStyle="italic" />
 
@@ -147,6 +146,7 @@
         android:layout_centerHorizontal="true"
         android:textStyle="bold"
         android:text="3"
+        android:elevation="6dp"
         android:textColor="#FF8C00"
         android:textSize="80sp" />
 </RelativeLayout>
