@@ -3,18 +3,21 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/font_montserrat</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
+        <item name="android:fontFamily">@font/font_montserrat</item>
         <item name="windowActionBar">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.Launcher">
+        <item name="android:fontFamily">@font/font_montserrat</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>

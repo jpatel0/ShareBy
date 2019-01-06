@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -33,10 +34,10 @@ public class UserProfile extends AppCompatActivity {
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     ImageView profileImageView;
-    Button editProfileButton;
     ImageView addressApprovedImageView;
     Toolbar toolbar;
     CollapsingToolbarLayout collapsingToolbarLayout;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class UserProfile extends AppCompatActivity {
         collapsingToolbarLayout = findViewById(R.id.profile_collapsing_toolbar);
         progressBar= findViewById(R.id.user_profile_progress_bar);
         profileImageView= findViewById(R.id.profile_image);
-        editProfileButton= findViewById(R.id.edit_profile_button);
+        fab = findViewById(R.id.floatingActionButton);
         addressApprovedImageView= findViewById(R.id.address_approved_image_view);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -89,7 +90,7 @@ public class UserProfile extends AppCompatActivity {
                         .into(profileImageView);
             }
 
-            editProfileButton.setOnClickListener(new View.OnClickListener() {
+            fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(UserProfile.this,EditProfile.class));
