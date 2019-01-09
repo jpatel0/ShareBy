@@ -151,7 +151,6 @@ public class LoginActivity extends AppCompatActivity {
                     //New User Sign up
                     startActivityForResult(AuthUI.getInstance()
                                             .createSignInIntentBuilder()
-                                            .setIsSmartLockEnabled(true)
                                             .setTheme(R.style.AppTheme)
                                             .setAvailableProviders(providers)
                                             .setLogo(R.drawable.sign)
