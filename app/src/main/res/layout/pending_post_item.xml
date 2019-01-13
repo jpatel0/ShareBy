@@ -15,7 +15,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/pending_user_profile_photo"
@@ -94,6 +95,7 @@
                 android:layout_below="@id/pending_request_description"
                 android:layout_toEndOf="@+id/pending_user_profile_photo"
                 android:backgroundTint="@color/green"
+                android:visibility="gone"
                 android:text="I have it"
                 android:textColor="@color/white" />
 
@@ -104,6 +106,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/pending_request_description"
                 android:backgroundTint="@color/colorAccent"
+                android:visibility="gone"
                 android:text="Reply in chat"
                 android:textColor="@android:color/white" />
 

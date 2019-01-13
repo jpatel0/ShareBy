@@ -90,8 +90,6 @@ public class DashboardFragment extends Fragment  {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         mAuth=FirebaseAuth.getInstance();
         /*mAuthListener=new FirebaseAuth.AuthStateListener() {
             @Override
@@ -104,7 +102,13 @@ public class DashboardFragment extends Fragment  {
                 }
             }
         };*/
+    }
 
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         if(preferences.getBoolean(MAP_KEY,true) && FirebaseAuth.getInstance().getCurrentUser()!=null){
             DatabaseReference dbReference= FirebaseDatabase.getInstance().getReference().child("UserDetails").child(mAuth.getCurrentUser().getUid());
             dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -129,12 +133,6 @@ public class DashboardFragment extends Fragment  {
                 }
             });
         }
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_dashboard, container, false);
         data=new ArrayList<>();
@@ -171,7 +169,7 @@ public class DashboardFragment extends Fragment  {
                 dashboardAdapter.clear();
                 updateDashboard();
             }
-        },3000);
+        },2000);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

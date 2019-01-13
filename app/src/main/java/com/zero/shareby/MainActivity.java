@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TabLayout tab=findViewById(R.id.tabs);
         tab.setupWithViewPager(viewPager);
 
+
         auth=FirebaseAuth.getInstance();
         navigationView.setCheckedItem(R.id.nav_home);
     }

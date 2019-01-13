@@ -3,19 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".PendingRequestsFragment">
 
-    <TextView
+    <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:layout_gravity="center|top"
-        android:textStyle="bold"
-        android:textColor="@android:color/holo_green_dark"
-        android:text="Pending Requests" />
+        app:cardElevation="5dp"
+        app:cardCornerRadius="15dp"
+        android:backgroundTint="@color/my_chat_message_bg"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="22sp"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:layout_gravity="center|top"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:text="Pending Requests" />
+    </android.support.v7.widget.CardView>
 
     <ListView
         android:id="@+id/pending_requests_listview"

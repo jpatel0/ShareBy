@@ -4,12 +4,14 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,12 +32,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PendingRequestsAdapter extends ArrayAdapter<Post>{
 
-    private ReplyClickListener listener;
-    public interface ReplyClickListener{
+    private ButtonClickListener listener;
+    private int mExpandedPosition=-1;
+    public interface ButtonClickListener {
         void onReplyButtonClick(String otherUserId);
+        void onHaveItemButtonClick(Post post);
     }
 
-    public PendingRequestsAdapter(Context context, ArrayList<Post> postArrayList,ReplyClickListener listener){
+    public PendingRequestsAdapter(Context context, ArrayList<Post> postArrayList,ButtonClickListener listener){
         super(context, R.layout.pending_post_item,postArrayList);
         this.listener = listener;
     }
@@ -53,6 +57,7 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
         TextView titleTextView=newView.findViewById(R.id.pending_request_title);
         TextView descriptionTextView=newView.findViewById(R.id.pending_request_description);
         TextView timestampTextView=newView.findViewById(R.id.timestamp_pending_post);
+        Button haveButton = newView.findViewById(R.id.i_have_it);
         final CircleImageView imageView=newView.findViewById(R.id.pending_user_profile_photo);
         Button replyButton=newView.findViewById(R.id.pending_reply_button);
 
@@ -88,11 +93,34 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
             replyButton.setTextColor(getContext().getResources().getColor(android.R.color.white));
             replyButton.setEnabled(false);
         }
+
+//        handling card collapse
+        final ListView postListView = parent.findViewById(R.id.pending_requests_listview);
+        final boolean isExpanded = position==mExpandedPosition;
+        replyButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        haveButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        newView.setActivated(isExpanded);
+        newView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mExpandedPosition = isExpanded ? -1:position;
+                TransitionManager.beginDelayedTransition(postListView);
+                notifyDataSetChanged();
+            }
+        });
+
         replyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(),post.getReqUid(),Toast.LENGTH_SHORT).show();
                 listener.onReplyButtonClick(post.getReqUid());
+            }
+        });
+
+        haveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onHaveItemButtonClick(post);
             }
         });
 

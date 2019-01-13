@@ -33,7 +33,7 @@ import java.util.Comparator;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PendingRequestsFragment extends Fragment implements PendingRequestsAdapter.ReplyClickListener{
+public class PendingRequestsFragment extends Fragment implements PendingRequestsAdapter.ButtonClickListener {
     private static final String TAG= "PendingRequestFragment";
 
     ArrayList<Post> pendingPostsList;
@@ -85,6 +85,11 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
 
             }
         });
+
+    }
+
+    @Override
+    public void onHaveItemButtonClick(Post post) {
 
     }
 

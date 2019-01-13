@@ -31,7 +31,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 return new PostDashboard();
 
         }
-        return new DashboardFragment();
+        return null;
     }
 
     @Override
