@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.zero.shareby.Utils.Utilities;
 import com.zero.shareby.R;
-import com.zero.shareby.customAdapter.ChatsAdapter;
+import com.zero.shareby.adapters.ChatsAdapter;
 
 import java.util.ArrayList;
 

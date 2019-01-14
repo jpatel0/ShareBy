@@ -22,7 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.Utils.Post;
-import com.zero.shareby.customAdapter.PostAdapter;
+import com.zero.shareby.adapters.PostAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

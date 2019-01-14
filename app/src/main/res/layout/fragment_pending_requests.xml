@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         app:cardElevation="5dp"
         app:cardCornerRadius="15dp"
+
+        android:layout_marginTop="5dp"
         android:backgroundTint="@color/my_chat_message_bg"
         android:layout_gravity="center_horizontal">
         <TextView
@@ -19,7 +21,6 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:textSize="22sp"
-            android:layout_marginTop="5dp"
             android:gravity="center"
             android:layout_gravity="center|top"
             android:textStyle="bold"

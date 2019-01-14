@@ -31,7 +31,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.Utils.Post;
 import com.zero.shareby.Utils.UserDetails;
-import com.zero.shareby.customAdapter.DashboardAdapter;
+import com.zero.shareby.adapters.DashboardAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

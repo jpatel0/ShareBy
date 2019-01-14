@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.Utils.Post;
 import com.zero.shareby.Utils.UserDetails;
 import com.zero.shareby.chats.PeerToPeerChat;
-import com.zero.shareby.customAdapter.PendingRequestsAdapter;
+import com.zero.shareby.adapters.PendingRequestsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

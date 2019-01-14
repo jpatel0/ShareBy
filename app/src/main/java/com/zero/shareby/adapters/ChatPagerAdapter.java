@@ -1,4 +1,4 @@
-package com.zero.shareby.customAdapter;
+package com.zero.shareby.adapters;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

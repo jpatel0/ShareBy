@@ -1,4 +1,4 @@
-package com.zero.shareby.customAdapter;
+package com.zero.shareby.adapters;
 
 import android.content.Context;
 import android.net.Uri;

@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
 import com.zero.shareby.Utils.UserDetails;
 import com.zero.shareby.Utils.Utilities;
-import com.zero.shareby.customAdapter.RecentChatsAdapter;
+import com.zero.shareby.adapters.RecentChatsAdapter;
 
 import java.util.ArrayList;
 

@@ -1,18 +1,21 @@
-package com.zero.shareby.customAdapter;
+package com.zero.shareby.adapters;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import com.zero.shareby.DashboardFragment;
 import com.zero.shareby.PendingRequestsFragment;
 import com.zero.shareby.PostDashboard;
 
-public class PagerAdapter extends FragmentStatePagerAdapter {
+public class PagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
+    private DashboardFragment dashboardFragment = new DashboardFragment();
+    private PendingRequestsFragment pendingRequestsFragment = new PendingRequestsFragment();
+    private PostDashboard postDashboard = new PostDashboard();
     public PagerAdapter(Context context,FragmentManager fm) {
         super(fm);
         mContext=context;
@@ -22,13 +25,13 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new DashboardFragment();
+                return dashboardFragment;
 
             case 1:
-                return new PendingRequestsFragment();
+                return pendingRequestsFragment;
 
             case 2:
-                return new PostDashboard();
+                return postDashboard;
 
         }
         return null;
