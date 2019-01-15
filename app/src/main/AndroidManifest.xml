@@ -35,19 +35,19 @@
             android:resource="@color/colorPrimary" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MyAppIntro" />
+        <activity android:name=".activities.MyAppIntro" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:label="Sign In"
             android:launchMode="singleTask" />
         <activity
-            android:name=".EditProfile"
+            android:name=".activities.EditProfile"
             android:label="Edit Profile"
-            android:parentActivityName=".UserProfile" />
+            android:parentActivityName=".activities.UserProfile" />
         <activity
-            android:name=".AddressActivity"
+            android:name=".activities.AddressActivity"
             android:label="Edit Address" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -62,7 +62,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".activities.SplashActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,11 +71,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserProfile"
+            android:name=".activities.UserProfile"
             android:label="Profile"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".PostActivity" />
+            android:parentActivityName=".activities.MainActivity" />
+        <activity android:name=".activities.PostActivity" />
 
         <service android:name=".fcm.FirebaseMessaging">
             <intent-filter>
@@ -98,7 +98,7 @@
         <activity
             android:name=".chats.ChatActivity"
             android:label="My Chats"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".chats.ContactListActivity"
             android:parentActivityName=".chats.ChatActivity" />

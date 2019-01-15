@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,10 +37,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.zero.shareby.Utils.CreateGroup;
-import com.zero.shareby.Utils.Post;
-import com.zero.shareby.Utils.UserDetails;
-import com.zero.shareby.Utils.Utilities;
+import com.zero.shareby.R;
+import com.zero.shareby.models.CreateGroup;
+import com.zero.shareby.models.Post;
+import com.zero.shareby.models.UserDetails;
+import com.zero.shareby.utils.Utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;

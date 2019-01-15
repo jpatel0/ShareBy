@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -25,7 +25,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.R;
+import com.zero.shareby.models.UserDetails;
 
 public class UserProfile extends AppCompatActivity {
     private static final String TAG="UserProfile";

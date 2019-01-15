@@ -68,7 +68,7 @@
                 android:backgroundTint="@color/green"
                 android:elevation="4dp"
                 android:visibility="gone"
-                android:text="Confirm"
+                android:text="Accept it"
                 android:textColor="@color/white"/>
 
 

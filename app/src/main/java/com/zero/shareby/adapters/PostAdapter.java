@@ -13,18 +13,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
-import com.zero.shareby.Utils.Post;
+import com.zero.shareby.models.Post;
 import com.zero.shareby.R;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.zero.shareby.Utils.Utilities.calculateTimeDisplay;
+import static com.zero.shareby.utils.Utilities.calculateTimeDisplay;
 
 public class PostAdapter extends ArrayAdapter<Post> {
 
@@ -91,7 +90,6 @@ public class PostAdapter extends ArrayAdapter<Post> {
                 @Override
                 public void onClick(View v) {
                     listener.onDeleteButtonClick(data);
-                    Toast.makeText(getContext(),"Delete clicked",Toast.LENGTH_SHORT).show();
                 }
             });
             deleteImageButton.setVisibility(View.VISIBLE);
@@ -102,6 +100,7 @@ public class PostAdapter extends ArrayAdapter<Post> {
                 @Override
                 public void onClick(View v) {
                     listener.onConfirmButtonClick(data);
+                    TransitionManager.beginDelayedTransition(postListView);
                 }
             });
         }else if (data.getSharedUid()!=null){
@@ -127,6 +126,12 @@ public class PostAdapter extends ArrayAdapter<Post> {
                     mExpandedPosition = isExpanded ? -1:position;
                     TransitionManager.beginDelayedTransition(postListView);
                     notifyDataSetChanged();
+                }
+            });
+            deleteImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onDeleteButtonClick(data);
                 }
             });
         }

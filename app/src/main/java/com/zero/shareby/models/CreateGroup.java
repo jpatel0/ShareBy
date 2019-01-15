@@ -1,4 +1,4 @@
-package com.zero.shareby.Utils;
+package com.zero.shareby.models;
 
 public class CreateGroup {
     private String grpName;

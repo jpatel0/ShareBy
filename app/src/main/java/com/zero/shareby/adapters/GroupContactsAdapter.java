@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.zero.shareby.R;
-import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.models.UserDetails;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.activities;
 
 import android.Manifest;
 import android.content.Context;
@@ -32,14 +32,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.zero.shareby.Utils.UserDetails;
-import com.zero.shareby.Utils.Utilities;
+import com.zero.shareby.R;
+import com.zero.shareby.models.UserDetails;
+import com.zero.shareby.utils.Utilities;
 import com.zero.shareby.fcm.FirebaseMessaging;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static com.zero.shareby.MapFragment.RC_PERMISSIONS;
+import static com.zero.shareby.fragments.MapFragment.RC_PERMISSIONS;
 
 public class LoginActivity extends AppCompatActivity {
 

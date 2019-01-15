@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.zero.shareby.R;
 import com.zero.shareby.chats.ChatActivity;
 import com.zero.shareby.adapters.PagerAdapter;
 

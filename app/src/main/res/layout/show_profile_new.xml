@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:theme="@style/AppTheme.NoActionBar"
-    tools:context=".UserProfile">
+    tools:context=".activities.UserProfile">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"

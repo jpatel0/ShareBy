@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.activities;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -19,7 +19,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.zero.shareby.Utils.Post;
+import com.zero.shareby.R;
+import com.zero.shareby.models.Post;
 
 
 public class PostActivity extends AppCompatActivity {

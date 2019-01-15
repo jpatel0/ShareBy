@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.activities;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -37,7 +37,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.R;
+import com.zero.shareby.models.UserDetails;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;

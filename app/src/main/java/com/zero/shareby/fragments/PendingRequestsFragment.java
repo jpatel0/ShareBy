@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.fragments;
 
 
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zero.shareby.Utils.Post;
-import com.zero.shareby.Utils.UserDetails;
+import com.zero.shareby.R;
+import com.zero.shareby.models.Post;
+import com.zero.shareby.models.UserDetails;
 import com.zero.shareby.chats.PeerToPeerChat;
 import com.zero.shareby.adapters.PendingRequestsAdapter;
 
@@ -32,10 +32,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class PendingRequestsFragment extends Fragment implements PendingRequestsAdapter.ButtonClickListener {
     private static final String TAG= "PendingRequestFragment";
 
@@ -85,7 +81,6 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
 

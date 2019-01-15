@@ -1,4 +1,4 @@
-package com.zero.shareby.Utils;
+package com.zero.shareby.models;
 
 public class Post {
     private String refKey,reqUid,sharedUid,repliedUid,repliedName,name,title,desc;

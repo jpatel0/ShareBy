@@ -1,4 +1,4 @@
-package com.zero.shareby;
+package com.zero.shareby.fragments;
 
 
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.zero.shareby.Utils.Post;
+import com.zero.shareby.R;
+import com.zero.shareby.activities.PostActivity;
+import com.zero.shareby.models.Post;
 import com.zero.shareby.adapters.PostAdapter;
 
 import java.util.ArrayList;
@@ -40,7 +43,7 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView=inflater.inflate(R.layout.fragment_post_dashboard, container, false);
         data=new ArrayList<>();
@@ -88,7 +91,7 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
 
     @Override
     public void onDeleteButtonClick(Post post) {
-
+        Snackbar.make(getActivity().findViewById(R.id.post_dashboard_layout),"feature coming soon",Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

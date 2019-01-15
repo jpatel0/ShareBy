@@ -25,8 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.R;
-import com.zero.shareby.Utils.UserDetails;
-import com.zero.shareby.Utils.Utilities;
+import com.zero.shareby.models.UserDetails;
+import com.zero.shareby.utils.Utilities;
 import com.zero.shareby.adapters.ChatsAdapter;
 
 import java.util.ArrayList;
