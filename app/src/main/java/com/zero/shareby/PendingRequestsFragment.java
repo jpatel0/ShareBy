@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -89,8 +92,22 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
     }
 
     @Override
-    public void onHaveItemButtonClick(Post post) {
-
+    public void onHaveItemButtonClick(final Post post) {
+        post.setRepliedUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        post.setRepliedName(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        String country = preferences.getString(getString(R.string.pref_country), "null");
+        String pin = preferences.getString(getString(R.string.pref_pin), "null");
+        String key1 = preferences.getString(getString(R.string.pref_key1), "null");
+        String key2 = preferences.getString(getString(R.string.pref_key2), "null");
+        DatabaseReference postReference = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+                .child(key1).child(key2).child("posts").child(post.getRefKey());
+        postReference.setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                pendingPostsList.remove(post);
+                postsAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void updatePendingList(){
@@ -112,7 +129,9 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
                     for (DataSnapshot posts:dataSnapshot.getChildren()){
                         if (!posts.hasChild("sharedUid")
                                 && posts.child("priority").getValue(Integer.class)>0) {
-                            pendingPostsList.add(posts.getValue(Post.class));
+                            Post post = posts.getValue(Post.class);
+                            post.setRefKey(posts.getKey());
+                            pendingPostsList.add(post);
                         }
                     }
                     Collections.sort(pendingPostsList,Collections.reverseOrder(new Comparator<Post>() {

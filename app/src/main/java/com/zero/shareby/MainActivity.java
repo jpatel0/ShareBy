@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView=findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         viewPager= findViewById(R.id.viewpager);
         pagerAdapter=new PagerAdapter(this,getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);

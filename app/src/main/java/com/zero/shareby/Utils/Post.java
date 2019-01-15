@@ -1,7 +1,7 @@
 package com.zero.shareby.Utils;
 
 public class Post {
-    private String reqUid,sharedUid,name,title,desc;
+    private String refKey,reqUid,sharedUid,repliedUid,repliedName,name,title,desc;
     private int priority,status;
     private long timestamp;
 
@@ -25,6 +25,30 @@ public class Post {
         title="Welcome "+n+" as the new member";
         priority=0;
         timestamp=System.currentTimeMillis();
+    }
+
+    public String getRepliedUid() {
+        return repliedUid;
+    }
+
+    public void setRepliedUid(String repliedUid) {
+        this.repliedUid = repliedUid;
+    }
+
+    public String getRepliedName() {
+        return repliedName;
+    }
+
+    public void setRepliedName(String repliedName) {
+        this.repliedName = repliedName;
+    }
+
+    public void setRefKey(String refKey) {
+        this.refKey = refKey;
+    }
+
+    public String getRefKey() {
+        return refKey;
     }
 
     public String getReqUid() {

@@ -128,7 +128,7 @@ public class Utilities {
             convertedTime=DateFormat.format("dd, MMM yy",timestamp).toString();
         }
 
-        return convertedTime;
+        return convertedTime+" ";
     }
 
     public static String compareUid(String currentUserUid,String otherUserUid){

@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ListView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class PostDashboard extends Fragment {
+public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonClickListener {
     private static final String TAG="PostDashboard";
     private ArrayList<Post> data;
     SharedPreferences preferences;
@@ -51,7 +54,7 @@ public class PostDashboard extends Fragment {
         data.add(new MyData("I want a stormBreaker","Just a description"));
         data.add(new MyData("I know hammer","Just a description"));*/
 
-        postAdapter=new PostAdapter(getActivity(),data);
+        postAdapter=new PostAdapter(getActivity(),data,this);
         ListView listView=rootView.findViewById(R.id.post_dashboard_list_view);
         listView.setAdapter(postAdapter);
         FloatingActionButton newPostButton=rootView.findViewById(R.id.post_floating_button);
@@ -62,6 +65,30 @@ public class PostDashboard extends Fragment {
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onConfirmButtonClick(final Post post) {
+        post.setSharedUid(post.getRepliedUid());
+        String country = preferences.getString(getString(R.string.pref_country), "null");
+        String pin = preferences.getString(getString(R.string.pref_pin), "null");
+        String key1 = preferences.getString(getString(R.string.pref_key1), "null");
+        String key2 = preferences.getString(getString(R.string.pref_key2), "null");
+        DatabaseReference postReference = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+                .child(key1).child(key2).child("posts").child(post.getRefKey());
+        postReference.setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                data.clear();
+                postAdapter.clear();
+                updatePostDashboard();
+            }
+        });
+    }
+
+    @Override
+    public void onDeleteButtonClick(Post post) {
+
     }
 
     @Override

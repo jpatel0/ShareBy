@@ -57,9 +57,9 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
         TextView titleTextView=newView.findViewById(R.id.pending_request_title);
         TextView descriptionTextView=newView.findViewById(R.id.pending_request_description);
         TextView timestampTextView=newView.findViewById(R.id.timestamp_pending_post);
-        Button haveButton = newView.findViewById(R.id.i_have_it);
+        final Button haveButton = newView.findViewById(R.id.i_have_it);
         final CircleImageView imageView=newView.findViewById(R.id.pending_user_profile_photo);
-        Button replyButton=newView.findViewById(R.id.pending_reply_button);
+        final Button replyButton=newView.findViewById(R.id.pending_reply_button);
 
         reqUserTextView.setText(post.getName());
         titleTextView.setText(post.getTitle());
@@ -91,7 +91,7 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
         if (Utilities.getUserUid().equals(post.getReqUid())){
             replyButton.setBackgroundTintList(getContext().getResources().getColorStateList(android.R.color.darker_gray));
             replyButton.setTextColor(getContext().getResources().getColor(android.R.color.white));
-            replyButton.setEnabled(false);
+            replyButton.setVisibility(View.GONE);
         }
 
 //        handling card collapse
@@ -121,6 +121,9 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
             @Override
             public void onClick(View v) {
                 listener.onHaveItemButtonClick(post);
+                mExpandedPosition=-1;
+                replyButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+                haveButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
             }
         });
 

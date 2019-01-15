@@ -7,7 +7,7 @@
         android:title="SAVE"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
-        android:icon="@android:drawable/ic_menu_save">
+        android:icon="@drawable/ic_save">
     </item>
 
     <item

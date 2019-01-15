@@ -50,7 +50,7 @@
                 android:textStyle="italic"
                 android:maxLines="1"
                 android:gravity="top"
-                android:paddingEnd="10dp"
+                android:paddingEnd="5dp"
                 android:paddingStart="5dp"
                 android:paddingTop="5dp"
                 android:text="1 hr ago"

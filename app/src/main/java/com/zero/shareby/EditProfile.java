@@ -196,8 +196,7 @@ public class EditProfile extends AppCompatActivity {
 
                 InputStream imageStream = null;
                 try {
-                    imageStream = getContentResolver().openInputStream(
-                            photoUri);
+                    imageStream = getContentResolver().openInputStream(photoUri);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -209,7 +208,6 @@ public class EditProfile extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
                 try {
                     stream.close();
-                    stream=null;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
