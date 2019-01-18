@@ -61,7 +61,6 @@ public class ChatsAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         final Chat chatObj=mChatList.get(position);
-
         if (chatObj.isDivider()){
             ((DateDividerViewHolder) holder).dateDivider.setText(Utilities.getDateString(chatObj.getTimestamp()));
         }

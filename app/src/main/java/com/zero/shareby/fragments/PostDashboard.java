@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,7 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
     @Override
     public void onConfirmButtonClick(final Post post) {
         post.setSharedUid(post.getRepliedUid());
+        post.setTimestamp(System.currentTimeMillis());
         String country = preferences.getString(getString(R.string.pref_country), "null");
         String pin = preferences.getString(getString(R.string.pref_pin), "null");
         String key1 = preferences.getString(getString(R.string.pref_key1), "null");
@@ -96,10 +98,10 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
 
     @Override
     public void onResume() {
+        super.onResume();
         data.clear();
         postAdapter.clear();
         updatePostDashboard();
-        super.onResume();
     }
 
     private void updatePostDashboard(){
@@ -128,8 +130,8 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
                             return Long.compare(o1.getTimestamp(),o2.getTimestamp());
                         }
                     }));
+                    TransitionManager.beginDelayedTransition((ListView)getView().getRootView().findViewById(R.id.post_dashboard_list_view));
                     postAdapter.notifyDataSetChanged();
-
                 }
 
                 @Override

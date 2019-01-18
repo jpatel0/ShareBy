@@ -88,44 +88,49 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
 
         timestampTextView.setText(Utilities.calculateTimeDisplay(post.getTimestamp()));
 
-        if (Utilities.getUserUid().equals(post.getReqUid())){
-            replyButton.setBackgroundTintList(getContext().getResources().getColorStateList(android.R.color.darker_gray));
-            replyButton.setTextColor(getContext().getResources().getColor(android.R.color.white));
-            replyButton.setVisibility(View.GONE);
-        }
+
 
 //        handling card collapse
         final ListView postListView = parent.findViewById(R.id.pending_requests_listview);
-        final boolean isExpanded = position==mExpandedPosition;
-        replyButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-        haveButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-        newView.setActivated(isExpanded);
-        newView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mExpandedPosition = isExpanded ? -1:position;
-                TransitionManager.beginDelayedTransition(postListView);
-                notifyDataSetChanged();
-            }
-        });
 
-        replyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(),post.getReqUid(),Toast.LENGTH_SHORT).show();
-                listener.onReplyButtonClick(post.getReqUid());
-            }
-        });
+        if (Utilities.getUserUid().equals(post.getReqUid())){
+//            replyButton.setBackgroundTintList(getContext().getResources().getColorStateList(android.R.color.darker_gray));
+//            replyButton.setTextColor(getContext().getResources().getColor(android.R.color.white));
+            newView.findViewById(R.id.pending_card_view).setBackgroundTintList(getContext().getResources().getColorStateList(R.color.yellow));
+            replyButton.setVisibility(View.GONE);
+            haveButton.setVisibility(View.GONE);
+        }else {
 
-        haveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onHaveItemButtonClick(post);
-                mExpandedPosition=-1;
-                replyButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-                haveButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-            }
-        });
+            final boolean isExpanded = position==mExpandedPosition;
+            replyButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+            haveButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+            newView.setActivated(isExpanded);
+            newView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mExpandedPosition = isExpanded ? -1:position;
+                    TransitionManager.beginDelayedTransition(postListView);
+                    notifyDataSetChanged();
+                }
+            });
+            replyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getContext(), post.getReqUid(), Toast.LENGTH_SHORT).show();
+                    listener.onReplyButtonClick(post.getReqUid());
+                }
+            });
+
+            haveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onHaveItemButtonClick(post);
+                    mExpandedPosition=-1;
+                    replyButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+                    haveButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+                }
+            });
+        }
 
         return newView;
     }

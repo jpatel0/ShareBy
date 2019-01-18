@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,13 +101,14 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 pendingPostsList.remove(post);
+                ListView listView = getView().getRootView().findViewById(R.id.pending_requests_listview);
+                TransitionManager.beginDelayedTransition(listView);
                 postsAdapter.notifyDataSetChanged();
             }
         });
     }
 
     private void updatePendingList(){
-
         if (FirebaseAuth.getInstance().getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")) {
             String country = preferences.getString(getString(R.string.pref_country), "null");
             String pin = preferences.getString(getString(R.string.pref_pin), "null");
