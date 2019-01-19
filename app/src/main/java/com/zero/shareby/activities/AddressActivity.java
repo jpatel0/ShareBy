@@ -1,13 +1,17 @@
 package com.zero.shareby.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,7 +92,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                         }
                         else {
                             Geocoder geocoder = new Geocoder(AddressActivity.this, Locale.getDefault());
-                            List<Address> addressList = null;
+                            List<Address> addressList;
                             try {
                                 addressList=geocoder.getFromLocation(lat,lng,3);
                                 Log.d(TAG,addressList.toString());
@@ -132,6 +136,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
             }
         });
         listener=new Listener();
+        displayUserLocationNeededDialog();
     }
 
 
@@ -234,6 +239,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                  */
                                 Utilities.uploadUserLocation(getApplicationContext(), latitude, longitude);
                                 addUserToGroup(country, listener.getPin(), listener.getKey1(), listener.getKey2());
+                                goToMainActivity();
                                 //userDetails are updated in above function
                             } else {
                                 Log.d(TAG,"inside not exists block");
@@ -243,7 +249,12 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                 update user address(lat,lng) to UserDetails first, change prefs accordingly
                                  */
                                 Utilities.uploadUserLocation(getApplicationContext(), latitude, longitude);
-                                placeIntentBuilder(2);
+                                AddressActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        placeIntentBuilder(2);
+                                    }
+                                });
                             }
                         }
                     });
@@ -289,6 +300,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                 editLoc.putString(getResources().getString(R.string.pref_key2), lngString);
                 editLoc.apply();
                 uploadUserDetails(country,pin,latString,lngString);
+                goToMainActivity();
             }
             else{
                 // Change back location of user to previous one
@@ -413,11 +425,13 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
 
 
     private void placeIntentBuilder(int i){
-        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
         try {
             if (i == 2) {
-                startActivityForResult(builder.build(AddressActivity.this), RC_CREATE_GRP);
+                // for creating new group
+                displayCreateGroupDialog();
             } else {
+                // for user's location
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
                 startActivityForResult(builder.build(AddressActivity.this), RC_PICKER);
             }
         }catch (GooglePlayServicesRepairableException e) {
@@ -523,15 +537,55 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         databaseReference.removeEventListener(mChildListener);
     }
 
+    private void displayCreateGroupDialog(){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Create New Group");
+        alertBuilder.setMessage("It seems there isn't any group available in your Area. " +
+                "You have to create a group by entering the center point location of your locality(200m radius)");
+        alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(AddressActivity.this), RC_CREATE_GRP);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    private void displayUserLocationNeededDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Location Needed");
+        builder.setMessage("Your Home Location is necessary for finding the exact matching group available in your Area. Set it from google maps");
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+
+    }
+
+    private void goToMainActivity(){
+        startActivity(new Intent(AddressActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        finish();
+    }
+
     private static class Listener{
         private boolean exists,isDone;
         private String pin,key1,key2;
 
-        public boolean ifExists() {
+        private boolean ifExists() {
             return exists;
         }
 
-        public void onResult(String pin,String key1,String key2,boolean exists,boolean isDone) {
+        private void onResult(String pin,String key1,String key2,boolean exists,boolean isDone) {
             this.exists = exists;
             this.pin=pin;
             this.key1=key1;
@@ -539,23 +593,23 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
             this.isDone=isDone;
         }
 
-        public boolean isDone() {
+        private boolean isDone() {
             return isDone;
         }
 
-        public void setDone(boolean done) {
+        private void setDone(boolean done) {
             isDone = done;
         }
 
-        public String getPin() {
+        private String getPin() {
             return pin;
         }
 
-        public String getKey1() {
+        private String getKey1() {
             return key1;
         }
 
-        public String getKey2() {
+        private String getKey2() {
             return key2;
         }
     }

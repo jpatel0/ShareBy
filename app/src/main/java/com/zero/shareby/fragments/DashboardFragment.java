@@ -54,6 +54,7 @@ public class DashboardFragment extends Fragment  {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     SwipeRefreshLayout swipeRefreshLayout;
+    ListView listView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -147,7 +148,7 @@ public class DashboardFragment extends Fragment  {
         data.add(new DashboardData("Jay","hammer","zero",1));*/
         swipeRefreshLayout=rootView.findViewById(R.id.main_dashboard_refresh);
         dashboardAdapter=new DashboardAdapter(getContext(),data);
-        ListView listView=rootView.findViewById(R.id.main_dashboard_list_view);
+        listView=rootView.findViewById(R.id.main_dashboard_list_view);
         listView.setAdapter(dashboardAdapter);
         return rootView;
     }
@@ -170,6 +171,7 @@ public class DashboardFragment extends Fragment  {
                 data.clear();
                 dashboardAdapter.clear();
                 updateDashboard();
+
             }
         },2000);
 

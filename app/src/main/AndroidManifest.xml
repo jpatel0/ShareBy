@@ -36,7 +36,8 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"/>
         <activity android:name=".activities.MyAppIntro" />
         <activity
             android:name=".activities.LoginActivity"
