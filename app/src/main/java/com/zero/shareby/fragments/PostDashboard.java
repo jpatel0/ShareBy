@@ -34,6 +34,7 @@ import com.zero.shareby.adapters.PostAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonClickListener {
     private static final String TAG="PostDashboard";
@@ -58,7 +59,7 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
         data.add(new MyData("I want a stormBreaker","Just a description"));
         data.add(new MyData("I know hammer","Just a description"));*/
 
-        postAdapter=new PostAdapter(getActivity(),data,this);
+        postAdapter=new PostAdapter(getActivity().getApplicationContext(),data,this);
         ListView listView=rootView.findViewById(R.id.post_dashboard_list_view);
         listView.setAdapter(postAdapter);
         FloatingActionButton newPostButton=rootView.findViewById(R.id.post_floating_button);
@@ -118,20 +119,24 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d(TAG, dataSnapshot.toString() + "\n");
-                    for (DataSnapshot myPost:dataSnapshot.getChildren()){
-                        if (myPost.child("reqUid").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                && myPost.child("priority").getValue(Integer.class)>0)
-                            data.add(myPost.getValue(Post.class));
-                    }
-                    Collections.sort(data,Collections.reverseOrder(new Comparator<Post>() {
-                        @Override
-                        public int compare(Post o1, Post o2) {
-                            return Long.compare(o1.getTimestamp(),o2.getTimestamp());
+                    try {
+                        Log.d(TAG, dataSnapshot.toString() + "\n");
+                        for (DataSnapshot myPost:dataSnapshot.getChildren()){
+                            if (myPost.child("reqUid").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    && myPost.child("priority").getValue(Integer.class)>0)
+                                data.add(myPost.getValue(Post.class));
                         }
-                    }));
-                    TransitionManager.beginDelayedTransition((ListView)getView().getRootView().findViewById(R.id.post_dashboard_list_view));
-                    postAdapter.notifyDataSetChanged();
+                        Collections.sort(data,Collections.reverseOrder(new Comparator<Post>() {
+                            @Override
+                            public int compare(Post o1, Post o2) {
+                                return Long.compare(o1.getTimestamp(),o2.getTimestamp());
+                            }
+                        }));
+                        TransitionManager.beginDelayedTransition((ListView) Objects.requireNonNull(getView()).getRootView().findViewById(R.id.post_dashboard_list_view));
+                        postAdapter.notifyDataSetChanged();
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override

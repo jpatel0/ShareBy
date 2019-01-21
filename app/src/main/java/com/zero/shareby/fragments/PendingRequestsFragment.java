@@ -51,7 +51,7 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_pending_requests, container, false);
         pendingPostsList=new ArrayList<>();
-        postsAdapter=new PendingRequestsAdapter(getContext(),pendingPostsList,this);
+        postsAdapter=new PendingRequestsAdapter(getActivity().getApplicationContext(),pendingPostsList,this);
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         ListView listView=rootView.findViewById(R.id.pending_requests_listview);
         listView.setAdapter(postsAdapter);
@@ -109,7 +109,7 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
     }
 
     private void updatePendingList(){
-        if (FirebaseAuth.getInstance().getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")) {
+        if (FirebaseAuth.getInstance().getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope") && isAdded()) {
             String country = preferences.getString(getString(R.string.pref_country), "null");
             String pin = preferences.getString(getString(R.string.pref_pin), "null");
             String key1 = preferences.getString(getString(R.string.pref_key1), "null");

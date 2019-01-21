@@ -75,7 +75,7 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("DashboardAdapter",dataSnapshot.toString());
                 UserDetails u=dataSnapshot.getValue(UserDetails.class);
-                if (u.getPhotoUrl()!=null){
+            if (u.getPhotoUrl()!=null){
                     Glide.with(getContext())
                             .load(Uri.parse(u.getPhotoUrl()))
                             .into(imageView);

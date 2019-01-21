@@ -37,7 +37,8 @@
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:configChanges="orientation|keyboardHidden"/>
         <activity android:name=".activities.MyAppIntro" />
         <activity
             android:name=".activities.LoginActivity"
@@ -46,6 +47,7 @@
         <activity
             android:name=".activities.EditProfile"
             android:label="Edit Profile"
+            android:configChanges="orientation|keyboardHidden"
             android:parentActivityName=".activities.UserProfile" />
         <activity
             android:name=".activities.AddressActivity"
@@ -99,12 +101,14 @@
         <activity
             android:name=".chats.ChatActivity"
             android:label="My Chats"
+            android:configChanges="orientation|keyboardHidden"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".chats.ContactListActivity"
             android:parentActivityName=".chats.ChatActivity" />
         <activity
             android:name=".chats.PeerToPeerChat"
+            android:configChanges="orientation|keyboardHidden"
             android:parentActivityName=".chats.ChatActivity" />
     </application>
 

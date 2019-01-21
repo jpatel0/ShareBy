@@ -52,7 +52,7 @@ public class RecentChats extends Fragment implements RecentChatsAdapter.ClickLis
         recentChatList = view.findViewById(R.id.recent_chats_recycler_view);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recentChatList.setLayoutManager(layoutManager);
-        chatsAdapter = new RecentChatsAdapter(getContext(),friends_Uids,this);
+        chatsAdapter = new RecentChatsAdapter(getActivity().getApplicationContext(),friends_Uids,this);
         recentChatList.setAdapter(chatsAdapter);
         refreshLayout = view.findViewById(R.id.recent_chats_refresh);
         FloatingActionButton fab = view.findViewById(R.id.recent_chat_fab_button);

@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.zero.shareby.R;
 import com.zero.shareby.chats.ChatActivity;
@@ -80,11 +82,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     prefEditor.putBoolean("app_intro_check_key",false);
                     prefEditor.clear();
                     prefEditor.commit();
-                    AuthUI.getInstance().signOut(getApplicationContext());
-                    Intent backToLoginIntent = new Intent(this,LoginActivity.class);
-                    backToLoginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(backToLoginIntent);
-                    finish();
+                    AuthUI.getInstance().signOut(getApplicationContext())
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Intent backToLoginIntent = new Intent(MainActivity.this,LoginActivity.class);
+                                    backToLoginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(backToLoginIntent);
+                                    finish();
+                                }
+                            });
                 }
                 break;
 

@@ -60,11 +60,11 @@ public class GroupChatFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         chats_list.setHasFixedSize(true);
         ((LinearLayoutManager) layoutManager).setStackFromEnd(true);
-        chats_list.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        chats_list.addItemDecoration(new DividerItemDecoration(getActivity().getApplicationContext(),DividerItemDecoration.VERTICAL));
         chats_list.setLayoutManager(layoutManager);
 
         chatsData =new ArrayList<>();
-        chatsAdapter=new ChatsAdapter(getContext(),chatsData);
+        chatsAdapter=new ChatsAdapter(getActivity().getApplicationContext(),chatsData);
         chats_list.setAdapter(chatsAdapter);
         mGrpRef = Utilities.getGroupReference(getContext());
 

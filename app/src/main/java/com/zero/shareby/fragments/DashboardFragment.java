@@ -147,7 +147,7 @@ public class DashboardFragment extends Fragment  {
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));*/
         swipeRefreshLayout=rootView.findViewById(R.id.main_dashboard_refresh);
-        dashboardAdapter=new DashboardAdapter(getContext(),data);
+        dashboardAdapter=new DashboardAdapter(getActivity().getApplicationContext(),data);
         listView=rootView.findViewById(R.id.main_dashboard_list_view);
         listView.setAdapter(dashboardAdapter);
         return rootView;
@@ -275,45 +275,47 @@ public class DashboardFragment extends Fragment  {
 
 
 
-    private void updateDashboard(){
-        Log.d(TAG,preferences.getString(getString(R.string.pref_key1),"nnn"));
-        if (FirebaseAuth.getInstance().getCurrentUser()!=null && !preferences.getString(getString(R.string.pref_key1),"nope").equals("nope")) {
-            swipeRefreshLayout.setRefreshing(true);
-            Log.d(TAG,"inside of upadateDash");
-            String country = preferences.getString(getString(R.string.pref_country), "null");
-            String pin = preferences.getString(getString(R.string.pref_pin), "null");
-            String key1 = preferences.getString(getString(R.string.pref_key1), "null");
-            String key2 = preferences.getString(getString(R.string.pref_key2), "null");
+    private void updateDashboard() {
+        if (this.isAdded()) {
+            Log.d(TAG, preferences.getString(getString(R.string.pref_key1), "nnn"));
+            if (FirebaseAuth.getInstance().getCurrentUser() != null && !preferences.getString(getString(R.string.pref_key1), "nope").equals("nope")) {
+                swipeRefreshLayout.setRefreshing(true);
+                Log.d(TAG, "inside of upadateDash");
+                String country = preferences.getString(getString(R.string.pref_country), "null");
+                String pin = preferences.getString(getString(R.string.pref_pin), "null");
+                String key1 = preferences.getString(getString(R.string.pref_key1), "null");
+                String key2 = preferences.getString(getString(R.string.pref_key2), "null");
 
-            DatabaseReference getMyPosts = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
-                    .child(key1).child(key2).child("posts");
+                DatabaseReference getMyPosts = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+                        .child(key1).child(key2).child("posts");
 
-            Query query = getMyPosts.orderByChild("timestamp");
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d(TAG, dataSnapshot.toString() + "\n");
-                    for (DataSnapshot posts:dataSnapshot.getChildren()){
-                        if (posts.hasChild("sharedUid")
-                                || posts.child("priority").getValue(Integer.class)==0) {
-                            data.add(posts.getValue(Post.class));
+                Query query = getMyPosts.orderByChild("timestamp");
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d(TAG, dataSnapshot.toString() + "\n");
+                        for (DataSnapshot posts : dataSnapshot.getChildren()) {
+                            if (posts.hasChild("sharedUid")
+                                    || posts.child("priority").getValue(Integer.class) == 0) {
+                                data.add(posts.getValue(Post.class));
+                            }
                         }
+                        Collections.sort(data, Collections.reverseOrder(new Comparator<Post>() {
+                            @Override
+                            public int compare(Post o1, Post o2) {
+                                return Long.compare(o1.getTimestamp(), o2.getTimestamp());
+                            }
+                        }));
+                        dashboardAdapter.notifyDataSetChanged();
+                        if (swipeRefreshLayout.isRefreshing())
+                            swipeRefreshLayout.setRefreshing(false);
                     }
-                    Collections.sort(data,Collections.reverseOrder(new Comparator<Post>() {
-                        @Override
-                        public int compare(Post o1, Post o2) {
-                            return Long.compare(o1.getTimestamp(),o2.getTimestamp());
-                        }
-                    }));
-                    dashboardAdapter.notifyDataSetChanged();
-                    if (swipeRefreshLayout.isRefreshing())
-                        swipeRefreshLayout.setRefreshing(false);
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            }
         }
     }
 
