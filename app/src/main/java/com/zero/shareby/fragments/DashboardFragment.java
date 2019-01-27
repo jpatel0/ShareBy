@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -105,6 +107,7 @@ public class DashboardFragment extends Fragment  {
                 }
             }
         };*/
+
     }
 
 
@@ -185,6 +188,9 @@ public class DashboardFragment extends Fragment  {
             }
         });
         super.onViewCreated(view, savedInstanceState);
+        AdView adView = view.findViewById(R.id.main_dashboard_ad);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override

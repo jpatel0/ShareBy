@@ -20,6 +20,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         auth=FirebaseAuth.getInstance();
         navigationView.setCheckedItem(R.id.nav_home);
+//        for testing: ca-app-pub-3940256099942544/6300978111
+//        for production : ca-app-pub-7619421557353367~5342952132
+        MobileAds.initialize(this, "ca-app-pub-7619421557353367~5342952132");
+
     }
 
 
