@@ -48,6 +48,8 @@ public class DashboardFragment extends Fragment  {
     public static final String MAP_KEY="map_key";
     private static final String TAG="DashboardFragment";
 
+    private static DashboardFragment fragment;
+
     private FirebaseAuth mAuth;
     //private FirebaseAuth.AuthStateListener mAuthListener;
     SharedPreferences preferences;
@@ -58,10 +60,6 @@ public class DashboardFragment extends Fragment  {
     SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
    // private OnFragmentInteractionListener mListener;
 
     public DashboardFragment() {
@@ -70,31 +68,15 @@ public class DashboardFragment extends Fragment  {
         
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DashboardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DashboardFragment newInstance(String param1, String param2) {
-        DashboardFragment fragment = new DashboardFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+    public static DashboardFragment getInstance() {
+        if (fragment==null)fragment = new DashboardFragment();
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
         mAuth=FirebaseAuth.getInstance();
         /*mAuthListener=new FirebaseAuth.AuthStateListener() {
             @Override

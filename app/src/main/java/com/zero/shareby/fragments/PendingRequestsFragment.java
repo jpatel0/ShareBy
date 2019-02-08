@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,11 +42,16 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
     ArrayList<Post> pendingPostsList;
     PendingRequestsAdapter postsAdapter;
     SharedPreferences preferences;
+    private static PendingRequestsFragment fragment;
 
     public PendingRequestsFragment() {
         // Required empty public constructor
     }
 
+    public static PendingRequestsFragment getInstance() {
+        if (fragment==null)fragment = new PendingRequestsFragment();
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +63,9 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         ListView listView=rootView.findViewById(R.id.pending_requests_listview);
         listView.setAdapter(postsAdapter);
+        AdView adView = rootView.findViewById(R.id.pending_ad);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         return rootView;
     }
 

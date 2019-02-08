@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".fragments.PendingRequestsFragment">
 
@@ -28,11 +29,26 @@
             android:text="Pending Requests" />
     </android.support.v7.widget.CardView>
 
-    <ListView
-        android:id="@+id/pending_requests_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp">
-    </ListView>
 
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ListView
+            android:id="@+id/pending_requests_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_margin="5dp">
+        </ListView>
+        <com.google.android.gms.ads.AdView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pending_ad"
+            android:layout_gravity="bottom"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-7619421557353367/2078181853">
+        </com.google.android.gms.ads.AdView>
+    </FrameLayout>
 </LinearLayout>

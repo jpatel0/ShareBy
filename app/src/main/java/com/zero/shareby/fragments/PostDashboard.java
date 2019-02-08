@@ -39,9 +39,15 @@ import java.util.Objects;
 public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonClickListener {
     private static final String TAG="PostDashboard";
     private ArrayList<Post> data;
+    private static PostDashboard fragment;
     SharedPreferences preferences;
     PostAdapter postAdapter;
     public PostDashboard() {
+    }
+
+    public static PostDashboard getInstance() {
+        if (fragment==null)fragment = new PostDashboard();
+        return fragment;
     }
 
     @Override

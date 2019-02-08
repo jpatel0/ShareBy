@@ -13,9 +13,6 @@ import com.zero.shareby.fragments.PostDashboard;
 public class PagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
-    private DashboardFragment dashboardFragment = new DashboardFragment();
-    private PendingRequestsFragment pendingRequestsFragment = new PendingRequestsFragment();
-    private PostDashboard postDashboard = new PostDashboard();
     public PagerAdapter(Context context,FragmentManager fm) {
         super(fm);
         mContext=context;
@@ -25,13 +22,13 @@ public class PagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return dashboardFragment;
+                return DashboardFragment.getInstance();
 
             case 1:
-                return pendingRequestsFragment;
+                return PendingRequestsFragment.getInstance();
 
             case 2:
-                return postDashboard;
+                return PostDashboard.getInstance();
 
         }
         return null;
