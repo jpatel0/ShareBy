@@ -1,40 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.SwipeRefreshLayout android:id="@+id/main_dashboard_refresh"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    tools:context=".fragments.DashboardFragment"
     xmlns:ads="http://schemas.android.com/apk/res-auto">
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".fragments.DashboardFragment">
+        android:layout_height="176dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:id="@+id/map_container">
+    </FrameLayout>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="176dp"
-            android:clickable="false"
-            android:focusable="false"
-            android:id="@+id/map_container">
-        </FrameLayout>
+    <com.google.android.gms.ads.AdView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_dashboard_ad"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-7619421557353367/2078181853">
+    </com.google.android.gms.ads.AdView>
 
-        <com.google.android.gms.ads.AdView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/main_dashboard_ad"
-            ads:adSize="BANNER"
-            ads:adUnitId="ca-app-pub-7619421557353367/2078181853">
-        </com.google.android.gms.ads.AdView>
-
+    <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/main_dashboard_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android">
         <ListView
             android:id="@+id/main_dashboard_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </ListView>
-    </LinearLayout>
-
-</android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

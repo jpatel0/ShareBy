@@ -43,8 +43,6 @@ import java.util.Comparator;
 
 
 public class DashboardFragment extends Fragment  {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String MAP_KEY="map_key";
     private static final String TAG="DashboardFragment";
 
@@ -148,7 +146,8 @@ public class DashboardFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FragmentManager fm=getFragmentManager();
-        fm.beginTransaction().replace(R.id.map_container,MapFragment.getInstance()).commit();
+        final MapFragment mapFragment = new MapFragment();
+        fm.beginTransaction().replace(R.id.map_container,mapFragment).commit();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -165,7 +164,7 @@ public class DashboardFragment extends Fragment  {
                 data.clear();
                 dashboardAdapter.clear();
                 updateDashboard();
-                MapFragment.getInstance().onResume();
+                mapFragment.onResume();
             }
         });
         super.onViewCreated(view, savedInstanceState);
@@ -191,7 +190,6 @@ public class DashboardFragment extends Fragment  {
         NavigationView nav=getActivity().findViewById(R.id.nav_view);
         nav.setCheckedItem(R.id.nav_home);
         if(!isConnected(getActivity())) buildDialog(getActivity()).show();
-        getFragmentManager().beginTransaction().replace(R.id.map_container,MapFragment.getInstance()).commit();
     }
 
     @Override

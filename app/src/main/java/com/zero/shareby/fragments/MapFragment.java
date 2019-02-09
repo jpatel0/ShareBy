@@ -46,12 +46,6 @@ public class MapFragment extends Fragment implements LocationListener {
     private boolean isPermissionEnabled=false;
     SharedPreferences preferences;
     DatabaseReference uidReference;
-    private static MapFragment fragment;
-
-    public static MapFragment getInstance() {
-        if (fragment==null)fragment = new MapFragment();
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
