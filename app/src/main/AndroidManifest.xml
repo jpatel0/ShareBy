@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zero.shareby">
-
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -24,25 +21,37 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.Test"></activity>
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. -->
+        <activity
+            android:name=".activities.PickLocation"
+            android:label="@string/title_activity_pick_location" /> <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_home" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming -->
+            android:resource="@drawable/ic_home" /> <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
-
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7619421557353367~5342952132"/>
+            android:value="ca-app-pub-7619421557353367~5342952132" />
 
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTop"
-            android:configChanges="orientation|keyboardHidden"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MyAppIntro" />
         <activity
             android:name=".activities.LoginActivity"
@@ -50,38 +59,27 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".activities.EditProfile"
-            android:label="Edit Profile"
             android:configChanges="orientation|keyboardHidden"
+            android:label="Edit Profile"
             android:parentActivityName=".activities.UserProfile" />
         <activity
             android:name=".activities.AddressActivity"
             android:label="Edit Address" />
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
-
         <activity
             android:name=".activities.SplashActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.UserProfile"
             android:label="Profile"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.PostActivity" />
 
         <service android:name=".fcm.FirebaseMessaging">
@@ -89,7 +87,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.
      See README(https://goo.gl/l4GJaQ) for more.
@@ -104,8 +101,8 @@
         -->
         <activity
             android:name=".chats.ChatActivity"
-            android:label="My Chats"
             android:configChanges="orientation|keyboardHidden"
+            android:label="My Chats"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".chats.ContactListActivity"

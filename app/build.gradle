@@ -3,15 +3,15 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config_release {
-			try {
-				storeFile file("D:/android/release_key.jks")
-				storePassword KEYSTORE_PASSWORD
-				keyAlias "sharebyKey"
-				keyPassword KEY_PASSWORD
-			}
-			catch (ex) {
-				throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
-			}
+            try {
+                storeFile file("D:/android/release_key.jks")
+                storePassword KEYSTORE_PASSWORD
+                keyAlias "sharebyKey"
+                keyPassword KEY_PASSWORD
+            }
+            catch (ex) {
+                throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
+            }
         }
     }
     compileSdkVersion 27

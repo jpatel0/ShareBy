@@ -24,7 +24,6 @@
             android:icon="@drawable/ic_logout"
             android:title="Logout" />
 
-
     </group>
 
     <item android:title="Communicate">

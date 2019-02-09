@@ -148,8 +148,7 @@ public class DashboardFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         FragmentManager fm=getFragmentManager();
-        final MapFragment mapFragment = new MapFragment();
-        fm.beginTransaction().replace(R.id.map_container,mapFragment).commit();
+        fm.beginTransaction().replace(R.id.map_container,MapFragment.getInstance()).commit();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -166,7 +165,7 @@ public class DashboardFragment extends Fragment  {
                 data.clear();
                 dashboardAdapter.clear();
                 updateDashboard();
-                mapFragment.onResume();
+                MapFragment.getInstance().onResume();
             }
         });
         super.onViewCreated(view, savedInstanceState);
@@ -192,6 +191,7 @@ public class DashboardFragment extends Fragment  {
         NavigationView nav=getActivity().findViewById(R.id.nav_view);
         nav.setCheckedItem(R.id.nav_home);
         if(!isConnected(getActivity())) buildDialog(getActivity()).show();
+        getFragmentManager().beginTransaction().replace(R.id.map_container,MapFragment.getInstance()).commit();
     }
 
     @Override
