@@ -6,12 +6,12 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +20,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,10 +54,11 @@ import java.util.Locale;
 import java.util.Map;
 
 
-public class AddressActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
-    private static final String TAG=AddressActivity.class.getSimpleName();
+public class AddressActivityOld extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
+    private static final String TAG= AddressActivityOld.class.getSimpleName();
     public static final int RC_PICKER=1353,RC_CREATE_GRP=7828;
     private boolean isPermissionEnabled=false;
+    GoogleApiClient mGoogleApiClient;
     private TextView addressLine;
     DatabaseReference databaseReference;
     ChildEventListener mChildListener;
@@ -84,7 +90,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                             addressLine.setText("");
                         }
                         else {
-                            Geocoder geocoder = new Geocoder(AddressActivity.this, Locale.getDefault());
+                            Geocoder geocoder = new Geocoder(AddressActivityOld.this, Locale.getDefault());
                             List<Address> addressList;
                             try {
                                 addressList=geocoder.getFromLocation(lat,lng,3);
@@ -115,6 +121,12 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
             };
             databaseReference.addChildEventListener(mChildListener);
         }
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
         googleMapButton=findViewById(R.id.google_map_button);
         googleMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,12 +180,12 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         if (requestCode==RC_PICKER){
             if (resultCode==RESULT_OK) {
                 int i;
-                LatLng latLngFromMap = data.getExtras().getParcelable("coordinates");
+                final Place place = PlacePicker.getPlace(this, data);
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses = new ArrayList<>();
                 ArrayList<String> pinCodes = new ArrayList<>();
                 try {
-                    addresses = geocoder.getFromLocation(latLngFromMap.latitude,latLngFromMap.longitude,10);
+                    addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 10);
                     if (addresses.size()>0){
                         for (i=0;i<addresses.size();++i) {
                             pin=addresses.get(i).getPostalCode();
@@ -181,11 +193,12 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                 pinCodes.add(pin);
                             }
                         }
-                        latitude=latLngFromMap.latitude;
-                        longitude=latLngFromMap.longitude;
+                        latitude=addresses.get(0).getLatitude();
+                        longitude=addresses.get(0).getLongitude();
                         country=addresses.get(0).getCountryName();
                         currentAddressLine=addresses.get(0).getAddressLine(0);
                     }
+
                     Log.d(TAG,"addresses List"+addresses);
                     Log.d(TAG,"pinCodes"+pinCodes);
                 } catch (IOException e) {
@@ -201,7 +214,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                     AsyncTask.execute(new Runnable() {
                         @Override
                         public void run() {
-                            AddressActivity.this.runOnUiThread(new Runnable() {
+                            AddressActivityOld.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     addressLine.setText(currentAddressLine);
@@ -235,7 +248,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                                 update user address(lat,lng) to UserDetails first, change prefs accordingly
                                  */
                                 Utilities.uploadUserLocation(getApplicationContext(), latitude, longitude);
-                                AddressActivity.this.runOnUiThread(new Runnable() {
+                                AddressActivityOld.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         placeIntentBuilder(2);
@@ -246,7 +259,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                     });
                 }
                 else
-                    Toast.makeText(AddressActivity.this, "Couldn't obtain enough info on the provided location", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddressActivityOld.this, "Couldn't obtain enough info on the provided location", Toast.LENGTH_SHORT).show();
             }
             else if (resultCode==RESULT_CANCELED){
                 Log.d(TAG," Map Canceled");
@@ -256,7 +269,8 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
             Log.d(TAG,"intent for create grp");
             final SharedPreferences.Editor editLoc=mPref.edit();
             if(resultCode==RESULT_OK){
-                LatLng latLng=data.getExtras().getParcelable("coordinates");
+                Place place = PlacePicker.getPlace(this, data);
+                LatLng latLng=place.getLatLng();
                 Geocoder geocoder = new Geocoder(this, Locale.getDefault());
                 List<Address> addresses = new ArrayList<>();
                 String country="",pin="";
@@ -410,12 +424,19 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
 
 
     private void placeIntentBuilder(int i){
-        if (i == 2) {
-            // for creating new group
-            displayCreateGroupDialog();
-        } else {
-            // for user's location
-            startActivityForResult(new Intent(this,PickLocation.class), RC_PICKER);
+        try {
+            if (i == 2) {
+                // for creating new group
+                displayCreateGroupDialog();
+            } else {
+                // for user's location
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                startActivityForResult(builder.build(AddressActivityOld.this), RC_PICKER);
+            }
+        }catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
         }
     }
 
@@ -521,7 +542,14 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         alertBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startActivityForResult(new Intent(AddressActivity.this,PickLocation.class), RC_CREATE_GRP);
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                try {
+                    startActivityForResult(builder.build(AddressActivityOld.this), RC_CREATE_GRP);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
                 dialog.dismiss();
             }
         }).show();
@@ -539,7 +567,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private void goToMainActivity(){
-        startActivity(new Intent(AddressActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        startActivity(new Intent(AddressActivityOld.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK));
         finish();
     }
 

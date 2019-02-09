@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -52,7 +51,7 @@ public class PickLocation extends FragmentActivity implements OnMapReadyCallback
     public void onMapLongClick(final LatLng latLng) {
         mMap.addMarker(new MarkerOptions().position(latLng).title("selecting this"));
 
-        AlertDialog.Builder builder = DialogBuilder.showAlertDialog(this,"Select this Location?","Are you sure you want to set this as your location address?");
+        AlertDialog.Builder builder = DialogBuilder.getDialogBuilder(this,"Select this Location?","Are you sure you want to set this as your location address?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
