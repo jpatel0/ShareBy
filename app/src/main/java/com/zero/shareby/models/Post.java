@@ -2,13 +2,19 @@ package com.zero.shareby.models;
 
 public class Post {
     private String refKey,reqUid,sharedUid,repliedUid,repliedName,name,title,desc;
-    private int priority,status;
+    private int priority,status,type;
     private long timestamp;
-
+/*
+type: 0-question
+      1-req item
+priority: 0-new user
+          1-item post normal
+          2-urgent item req
+ */
     public Post(){
     }
 
-    public Post(String uid1,String uid2,String n,String tit,String des,int prior,int stat){
+    public Post(String uid1,String uid2,String n,String tit,String des,int prior,int stat,int type){
         reqUid=uid1;
         sharedUid=uid2;
         name=n;
@@ -16,6 +22,7 @@ public class Post {
         desc=des;
         priority=prior;
         status=stat;
+        this.type = type;
         timestamp=System.currentTimeMillis();
     }
 
@@ -25,6 +32,14 @@ public class Post {
         title="Welcome "+n+" as the new member";
         priority=0;
         timestamp=System.currentTimeMillis();
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getRepliedUid() {

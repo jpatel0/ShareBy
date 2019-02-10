@@ -7,12 +7,42 @@
     android:orientation="vertical"
     tools:context=".activities.PostActivity">
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="7dp"
+            android:textSize="20sp"
+            android:text="Select Category:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+        <Spinner
+            android:id="@+id/post_category_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:gravity="start"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="1dp"
+            android:entries="@array/post_category_list"
+            android:padding="7dp"/>
+    </RelativeLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="What do you want?"
         android:fontFamily="sans-serif"
         android:textSize="22sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginTop="10dp"
@@ -34,6 +64,7 @@
         android:layout_height="wrap_content"
         android:text="Item Description(optional)"
         android:textSize="22sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:paddingStart="5dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"

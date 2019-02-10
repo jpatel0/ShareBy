@@ -101,6 +101,7 @@ public class PendingRequestsAdapter extends ArrayAdapter<Post>{
             haveButton.setVisibility(View.GONE);
         }else {
 
+            newView.findViewById(R.id.pending_card_view).setBackgroundTintList(getContext().getResources().getColorStateList(R.color.white));
             final boolean isExpanded = position==mExpandedPosition;
             replyButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
             haveButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);

@@ -19,4 +19,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_pick_location">Pick Location</string>
 
+    <string-array name="post_category_list">
+        <item>Select from here</item>
+        <item>Ask a Question</item>
+        <item>Request an Item</item>
+    </string-array>
+
 </resources>

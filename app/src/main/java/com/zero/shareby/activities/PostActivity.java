@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +30,7 @@ public class PostActivity extends AppCompatActivity {
     EditText titleEditText,descriptionEditText;
     SharedPreferences preferences;
     FirebaseUser user;
+    Spinner categorySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class PostActivity extends AppCompatActivity {
 
         preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         user=FirebaseAuth.getInstance().getCurrentUser();
+        categorySpinner = findViewById(R.id.post_category_spinner);
         titleEditText=findViewById(R.id.title_edit_text);
         descriptionEditText=findViewById(R.id.description_edit_text);
         postButton=findViewById(R.id.post_button);
@@ -53,7 +56,7 @@ public class PostActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().trim().length()>0) {
+                if (s.toString().trim().length()>0 && categorySpinner.getSelectedItemPosition()!=0) {
                     postButton.setEnabled(true);
                     postButton.setTextColor(getResources().getColor(android.R.color.white));
                     postButton.setBackgroundTintList(getResources().getColorStateList(R.color.colorAccent));
@@ -77,7 +80,6 @@ public class PostActivity extends AppCompatActivity {
                 postMessage();
             }
         });
-
     }
 
     private void postMessage() {
@@ -94,7 +96,7 @@ public class PostActivity extends AppCompatActivity {
 
             DatabaseReference uploadPost = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
                     .child(key1).child(key2).child("posts");
-            Post newPost=new Post(user.getUid(),null,user.getDisplayName(),title,description,1,0);
+            Post newPost=new Post(user.getUid(),null,user.getDisplayName(),title,description,1,0,categorySpinner.getSelectedItemPosition()-1);
             uploadPost.push().setValue(newPost).addOnSuccessListener(this, new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
