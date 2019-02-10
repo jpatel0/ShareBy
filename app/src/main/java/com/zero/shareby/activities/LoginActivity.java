@@ -34,7 +34,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.zero.shareby.R;
 import com.zero.shareby.models.UserDetails;
-import com.zero.shareby.utils.Utilities;
+import com.zero.shareby.Utils.Utilities;
 import com.zero.shareby.fcm.FirebaseMessaging;
 
 import java.util.Arrays;
@@ -265,8 +265,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==RC_PERMISSIONS){
-            for(int i=0;i<permissions.length;i++){
-                if(ActivityCompat.checkSelfPermission(this,permissions[i])!=PackageManager.PERMISSION_GRANTED){
+            for(String perm : permissions){
+                if(ActivityCompat.checkSelfPermission(this,perm)!=PackageManager.PERMISSION_GRANTED){
                     return;
                 }
             }

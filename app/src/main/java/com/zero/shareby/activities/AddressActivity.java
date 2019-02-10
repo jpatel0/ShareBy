@@ -39,7 +39,7 @@ import com.zero.shareby.Utils.DialogBuilder;
 import com.zero.shareby.models.CreateGroup;
 import com.zero.shareby.models.Post;
 import com.zero.shareby.models.UserDetails;
-import com.zero.shareby.utils.Utilities;
+import com.zero.shareby.Utils.Utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.zero.shareby.utils;
+package com.zero.shareby.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

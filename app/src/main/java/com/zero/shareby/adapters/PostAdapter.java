@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.zero.shareby.utils.Utilities.calculateTimeDisplay;
+import static com.zero.shareby.Utils.Utilities.calculateTimeDisplay;
 
 public class PostAdapter extends ArrayAdapter<Post> {
 

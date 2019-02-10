@@ -53,8 +53,6 @@ public class DashboardFragment extends Fragment  {
     SharedPreferences preferences;
     ArrayList<Post> data;
     DashboardAdapter dashboardAdapter;
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
 
