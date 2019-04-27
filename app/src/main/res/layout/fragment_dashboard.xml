@@ -16,13 +16,13 @@
         android:id="@+id/map_container">
     </FrameLayout>
 
-    <com.google.android.gms.ads.AdView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/main_dashboard_ad"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-7619421557353367/2078181853">
-    </com.google.android.gms.ads.AdView>
+    <!--<com.google.android.gms.ads.AdView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/main_dashboard_ad"-->
+        <!--ads:adSize="BANNER"-->
+        <!--ads:adUnitId="ca-app-pub-7619421557353367/2078181853">-->
+    <!--</com.google.android.gms.ads.AdView>-->
 
     <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/main_dashboard_refresh"
         android:layout_width="match_parent"

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".activities.PostActivity">
 
@@ -96,5 +97,12 @@
         android:layout_gravity="end"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="5dp"/>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/post_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-7619421557353367/2078181853"></com.google.android.gms.ads.AdView>
 
 </LinearLayout>

@@ -166,9 +166,9 @@ public class DashboardFragment extends Fragment  {
             }
         });
         super.onViewCreated(view, savedInstanceState);
-        AdView adView = view.findViewById(R.id.main_dashboard_ad);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+//        AdView adView = view.findViewById(R.id.main_dashboard_ad);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        adView.loadAd(adRequest);
     }
 
     @Override
