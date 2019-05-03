@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,12 +37,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class PendingRequestsFragment extends Fragment implements PendingRequestsAdapter.ButtonClickListener {
+public class PendingRequestsFragment extends Fragment implements PendingRequestsAdapter.ButtonClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG= "PendingRequestFragment";
 
     ArrayList<Post> pendingPostsList;
     PendingRequestsAdapter postsAdapter;
     SharedPreferences preferences;
+    SwipeRefreshLayout swipeRefreshLayout;
     private static PendingRequestsFragment fragment;
 
     public PendingRequestsFragment() {
@@ -63,18 +65,18 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         ListView listView=rootView.findViewById(R.id.pending_requests_listview);
         listView.setAdapter(postsAdapter);
-        AdView adView = rootView.findViewById(R.id.pending_ad);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        swipeRefreshLayout = rootView.findViewById(R.id.pending_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
+//        AdView adView = rootView.findViewById(R.id.pending_ad);
+//        AdRequest adRequest = new AdRequest.Builder().build();
+//        adView.loadAd(adRequest);
         return rootView;
     }
 
     @Override
     public void onResume() {
-        pendingPostsList.clear();
-        postsAdapter.clear();
         super.onResume();
-        updatePendingList();
+        onRefresh();
     }
 
     @Override
@@ -149,11 +151,12 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
                         }
                     }));
                     postsAdapter.notifyDataSetChanged();
-
+                    swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
@@ -161,4 +164,11 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
     }
 
 
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        pendingPostsList.clear();
+        postsAdapter.clear();
+        updatePendingList();
+    }
 }

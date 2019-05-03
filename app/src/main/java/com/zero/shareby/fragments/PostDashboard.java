@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,12 +37,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonClickListener {
+public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG="PostDashboard";
     private ArrayList<Post> data;
     private static PostDashboard fragment;
     SharedPreferences preferences;
     PostAdapter postAdapter;
+    SwipeRefreshLayout swipeRefreshLayout;
     public PostDashboard() {
     }
 
@@ -75,6 +77,8 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
                 startActivity(new Intent(getActivity(),PostActivity.class));
             }
         });
+        swipeRefreshLayout = rootView.findViewById(R.id.post_dashboard_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
         return rootView;
     }
 
@@ -106,9 +110,7 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
     @Override
     public void onResume() {
         super.onResume();
-        data.clear();
-        postAdapter.clear();
-        updatePostDashboard();
+        onRefresh();
     }
 
     private void updatePostDashboard(){
@@ -143,15 +145,23 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
                     }catch (NullPointerException e){
                         e.printStackTrace();
                     }
+                    swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             });
         }
     }
 
 
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        data.clear();
+        postAdapter.clear();
+        updatePostDashboard();
+    }
 }

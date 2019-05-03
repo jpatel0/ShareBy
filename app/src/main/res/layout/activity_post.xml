@@ -1,108 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<FrameLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context=".activities.PostActivity">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <RelativeLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="10dp">
+        android:layout_height="match_parent"
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        tools:context=".activities.PostActivity">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="7dp"
+                android:textSize="20sp"
+                android:text="Select Category:"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+            <Spinner
+                android:id="@+id/post_category_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:gravity="start"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="1dp"
+                android:entries="@array/post_category_list"
+                android:padding="7dp"/>
+        </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="7dp"
-            android:textSize="20sp"
-            android:text="Select Category:"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+            android:text="What do you want?"
+            android:fontFamily="sans-serif"
+            android:textSize="22sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"
+            android:paddingStart="5dp"/>
 
-        <Spinner
-            android:id="@+id/post_category_spinner"
+        <EditText
+            android:id="@+id/title_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:paddingStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:hint="Your Request Item Title"
+            android:inputType="text"
+            android:background="@drawable/bg_edittext"/>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:gravity="start"
+            android:text="Item Description(optional)"
+            android:textSize="22sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:paddingStart="5dp"
             android:layout_marginStart="5dp"
-            android:layout_marginEnd="1dp"
-            android:entries="@array/post_category_list"
-            android:padding="7dp"/>
-    </RelativeLayout>
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="10dp"/>
 
-    <TextView
+
+        <EditText
+            android:id="@+id/description_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:paddingStart="5dp"
+            android:hint="Let your neighbors know exactly what you want.."
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:gravity="top"
+            android:background="@drawable/bg_edittext"/>
+
+        <Button
+            android:id="@+id/post_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="Post"
+            android:backgroundTint="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:enabled="false"
+            android:layout_gravity="end"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"/>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/post_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-7619421557353367/2078181853"></com.google.android.gms.ads.AdView>
+    </LinearLayout>
+
+
+    <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What do you want?"
-        android:fontFamily="sans-serif"
-        android:textSize="22sp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="10dp"
-        android:paddingStart="5dp"/>
-
-    <EditText
-        android:id="@+id/title_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:paddingStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:hint="Your Request Item Title"
-        android:inputType="text"
-        android:background="@drawable/bg_edittext"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Item Description(optional)"
-        android:textSize="22sp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:paddingStart="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="10dp"/>
-
-
-    <EditText
-        android:id="@+id/description_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:paddingStart="5dp"
-        android:hint="Let your neighbors know exactly what you want.."
-        android:inputType="textMultiLine"
-        android:lines="5"
-        android:gravity="top"
-        android:background="@drawable/bg_edittext"/>
-
-    <Button
-        android:id="@+id/post_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Post"
-        android:backgroundTint="@color/colorAccent"
-        android:textColor="@android:color/white"
-        android:enabled="false"
-        android:layout_gravity="end"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="5dp"/>
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/post_ad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-7619421557353367/2078181853"></com.google.android.gms.ads.AdView>
-
-</LinearLayout>
+        android:layout_gravity="center"
+        android:id="@+id/post_progress"
+        android:visibility="gone"/>
+</FrameLayout>

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ public class PostActivity extends AppCompatActivity {
     SharedPreferences preferences;
     FirebaseUser user;
     Spinner categorySpinner;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +84,14 @@ public class PostActivity extends AppCompatActivity {
                 postMessage();
             }
         });
-
+        progressBar = findViewById(R.id.post_progress);
         AdView adView = findViewById(R.id.post_ad);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
     }
 
     private void postMessage() {
+        progressBar.setVisibility(View.VISIBLE);
         String title=titleEditText.getText().toString().trim();
         String description=null;
         if (descriptionEditText.getText().toString().trim().length()>0){
@@ -106,14 +109,17 @@ public class PostActivity extends AppCompatActivity {
             uploadPost.push().setValue(newPost).addOnSuccessListener(this, new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(PostActivity.this,"Your Post Request Sent",Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
 
         }
-        else
-            Toast.makeText(this,"An Error occured",Toast.LENGTH_SHORT).show();
+        else {
+            Toast.makeText(this, "An Error occured", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
