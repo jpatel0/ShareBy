@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ProgressBar
+        android:id="@+id/edit_layout_progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:backgroundTint="@color/dividerColor" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/edit_layout_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/edit_profile_image"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="22dp"
+                android:src="@drawable/meet_people"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="2dp" />
+
+            <TextView
+                android:id="@+id/name_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorAccent"
+                android:text="First and Last Name"/>
+
+            <EditText
+                android:id="@+id/edit_profile_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="9dp"
+                android:layout_marginStart="9dp"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/email_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorAccent"
+                android:text="Email"/>
+
+            <EditText
+                android:id="@+id/edit_profile_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="9dp"
+                android:layout_marginStart="9dp"
+                android:inputType="textEmailAddress"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/phone_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorAccent"
+                android:text="Mobile Number"/>
+
+            <EditText
+                android:id="@+id/edit_profile_phone"
+                android:inputType="phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="9dp"
+                android:layout_marginStart="9dp"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/address_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="12sp"
+                android:textColor="@color/colorAccent"
+                android:layout_marginStart="10dp"
+                android:text="Your Address"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/edit_address_text_view"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="11dp"
+                    android:lines="1"
+                    android:maxLines="2"
+                    android:text="No Address Set Yet"
+                    android:textSize="17sp" />
+
+                <Button
+                    android:id="@+id/change_location_button"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.8"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/red"
+                    android:textColor="@color/white"
+                    android:text="Change"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/age_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorAccent"
+                android:text="Age"/>
+
+            <EditText
+                android:id="@+id/edit_profile_age"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="9dp"
+                android:layout_marginStart="9dp"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/about_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/colorAccent"
+                android:text="About"/>
+
+            <EditText
+                android:id="@+id/edit_profile_about"
+                android:inputType="textMultiLine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="9dp"
+                android:layout_marginStart="9dp"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/edit_profile_save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="@color/green"
+                android:textColor="@color/white"
+                android:text="Save"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

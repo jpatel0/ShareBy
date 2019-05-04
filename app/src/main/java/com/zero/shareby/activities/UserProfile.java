@@ -93,7 +93,7 @@ public class UserProfile extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(UserProfile.this,EditProfile.class));
+                    startActivity(new Intent(UserProfile.this,UserSettings.class));
                 }
             });
 

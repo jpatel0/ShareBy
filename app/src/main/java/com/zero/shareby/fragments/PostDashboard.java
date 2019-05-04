@@ -104,7 +104,19 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
 
     @Override
     public void onDeleteButtonClick(Post post) {
-        Snackbar.make(getActivity().findViewById(R.id.post_dashboard_layout),"feature coming soon",Snackbar.LENGTH_SHORT).show();
+        String country = preferences.getString(getString(R.string.pref_country), "null");
+        String pin = preferences.getString(getString(R.string.pref_pin), "null");
+        String key1 = preferences.getString(getString(R.string.pref_key1), "null");
+        String key2 = preferences.getString(getString(R.string.pref_key2), "null");
+        DatabaseReference postReference = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+                .child(key1).child(key2).child("posts").child(post.getRefKey());
+        postReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Snackbar.make(getActivity().findViewById(R.id.post_dashboard_layout),"Post Removed Successfully",Snackbar.LENGTH_SHORT).show();
+                onRefresh();
+            }
+        });
     }
 
     @Override

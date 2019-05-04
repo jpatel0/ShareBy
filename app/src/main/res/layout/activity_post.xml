@@ -42,66 +42,77 @@
                 android:padding="7dp"/>
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="What do you want?"
-            android:fontFamily="sans-serif"
-            android:textSize="22sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="10dp"
-            android:paddingStart="5dp"/>
-
-        <EditText
-            android:id="@+id/title_edit_text"
+        <LinearLayout
+            android:id="@+id/post_selection_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:paddingStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:hint="Your Request Item Title"
-            android:inputType="text"
-            android:background="@drawable/bg_edittext"/>
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Item Description(optional)"
-            android:textSize="22sp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:paddingStart="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="10dp"/>
+            <TextView
+                android:id="@+id/post_title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="What do you want?"
+                android:fontFamily="sans-serif"
+                android:textSize="22sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                android:paddingStart="5dp"/>
+
+            <EditText
+                android:id="@+id/title_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:paddingStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:hint="Your Request Item Title"
+                android:inputType="text"
+                android:background="@drawable/bg_edittext"/>
+
+            <TextView
+                android:id="@+id/post_description_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Item Description(optional)"
+                android:textSize="22sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:paddingStart="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"/>
 
 
-        <EditText
-            android:id="@+id/description_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:paddingStart="5dp"
-            android:hint="Let your neighbors know exactly what you want.."
-            android:inputType="textMultiLine"
-            android:lines="5"
-            android:gravity="top"
-            android:background="@drawable/bg_edittext"/>
+            <EditText
+                android:id="@+id/description_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:paddingStart="5dp"
+                android:hint="Let your neighbors know exactly what you want.."
+                android:inputType="textMultiLine"
+                android:lines="5"
+                android:gravity="top"
+                android:background="@drawable/bg_edittext"/>
 
-        <Button
-            android:id="@+id/post_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="Post"
-            android:backgroundTint="@color/colorAccent"
-            android:textColor="@android:color/white"
-            android:enabled="false"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"/>
+            <Button
+                android:id="@+id/post_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Post"
+                android:backgroundTint="@color/colorAccent"
+                android:textColor="@android:color/white"
+                android:enabled="false"
+                android:layout_gravity="end"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"/>
+
+        </LinearLayout>
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/post_ad"

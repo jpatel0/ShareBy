@@ -20,12 +20,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.util.data.ProviderAvailability;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.zero.shareby.R;
 import com.zero.shareby.chats.ChatActivity;
 import com.zero.shareby.adapters.PagerAdapter;
@@ -68,6 +71,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        for testing: ca-app-pub-3940256099942544/6300978111
 //        for production : ca-app-pub-7619421557353367~5342952132
         MobileAds.initialize(this, "ca-app-pub-7619421557353367~5342952132");
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            for (UserInfo profile : user.getProviderData()) {
+                // Id of the provider (ex: google.com)
+                String providerId = profile.getProviderId();
+
+                // UID specific to the provider
+                String uid = profile.getUid();
+                Log.d(TAG,"Provider:"+providerId);
+
+//
+//                // Name, email address, and profile photo Url
+//                String name = profile.getDisplayName();
+//                String email = profile.getEmail();
+//                Uri photoUrl = profile.getPhotoUrl();
+            }
+        }
+
 
     }
 

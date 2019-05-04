@@ -3,12 +3,13 @@ package com.zero.shareby.models;
 import java.io.Serializable;
 
 public class UserDetails implements Serializable {
-    private String name;
+    private String name,email,about;
     private String uid;
     private double latitude;
     private double longitude;
     private String phone,photoUrl;
     private String country,pin,key1,key2,tokenId;
+    private int age;
 
     public UserDetails(){
         latitude=0.0;
@@ -18,6 +19,30 @@ public class UserDetails implements Serializable {
         key1="null";
         key2="null";
         name="null";
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getTokenId() {

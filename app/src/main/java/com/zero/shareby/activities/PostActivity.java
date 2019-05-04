@@ -10,10 +10,13 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
@@ -31,10 +34,13 @@ public class PostActivity extends AppCompatActivity {
 
     Button postButton;
     EditText titleEditText,descriptionEditText;
+    TextView titleTextView,descTextView;
     SharedPreferences preferences;
     FirebaseUser user;
     Spinner categorySpinner;
     ProgressBar progressBar;
+    LinearLayout selectionLayout;
+    int type = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +51,9 @@ public class PostActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        selectionLayout = findViewById(R.id.post_selection_view);
+        titleTextView=findViewById(R.id.post_title_text_view);
+        descTextView=findViewById(R.id.post_description_text_view);
         preferences= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         user=FirebaseAuth.getInstance().getCurrentUser();
         categorySpinner = findViewById(R.id.post_category_spinner);
@@ -53,6 +62,36 @@ public class PostActivity extends AppCompatActivity {
         postButton=findViewById(R.id.post_button);
         postButton.setBackgroundTintList(getResources().getColorStateList(android.R.color.darker_gray));
         postButton.setTextColor(getResources().getColor(android.R.color.white));
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+              @Override
+              public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                  if (position==1){
+                      type =0;
+                      titleTextView.setText("What is your Query?");
+                      titleEditText.setHint("Let others know your question");
+                      descTextView.setText("Give a Little Explanation(optional)");
+                      descriptionEditText.setHint("A description helps others to understand your query better");
+                      selectionLayout.setVisibility(View.VISIBLE);
+                  }else if (position==2){
+                      type =1;
+                      titleTextView.setText("What do you want?");
+                      titleEditText.setHint("Your Request Item Title");
+                      descTextView.setText("Item Description(optional)");
+                      descriptionEditText.setHint("Let your neighbors know exactly what you want..");
+                      selectionLayout.setVisibility(View.VISIBLE);
+                  }else {
+                      selectionLayout.setVisibility(View.GONE);
+                  }
+              }
+
+              @Override
+              public void onNothingSelected(AdapterView<?> parent) {
+                  selectionLayout.setVisibility(View.GONE);
+              }
+          }
+        );
+
         titleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -117,7 +156,7 @@ public class PostActivity extends AppCompatActivity {
 
         }
         else {
-            Toast.makeText(this, "An Error occured", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "An Error occurred", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.GONE);
         }
     }
