@@ -72,23 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        for production : ca-app-pub-7619421557353367~5342952132
         MobileAds.initialize(this, "ca-app-pub-7619421557353367~5342952132");
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            for (UserInfo profile : user.getProviderData()) {
-                // Id of the provider (ex: google.com)
-                String providerId = profile.getProviderId();
-
-                // UID specific to the provider
-                String uid = profile.getUid();
-                Log.d(TAG,"Provider:"+providerId);
-
-//
-//                // Name, email address, and profile photo Url
-//                String name = profile.getDisplayName();
-//                String email = profile.getEmail();
-//                Uri photoUrl = profile.getPhotoUrl();
-            }
-        }
 
 
     }

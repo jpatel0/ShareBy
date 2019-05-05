@@ -58,8 +58,6 @@ public class LoginActivity extends AppCompatActivity {
         final SharedPreferences userAvailable= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         providers= Arrays.asList(
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.EmailBuilder().setRequireName(true).build(),
                 new AuthUI.IdpConfig.PhoneBuilder().build()
         );
 
@@ -105,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                                     UserDetails userDetails = new UserDetails();
                                     userDetails.setUid(firebaseAuth.getUid());
                                     userDetails.setName(firebaseAuth.getCurrentUser().getDisplayName());
+                                    userDetails.setPhone(firebaseAuth.getCurrentUser().getPhoneNumber());
                                     if (firebaseAuth.getCurrentUser().getPhotoUrl()!=null)
                                         userDetails.setPhotoUrl(firebaseAuth.getCurrentUser().getPhotoUrl().toString());
                                     DatabaseReference fd = FirebaseDatabase.getInstance().getReference().child("UserDetails").child(firebaseAuth.getCurrentUser().getUid());
@@ -127,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                                             SharedPreferences.Editor editor=userAvailable.edit();
                                             editor.putBoolean("uploaded",true);
                                             editor.commit();
-                                            startActivity(new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                            startActivity(new Intent(LoginActivity.this, UserSettings.class).putExtra("newUser","true"));
                                             pb.setVisibility(View.INVISIBLE);
                                             finish();
                                         }
@@ -150,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
                     //New User Sign up
+
                     startActivityForResult(AuthUI.getInstance()
                                             .createSignInIntentBuilder()
                                             .setTheme(R.style.AppTheme)

@@ -59,7 +59,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     Button googleMapButton;
     SharedPreferences mPref;
     private Listener listener;
-    private String country=null,currentAddressLine,pin;
+    private String country=null,currentAddressLine,pin,uname;
     private double latitude=0,longitude=0;
 
     @Override
@@ -68,6 +68,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         setContentView(R.layout.activity_address);
         addressLine =findViewById(R.id.address1_edit_text);
         mPref= PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        uname = getIntent().getStringExtra("uname");
         if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
             databaseReference = FirebaseDatabase.getInstance().getReference().child("UserDetails");
             mChildListener = new ChildEventListener() {
@@ -277,7 +278,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                         1,2000,latLng.latitude,latLng.longitude));
                 writeTokenToGroup(createRef);
                 Log.d(TAG,createRef.getKey());
-                Post post=new Post(user.getUid(),user.getDisplayName());
+                Post post=new Post(user.getUid(),uname);
                 createRef.child("posts").push().setValue(post);
                 editLoc.putString(getResources().getString(R.string.pref_country), country);
                 editLoc.putString(getResources().getString(R.string.pref_pin), pin);
@@ -371,6 +372,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
 
     private void addUserToGroup(String country,String pin,String key1,String key2){
         FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+        String uid=user.getUid();
         DatabaseReference groupsRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin);
         //groupsRef.child(key1).child(key2).child("members").child(user.getUid()).setValue(true);
 
@@ -383,7 +385,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
                     pinn=mPref.getString(getResources().getString(R.string.pref_pin),"nope");
             DatabaseReference delOldGroup=FirebaseDatabase.getInstance().getReference().child("Groups").child(count).child(pinn)
                     .child(k1).child(k2);
-            delOldGroup.child("members").child(user.getUid())
+            delOldGroup.child("members").child(uid)
                     .removeValue(new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
@@ -393,7 +395,8 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
         }
         //add user to the group
         writeTokenToGroup(groupsRef.child(key1).child(key2));
-        groupsRef.child(key1).child(key2).child("posts").push().setValue(new Post(user.getUid(),user.getDisplayName()));
+        Post post = new Post(uid,uname);
+        groupsRef.child(key1).child(key2).child("posts").push().setValue(post);
         uploadUserDetails(country,pin,key1,key2);
     }
 
@@ -539,7 +542,7 @@ public class AddressActivity extends AppCompatActivity implements GoogleApiClien
     }
 
     private void goToMainActivity(){
-        startActivity(new Intent(AddressActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        //startActivity(new Intent(AddressActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_CLEAR_TASK));
         finish();
     }
 

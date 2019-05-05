@@ -54,24 +54,24 @@
                 android:layout_marginStart="9dp"
                 android:textSize="17sp" />
 
-            <TextView
-                android:id="@+id/email_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:textSize="12sp"
-                android:layout_marginStart="10dp"
-                android:textColor="@color/colorAccent"
-                android:text="Email"/>
+            <!--<TextView-->
+                <!--android:id="@+id/email_text_view"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:textSize="12sp"-->
+                <!--android:layout_marginStart="10dp"-->
+                <!--android:textColor="@color/colorAccent"-->
+                <!--android:text="Email"/>-->
 
-            <EditText
-                android:id="@+id/edit_profile_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="9dp"
-                android:layout_marginStart="9dp"
-                android:inputType="textEmailAddress"
-                android:textSize="17sp" />
+            <!--<EditText-->
+                <!--android:id="@+id/edit_profile_email"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginEnd="9dp"-->
+                <!--android:layout_marginStart="9dp"-->
+                <!--android:inputType="textEmailAddress"-->
+                <!--android:textSize="17sp" />-->
 
             <TextView
                 android:id="@+id/phone_text_view"
@@ -86,6 +86,10 @@
             <EditText
                 android:id="@+id/edit_profile_phone"
                 android:inputType="phone"
+                android:enabled="false"
+                android:hint="mobile"
+                android:textColor="#89000000"
+                android:text="123"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="9dp"

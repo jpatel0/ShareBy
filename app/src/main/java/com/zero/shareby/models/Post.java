@@ -29,7 +29,7 @@ priority: 0-new user
     public Post(String u,String n){
         reqUid=u;
         name=n;
-        title="Welcome "+n+" as the new member";
+        title="Welcome "+name+" as the new member";
         priority=0;
         timestamp=System.currentTimeMillis();
     }

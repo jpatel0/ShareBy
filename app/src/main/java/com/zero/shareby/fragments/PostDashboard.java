@@ -67,7 +67,7 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
         data.add(new MyData("I want a stormBreaker","Just a description"));
         data.add(new MyData("I know hammer","Just a description"));*/
 
-        postAdapter=new PostAdapter(getActivity().getApplicationContext(),data,this);
+        postAdapter=new PostAdapter(getActivity(),data,this);
         ListView listView=rootView.findViewById(R.id.post_dashboard_list_view);
         listView.setAdapter(postAdapter);
         FloatingActionButton newPostButton=rootView.findViewById(R.id.post_floating_button);

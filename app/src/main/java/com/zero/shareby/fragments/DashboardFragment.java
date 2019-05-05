@@ -128,7 +128,7 @@ public class DashboardFragment extends Fragment  {
         data.add(new DashboardData("Jay","hammer","zero",1));
         data.add(new DashboardData("Jay","hammer","zero",1));*/
         swipeRefreshLayout=rootView.findViewById(R.id.main_dashboard_refresh);
-        dashboardAdapter=new DashboardAdapter(getActivity().getApplicationContext(),data);
+        dashboardAdapter=new DashboardAdapter(getActivity(),data);
         listView=rootView.findViewById(R.id.main_dashboard_list_view);
         listView.setAdapter(dashboardAdapter);
         return rootView;

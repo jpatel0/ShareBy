@@ -61,7 +61,7 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
         // Inflate the layout for this fragment
         View rootView=inflater.inflate(R.layout.fragment_pending_requests, container, false);
         pendingPostsList=new ArrayList<>();
-        postsAdapter=new PendingRequestsAdapter(getActivity().getApplicationContext(),pendingPostsList,this);
+        postsAdapter=new PendingRequestsAdapter(getActivity(),pendingPostsList,this);
         preferences= PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         ListView listView=rootView.findViewById(R.id.pending_requests_listview);
         listView.setAdapter(postsAdapter);
