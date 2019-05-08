@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/post_item_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
+        android:layout_margin="3dp"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="7dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/card_profile_image"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:padding="5dp"
+                android:src="@drawable/sign"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:id="@+id/card_title"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toEndOf="@id/card_profile_image"
+                android:layout_toStartOf="@id/timestamp_post_dashboard"
+                android:layout_alignParentTop="true"
+                android:maxLines="2"
+                android:gravity="center_vertical"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="Let me borrow this object"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/timestamp_post_dashboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="time"
+                android:layout_alignParentTop="true"
+                android:textStyle="italic"
+                android:maxLines="1"
+                android:gravity="top"
+                android:paddingEnd="10dp"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:textSize="13sp" />
+
+
+            <TextView
+                android:id="@+id/card_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/card_title"
+                android:maxLines="3"
+                android:layout_alignParentStart="true"
+                android:paddingEnd="5dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="3dp"
+                android:layout_marginBottom="4dp"
+                android:text="Here's a little description of it"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/post_replies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/card_description"
+                android:layout_alignParentStart="true"
+                android:paddingEnd="5dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="3dp"
+                android:layout_marginBottom="4dp"
+                android:text="No one has replied yet..."
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:textColor="@color/colorAccent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

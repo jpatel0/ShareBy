@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -104,19 +105,20 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
 
     @Override
     public void onDeleteButtonClick(Post post) {
-        String country = preferences.getString(getString(R.string.pref_country), "null");
-        String pin = preferences.getString(getString(R.string.pref_pin), "null");
-        String key1 = preferences.getString(getString(R.string.pref_key1), "null");
-        String key2 = preferences.getString(getString(R.string.pref_key2), "null");
-        DatabaseReference postReference = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
-                .child(key1).child(key2).child("posts").child(post.getRefKey());
-        postReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Snackbar.make(getActivity().findViewById(R.id.post_dashboard_layout),"Post Removed Successfully",Snackbar.LENGTH_SHORT).show();
-                onRefresh();
-            }
-        });
+        Toast.makeText(getActivity(),"Feature coming soon",Toast.LENGTH_SHORT).show();
+//        String country = preferences.getString(getString(R.string.pref_country), "null");
+//        String pin = preferences.getString(getString(R.string.pref_pin), "null");
+//        String key1 = preferences.getString(getString(R.string.pref_key1), "null");
+//        String key2 = preferences.getString(getString(R.string.pref_key2), "null");
+//        DatabaseReference postReference = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+//                .child(key1).child(key2).child("posts").child(post.getRefKey());
+//        postReference.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Void> task) {
+//                Snackbar.make(getActivity().findViewById(R.id.post_dashboard_layout),"Post Removed Successfully",Snackbar.LENGTH_SHORT).show();
+//                onRefresh();
+//            }
+//        });
     }
 
     @Override
@@ -143,8 +145,12 @@ public class PostDashboard extends Fragment implements PostAdapter.MyPostButtonC
                         Log.d(TAG, dataSnapshot.toString() + "\n");
                         for (DataSnapshot myPost:dataSnapshot.getChildren()){
                             if (myPost.child("reqUid").getValue(String.class).equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    && myPost.child("priority").getValue(Integer.class)>0)
-                                data.add(myPost.getValue(Post.class));
+                                    && myPost.child("priority").getValue(Integer.class)>0) {
+                                Post post = myPost.getValue(Post.class);
+                                Log.d("postkey",myPost.getKey());
+                                post.setRefKey(myPost.getKey());
+                                data.add(post);
+                            }
                         }
                         Collections.sort(data,Collections.reverseOrder(new Comparator<Post>() {
                             @Override

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/pending_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
+        android:layout_margin="3dp"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="7dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/pending_user_profile_photo"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:padding="5dp"
+                android:src="@drawable/sign"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+
+            <TextView
+                android:id="@+id/requesting_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/pending_user_profile_photo"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/timestamp_pending_post"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:gravity="top"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:text="req username"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/timestamp_pending_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:textStyle="italic"
+                android:maxLines="1"
+                android:gravity="top"
+                android:paddingEnd="10dp"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:text="time"
+                android:textSize="13sp" />
+
+
+            <TextView
+                android:id="@+id/pending_request_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/pending_user_profile_photo"
+                android:layout_below="@id/requesting_user_name"
+                android:maxLines="2"
+                android:paddingBottom="3dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:text=" request title"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/pending_request_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/pending_user_profile_photo"
+                android:layout_below="@id/pending_request_title"
+                android:maxLines="2"
+                android:text="description"
+                android:paddingBottom="3dp"
+                android:paddingEnd="5dp"
+                android:paddingStart="5dp"
+                android:paddingTop="5dp"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:id="@+id/pending_query_reply_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_below="@id/pending_request_description"
+                android:layout_toEndOf="@+id/pending_user_profile_photo">
+
+                <EditText
+                    android:inputType="textMultiLine"
+                    android:labelFor="@id/pending_reply_button"
+                    android:layout_marginEnd="3dp"
+                    android:id="@+id/pending_reply_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_edittext_focused"
+                    android:visibility="gone"
+                    android:layout_toLeftOf="@id/pending_reply_button"
+                    android:hint="Send a suggestion/answer" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:id="@+id/pending_reply_button"
+                    app:fabSize="mini"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:backgroundTint="@color/green"
+                    android:src="@drawable/ic_send"
+                    android:visibility="gone"
+                    app:borderWidth="0dp"
+                    android:text="Reply in chat"
+                    android:textColor="@android:color/white" />
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

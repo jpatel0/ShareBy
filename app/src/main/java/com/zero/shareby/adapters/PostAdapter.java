@@ -1,10 +1,13 @@
 package com.zero.shareby.adapters;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import android.support.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +20,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.zero.shareby.models.Post;
 import com.zero.shareby.R;
 import java.util.ArrayList;
+import java.util.prefs.PreferenceChangeEvent;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -73,67 +82,115 @@ public class PostAdapter extends ArrayAdapter<Post> {
         final Button confirmButton = newView.findViewById(R.id.confirm_post_button);
         final TextView repliesTextView=newView.findViewById(R.id.post_replies);
 
-        if (data.getRepliedUid()!=null && data.getSharedUid()==null){
-//            when the requester has to confirm the help offer
-            final boolean isExpanded = position==mExpandedPosition;
-            deleteImageButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+
+        if (data.getType()==0){
+            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+            final boolean isExpanded = position == mExpandedPosition;
+            confirmButton.setVisibility(View.GONE);
+            deleteImageButton.setVisibility(View.GONE);
+            repliesTextView.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
             newView.setActivated(isExpanded);
             newView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mExpandedPosition = isExpanded ? -1:position;
+                    String country = preferences.getString(getContext().getString(R.string.pref_country), "null");
+                    String pin = preferences.getString(getContext().getString(R.string.pref_pin), "null");
+                    String key1 = preferences.getString(getContext().getString(R.string.pref_key1), "null");
+                    String key2 = preferences.getString(getContext().getString(R.string.pref_key2), "null");
+                    Log.d("getnull",country+pin+key1+key2);
+                    DatabaseReference repliesRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(country).child(pin)
+                            .child(key1).child(key2).child("posts").child(data.getRefKey()).child("replies");
+                    repliesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
+
+                                String replies="";
+                                for (DataSnapshot reply:dataSnapshot.getChildren()) {
+                                    replies+="\n"+reply.getValue().toString();
+                                }
+                                repliesTextView.setText("Replies::\n"+replies);
+                            }else {
+                                repliesTextView.setText("No replies yet");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                    mExpandedPosition = isExpanded ? -1 : position;
                     TransitionManager.beginDelayedTransition(postListView);
                     notifyDataSetChanged();
                 }
             });
-            deleteImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDeleteButtonClick(data);
-                }
-            });
-            deleteImageButton.setVisibility(View.VISIBLE);
-            confirmButton.setVisibility(View.VISIBLE);
-            repliesTextView.setVisibility(View.VISIBLE);
-            repliesTextView.setText(data.getRepliedName()+" has offered your request, Confirm?");
-            confirmButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onConfirmButtonClick(data);
-                    TransitionManager.beginDelayedTransition(postListView);
-                }
-            });
-        }else if (data.getSharedUid()!=null){
+        }
+
+        else {
+            if (data.getRepliedUid() != null && data.getSharedUid() == null) {
+//            when the requester has to confirm the help offer
+                final boolean isExpanded = position == mExpandedPosition;
+                deleteImageButton.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+                newView.setActivated(isExpanded);
+                newView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mExpandedPosition = isExpanded ? -1 : position;
+                        TransitionManager.beginDelayedTransition(postListView);
+                        notifyDataSetChanged();
+                    }
+                });
+                deleteImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onDeleteButtonClick(data);
+                    }
+                });
+                deleteImageButton.setVisibility(View.VISIBLE);
+                confirmButton.setVisibility(View.VISIBLE);
+                repliesTextView.setVisibility(View.VISIBLE);
+                repliesTextView.setText(data.getRepliedName() + " has offered your request, Confirm?");
+                confirmButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onConfirmButtonClick(data);
+                        TransitionManager.beginDelayedTransition(postListView);
+                    }
+                });
+            } else if (data.getSharedUid() != null) {
 
 //            when the request is fulfilled and completed
 
-            repliesTextView.setVisibility(View.VISIBLE);
-            confirmButton.setVisibility(View.GONE);
-            deleteImageButton.setVisibility(View.GONE);
-            repliesTextView.setText(data.getTitle()+" accepted from "+data.getRepliedName());
-        }else {
+                repliesTextView.setVisibility(View.VISIBLE);
+                confirmButton.setVisibility(View.GONE);
+                deleteImageButton.setVisibility(View.GONE);
+                repliesTextView.setText(data.getTitle() + " accepted from " + data.getRepliedName());
+            } else {
 
 //            when a post is new and no one has offered any help
 
-            repliesTextView.setVisibility(View.GONE);
-            confirmButton.setVisibility(View.GONE);
-            final boolean isExpanded = position==mExpandedPosition;
-            deleteImageButton.setVisibility(isExpanded?View.VISIBLE:View.GONE);
-            newView.setActivated(isExpanded);
-            newView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mExpandedPosition = isExpanded ? -1:position;
-                    TransitionManager.beginDelayedTransition(postListView);
-                    notifyDataSetChanged();
-                }
-            });
-            deleteImageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onDeleteButtonClick(data);
-                }
-            });
+                repliesTextView.setVisibility(View.GONE);
+                confirmButton.setVisibility(View.GONE);
+                final boolean isExpanded = position == mExpandedPosition;
+                deleteImageButton.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+                newView.setActivated(isExpanded);
+                newView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mExpandedPosition = isExpanded ? -1 : position;
+                        TransitionManager.beginDelayedTransition(postListView);
+                        notifyDataSetChanged();
+                    }
+                });
+                deleteImageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onDeleteButtonClick(data);
+                    }
+                });
+            }
+
         }
 
         return newView;
